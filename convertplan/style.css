@@ -1,0 +1,282 @@
+:root {
+  /* Paleta Principal */
+  --azul-escuro: #333;
+  --azul-escuro-secundario: #34495e;
+  --cinza-claro-neutro: #f5f7fa;
+  --branco-puro: #ffffff;
+
+  /* Cores de Apoio */
+  --cinza-medio: #f0f0f0;
+  --cinza-texto: #333333;
+
+  /* Cores de Alerta */
+  --alerta-borda: #ffc107;
+  --alerta-fundo: #fff3cd;
+  --alerta-texto: #856404;
+
+  /* Cores de Efeitos */
+  --sombra-suave-inicio: rgba(0,0,0,0.05);
+  --sombra-suave-fim: rgba(0,0,0,0.2);
+}
+
+/* Estilos Gerais */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--cinza-claro-neutro); /* Fundo neutro */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* Centraliza verticalmente */
+  min-height: 100vh; /* Ocupa a tela inteira */
+  color: var(--cinza-texto);
+}
+
+/* Estilos do Header */
+header {
+  background-color: var(--azul-escuro); /* Utilizando o Azul Escuro */
+  color: var(--branco-puro);
+  padding: 1rem 2rem;
+  text-align: center;
+  box-shadow: 0 4px 8px var(--sombra-suave-inicio);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+header .home-button img {
+  width: 40px;
+  height: 40px;
+  transition: transform 0.3s ease;
+}
+
+header .home-button img:hover {
+  transform: scale(1.1);
+}
+
+/* Corrigindo o alinhamento do h1 */
+header h1 {
+  font-size: 1.75rem;
+  font-weight: bold;
+  margin: 0;
+  flex-grow: 1;
+  text-align: center;
+  padding: 0 10px;
+}
+
+/* Estilo para os campos de entrada */
+textarea, input {
+  width: 100%;
+  max-width: 600px;
+  padding: 12px;
+  border: 1px solid var(--cinza-medio);
+  border-radius: 8px;
+  resize: none;
+  font-size: 16px;
+  margin-top: 15px;
+}
+
+textarea:focus, input:focus {
+  border-color: var(--azul-escuro-secundario);
+  outline: none;
+  box-shadow: 0 0 8px var(--sombra-suave-fim);
+}
+
+/* Centralizar conteúdo abaixo do header */
+main {
+  width: 100%;
+  max-width: 800px;
+  padding-top: 120px;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* Estilo para os botões */
+button {
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  padding: 14px 28px;
+  margin-top: 20px;
+  min-width: 200px;
+}
+
+button:hover {
+  opacity: 0.9;
+  transform: scale(1.05);
+}
+
+/* Botões com cor primária (Azul Escuro) */
+.bg-orange-500 {
+  background-color: var(--azul-escuro);
+  color: var(--branco-puro);
+}
+
+.bg-orange-500:hover {
+  background-color: var(--azul-escuro-secundario);
+}
+
+/* Se desejar manter outro botão com cor diferenciada,
+   você pode definir outra classe, por exemplo: */
+.bg-green-500 {
+  background-color: var(--cinza-texto);
+  color: var(--branco-puro);
+}
+
+.bg-green-500:hover {
+  background-color: var(--cinza-medio);
+}
+
+/* Estilo da tabela */
+.table-container {
+  width: 100%;
+  max-width: 900px;
+  padding: 20px;
+  margin-top: 40px;
+  background-color: var(--branco-puro);
+  border-radius: 10px;
+  box-shadow: 0 6px 12px var(--sombra-suave-inicio);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table th, table td {
+  padding: 16px;
+  text-align: left;
+  border: 1px solid var(--cinza-medio);
+  font-size: 16px;
+}
+
+table th {
+  background-color: var(--azul-escuro); /* Cabeçalhos com cor primária */
+  color: var(--branco-puro);
+  font-weight: bold;
+}
+
+table tbody tr:nth-child(even) {
+  background-color: var(--cinza-medio);
+}
+
+table tbody tr:hover {
+  background-color: var(--cinza-claro-neutro);
+}
+
+/* Spinner de Carregamento */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.spinner {
+  border: 8px solid var(--cinza-medio);
+  border-top: 8px solid var(--azul-escuro);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Estilo para o Card */
+.card {
+  background-color: var(--branco-puro);
+  border-radius: 10px;
+  box-shadow: 0 6px 12px var(--sombra-suave-inicio);
+  padding: 20px;
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 620px;
+}
+
+/* Estilo para o campo de texto */
+textarea {
+  border: 1px solid var(--cinza-medio);
+  border-radius: 8px;
+  font-size: 16px;
+  resize: none;
+  padding: 12px;
+  width: 100%;
+}
+
+textarea:focus {
+  border-color: var(--azul-escuro-secundario);
+  outline: none;
+  box-shadow: 0 0 8px var(--sombra-suave-fim);
+}
+
+/* Estilo para o container do alerta */
+.alert-container {
+  width: 100%;
+  max-width: 900px;
+  padding: 20px;
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+/* Estilo para o alerta */
+.alert {
+  background-color: var(--alerta-fundo);
+  border: 1px solid var(--alerta-borda);
+  color: var(--alerta-texto);
+  padding: 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 800px;
+  box-shadow: 0 4px 8px var(--sombra-suave-inicio);
+}
+
+/* Estilo para o ícone do alerta */
+.alert-icon {
+  font-size: 24px;
+  margin-right: 16px;
+}
+
+/* Estilo para o texto do alerta */
+.alert-text {
+  font-size: 16px;
+  line-height: 1.5;
+  font-weight: normal;
+  margin: 0;
+}
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #333; /* Cinza escuro do footer */
+  color: #fff; /* Cor do texto no footer */
+  text-align: center;
+  padding: 10px;
+  font-size: 14px;
+  z-index: 1000;
+}

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <title>Download de Planilhas</title>
+</head>
+
+<body>
+
+    <header>
+        <a href="../index.html" class="back-button" style="position: absolute; left: 20px; top: 50%; transform: translateY(-50%);">
+            <img src="https://cdn-icons-png.flaticon.com/512/25/25694.png" style="width: 20px; filter: invert(1);" alt="Ícone de Home">
+        </a>
+        <h1>Gerenciamento de Planilhas e Relatórios</h1>
+    </header>
+    
+
+    <main>
+        <h1 class="titulo-principal">Acesso a Planilhas</h1>
+
+        <div class="alert">
+            <i class="fa-solid fa-triangle-exclamation alert-icon"></i>
+            <p>
+                <strong>ATENÇÃO:</strong> Para acessar as planilhas, você deve ter permissão de acesso. Apenas
+                administradores podem visualizar os dados, sendo impossível compartilhar esse link. Se você não tem
+                permissão, por favor, entre em contato com o administrador.
+            </p>
+        </div>
+
+        <!-- Container de Login -->
+        <div class="container login-container">
+            <div class="login-header">
+                <i class="fa-solid fa-user-lock login-icon"></i>
+                <span class="login-title">Login Atom</span>
+            </div>
+
+            <div class="senhas-container">
+                <div class="senha-item">
+                    <i class="fa-solid fa-key"></i> <strong>Master:</strong> 2468515151
+                </div>
+                <div class="senha-item">
+                    <i class="fa-solid fa-key"></i> <strong>Expedição:</strong> 1234
+                </div>
+            </div>
+        </div>
+
+        <!-- Lista de Planilhas -->
+        <div class="container planilhas-container">
+            <div class="download-section">
+                <i class="fa-solid fa-chart-line"></i>
+                <span>Analise Power B.I</span>
+                <a href="https://docs.google.com/spreadsheets/d/1lY-jNRR009UEnXkd4jgMb7W5bTDHE6xxNbBgfvHUav4/edit?gid=0#gid=0"
+                    target="_blank" class="btn-download">Abrir Planilha</a>
+            </div>
+
+            <div class="download-section">
+                <i class="fa-solid fa-database"></i>
+                <span>Todos os produtos no Atom</span>
+                <a href="https://docs.google.com/spreadsheets/d/1btclk9JuvJvHf9xyrfZiMOTqBf7HlpdZ/edit?gid=1981443210#gid=1981443210"
+                    target="_blank" class="btn-download">Abrir Planilha</a>
+            </div>
+
+            <div class="download-section">
+                <i class="fa-solid fa-file-excel"></i>
+                <span>Planilha de Controle LIKE</span>
+                <a href="https://docs.google.com/spreadsheets/d/19awE2XjvvPfc-XFL0jgHQuGUC5R9V7u4/edit?rtpof=true&gid=640455975#gid=640455975"
+                    target="_blank" class="btn-download">Abrir Planilha</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <span class="footer-rights">Todos os direitos reservados</span> - WolfSoftware.in  |
+        <span class="footer-ceo">CEO e Engenheiro de Desenvolvimento - Erick Barbosa</span>
+      </footer>
+
+
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>

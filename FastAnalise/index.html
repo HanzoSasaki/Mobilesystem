@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Margem</title>
+    <link rel="stylesheet" href="style..css">
+</head>
+
+<body>
+    <header>
+        Análise Rápida
+        <a href="../index.html" style="position: absolute; left: 20px; top: 50%; transform: translateY(-50%);">
+            <img src="https://cdn-icons-png.flaticon.com/512/25/25694.png" style="width: 20px; filter: invert(1);" alt="Ícone de Home">
+        </a>
+    </header>
+    
+
+    <div class="container">
+        <h2>Calculadora de Margem</h2>
+        <label>Nome do Produto:</label>
+        <input type="text" id="produto" required>
+
+        <label>Preço de Custo (R$):</label>
+        <input type="number" id="precoCusto" required>
+
+        <label>Preço de Venda (R$):</label>
+        <input type="number" id="precoVenda" required>
+
+        <label>Plataforma:</label>
+        <select id="plataforma">
+            <option value="shopee">Shopee</option>
+            <option value="amazon">Amazon</option>
+        </select>
+        
+        <button onclick="calcularMargem()">Calcular</button>
+        <button onclick="gerarRelatorioPDF()">Gerar PDF</button>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Margem (R$)</th>
+                    <th>Margem (%)</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="resultado"></tbody>
+        </table>
+
+        <!-- <h2>Simulação de Promoções</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Desconto (%)</th>
+                    <th>Preço Final (R$)</th>
+                    <th>Lucro (R$)</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="simulacao"></tbody>
+        </table> -->
+    </div>
+
+    <footer>
+        <span class="footer-rights">Todos os direitos reservados</span> - WolfSoftware.in  |
+        <span class="footer-ceo">CEO e Engenheiro de Desenvolvimento - Erick Barbosa</span>
+      </footer>
+
+
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Software de Análise de Vendas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="meia.css">
+</head>
+
+<body>
+
+    <div id="loader" class="loader-overlay">
+        <div class="spinner"></div>
+        <p>Processando... Aguarde</p>
+    </div>
+
+    <button id="scrollToTopBtn" onclick="scrollToTop()">↑</button>
+    <header style="position: relative; padding: 10px;">
+        <h2 style="text-align: center; width: 100%;">Análise Diária FASTSHOP</h2>
+        <a href="../../index.html" style="position: absolute; left: 20px; top: 50%; transform: translateY(-50%);">
+            <img src="https://cdn-icons-png.flaticon.com/512/25/25694.png" style="width: 20px; filter: invert(1);" alt="Ícone de Home">
+        </a>
+    </header>
+
+    <div class="actions-container">
+        <div class="import-button-container">
+            <button id="importButton" onclick="window.location.href='../index.html'">
+                <span>Visualização de analise em nota cheia</span>
+            </button>
+        </div>
+    
+        <div class="filtro-container">
+            <input type="text" id="filtroData" placeholder="Escolha uma data ou intervalo">
+        </div>
+    </div>
+
+    <div class="alert">
+        <span class="alert-icon">⚠️</span>
+        <p><strong>ATENÇÃO:</strong> Esta página analisa os dados com base no <Strong>IMPOSTO</Strong> de <Strong>3,25%</Strong> e nas demais taxas padrões para <Strong>MEIA NOTA.</Strong></p>
+
+    </div>
+
+    <section class="table-section">
+        <table id="resultTable">
+            <thead>
+                <tr>
+                    <th onclick="ativarFiltro(this)">Número do Pedido</th>
+                    <th onclick="ativarFiltro(this)">Nome do Produto</th>
+                    <th onclick="ativarFiltro(this)">Variação Produto</th>
+                    <th onclick="ativarFiltro(this)">Quantidade venda</th>
+                    <th onclick="ativarFiltro(this)">Loja</th>
+                    <th onclick="ativarFiltro(this)">Custo Real (R$)</th>
+                    <th onclick="ativarFiltro(this)">Preço de Venda (R$)</th>
+                    <th onclick="ativarFiltro(this)">Margem Líquida (R$)</th>
+                    <th onclick="ativarFiltro(this)">Margem (%)</th>
+                    <th onclick="ativarFiltro(this)">Data</th>
+                    <th onclick="ativarFiltro(this)">% NECESSÁRIA PARA ATINGIR A META</th>
+                    <th onclick="ativarFiltro(this)">AVALIAÇÃO POR PEDIDO</th>
+                    <th onclick="ativarFiltro(this)">OBS</th>
+                    
+                </tr>
+            </thead>
+            <tbody id="table-body">
+                <!-- Dados da planilha serão exibidos aqui -->
+            </tbody>
+        </table>
+    </section>
+
+
+    <footer>
+        <span class="footer-rights">Todos os direitos reservados</span> - WolfSoftware.in  |
+        <span class="footer-ceo">CEO e Engenheiro de Desenvolvimento - Erick Barbosa</span>
+      </footer>
+
+      
+    <script src="https://cdn.jsdelivr.net/npm/papaparse/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="meia.js"></script>
+    <script src="../assets/filter.js"></script>
+
+    <script>
+      
+    </script>
+    
+</body>
+
+</html>

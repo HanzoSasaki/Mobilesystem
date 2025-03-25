@@ -1,0 +1,249 @@
+:root {
+  --cinza-escuro: #333;
+  --branco: #fff;
+  --cinza-claro: #f4f4f4;
+  --azul: #007BFF;
+  --cinza-suave: #555;
+  --cinza-borda: #ddd;
+  --fundo-modal: rgba(0, 0, 0, 0.8);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  line-height: 1.6;
+  background-color: var(--cinza-claro);
+  padding: 2rem;
+  color: var(--cinza-escuro);
+}
+
+header {
+  width: 100%;
+  background-color: var(--cinza-escuro);
+  color: var(--branco);
+  text-align: center;
+  padding: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  position: fixed;
+  top: 0;
+  left: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.home-button {
+  position: absolute;
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
+  background-color: var(--cinza-escuro);
+  color: var(--branco);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.home-button:hover {
+  background-color: var(--azul);
+}
+
+.card {
+  padding: 20px;
+  background: var(--branco);
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  border: 1px solid var(--cinza-borda);
+}
+
+.red {
+  color: red;
+}
+
+h1 {
+  text-align: center;
+  color: var(--cinza-escuro);
+  margin-bottom: 2rem;
+  font-size: 2.5rem;
+}
+
+.btn {
+  background: var(--cinza-escuro);
+  color: var(--branco);
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.btn:hover {
+  background: var(--azul);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.btn-excluir {
+  background: #dc3545;
+}
+
+.btn-excluir:hover {
+  background: #bb2d3b;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 2rem;
+  background: var(--branco);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+th, td {
+  padding: 1rem;
+  text-align: left;
+}
+
+th {
+  background: var(--cinza-escuro);
+  color: var(--branco);
+  font-weight: 600;
+}
+
+tr:nth-child(even) {
+  background: #f8f8f8;
+}
+
+.acoes-cell {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--fundo-modal);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: var(--branco);
+  padding: 2rem;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+  animation: modalEntrada 0.3s ease;
+}
+
+@keyframes modalEntrada {
+  from { transform: translateY(-20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.fechar-modal {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--cinza-escuro);
+  background: none;
+  border: none;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #666;
+  font-weight: 500;
+}
+
+input, select {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid var(--cinza-borda);
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: var(--cinza-escuro);
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.2);
+}
+
+.item-flex {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.add-item {
+  margin-top: 1rem;
+}
+
+.config-descontos {
+  background: var(--branco);
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin: 2rem 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+@media (max-width: 768px) {
+  body {
+      padding: 1rem;
+  }
+
+  table {
+      display: block;
+      overflow-x: auto;
+  }
+
+  .modal-content {
+      padding: 1.5rem;
+  }
+
+  .item-flex {
+      flex-direction: column;
+      align-items: stretch;
+  }
+}
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #333; /* Cinza escuro do footer */
+  color: #fff; /* Cor do texto no footer */
+  text-align: center;
+  padding: 10px;
+  font-size: 14px;
+  z-index: 1000;
+}
+

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Folha de Pagamento</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+   <link rel="stylesheet" href="src/style.css">
+</head>
+<body>
+    <header>
+        Gestão de Folha de Pagamento
+        <a href="../index.html" style="position: absolute; left: 20px; top: 50%; transform: translateY(-50%);">
+            <img src="https://cdn-icons-png.flaticon.com/512/25/25694.png" style="width: 20px; filter: invert(1);" alt="Ícone de Home">
+        </a>
+    </header>
+    
+
+        <br>
+        <br>
+        <div class="card" id="diaUtilCard"></div>
+        <div class="config-descontos">
+            <h3>Configurações</h3>
+            <div class="form-group">
+                <label>Dias Úteis no Mês:</label>
+                <input type="number" id="diasUteis" value="22">
+            </div>
+        </div>
+
+        <button class="btn" onclick="abrirModal('cadastro')">Novo Funcionário</button>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Salário Base</th>
+                    <th>Faltas</th>
+                    <th>Descontos</th>
+                    <th>Total</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody id="tabelaFuncionarios"></tbody>
+        </table>
+
+        <!-- Modal Cadastro -->
+        <div id="modalCadastro" class="modal">
+            <div class="modal-content">
+                <button class="fechar-modal" onclick="fecharModal('cadastro')">&times;</button>
+                <h2>Cadastrar Funcionário</h2>
+                <form onsubmit="adicionarFuncionario(event)">
+                    <div class="form-group">
+                        <label>Nome Completo:</label>
+                        <input type="text" id="nomeCadastro" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Salário Base (R$):</label>
+                        <input type="number" id="salarioBaseCadastro" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Bonificação (R$):</label>
+                        <input type="number" id="bonificacaoCadastro" step="0.01" value="0">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Faltas/Ausências:</label>
+                        <div id="ausenciasContainer"></div>
+                        <button type="button" class="btn add-item" onclick="adicionarFalta('ausenciasContainer')">+ Adicionar Falta</button>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Horas Extras:</label>
+                        <div id="horasExtrasContainer"></div>
+                        <button type="button" class="btn add-item" onclick="adicionarHoraExtra('horasExtrasContainer')">+ Adicionar Hora Extra</button>
+                    </div>
+
+                    <button type="submit" class="btn">Salvar Cadastro</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal Edição -->
+        <div id="modalEdicao" class="modal">
+            <div class="modal-content">
+                <button class="fechar-modal" onclick="fecharModal('edicao')">&times;</button>
+                <h2>Editar Funcionário</h2>
+                <form onsubmit="salvarEdicao(event)">
+                    <div class="form-group">
+                        <label>Nome:</label>
+                        <input type="text" id="editNome" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Salário Base (R$):</label>
+                        <input type="number" id="editSalarioBase" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Bonificação (R$):</label>
+                        <input type="number" id="editBonificacao" step="0.01" value="0">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Faltas/Ausências:</label>
+                        <div id="editAusenciasContainer"></div>
+                        <button type="button" class="btn add-item" onclick="adicionarFalta('editAusenciasContainer')">+ Adicionar Falta</button>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Horas Extras:</label>
+                        <div id="editHorasExtrasContainer"></div>
+                        <button type="button" class="btn add-item" onclick="adicionarHoraExtra('editHorasExtrasContainer')">+ Adicionar Hora Extra</button>
+                    </div>
+
+                    <button type="submit" class="btn">Salvar Alterações</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <span class="footer-rights">Todos os direitos reservados</span> - WolfSoftware.in  |
+        <span class="footer-ceo">CEO e Engenheiro de Desenvolvimento - Erick Barbosa</span>
+      </footer>
+
+
+
+
+
+
+    <script src="src/script.js"></script>
+</body>
+</html>

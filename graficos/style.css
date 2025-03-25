@@ -1,0 +1,295 @@
+/* Reset e configurações básicas */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Header Fixo */
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  padding: 15px 0;
+  z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+  font-size: 24px;
+}
+
+/* Container Principal */
+.container {
+  display: flex;
+  flex: 1;
+  margin-top: 60px;
+  flex-wrap: wrap;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 250px;
+  background-color: #f4f4f4;
+  padding: 20px;
+  height: calc(100vh - 120px);
+  overflow-y: auto;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.sidebar li {
+  margin-bottom: 15px;
+}
+
+/* Links da Sidebar */
+.sidebar a {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+  padding: 10px;
+  display: block;
+  border-radius: 4px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.sidebar a:hover {
+  background-color: #007BFF;
+  color: #fff;
+}
+
+/* Submenu Estilizado */
+.submenu > .submenu-toggle {
+  position: relative;
+}
+
+.submenu > .submenu-toggle::after {
+  content: '▼';
+  position: absolute;
+  right: 10px;
+  transition: transform 0.3s ease;
+}
+
+.submenu.active > .submenu-toggle::after {
+  transform: rotate(-180deg);
+}
+
+.submenu .submenu-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  list-style: none;
+  padding-left: 10px;
+}
+
+.submenu.active .submenu-content {
+  max-height: 500px; /* Valor suficiente para conter as opções */
+}
+
+/* Área de Conteúdo */
+.content {
+  flex: 1;
+  padding: 20px;
+  background-color: #fff;
+  overflow-y: auto;
+}
+
+/* Grid de Cards */
+.card-grid {
+  display: grid;
+  gap: 20px;
+  justify-content: center;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+/* Estilo de cada Card */
+.card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.card:hover {
+  transform: scale(1.02);
+}
+
+.card h2 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.card p {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+/* Footer Fixo */
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  padding: 10px;
+  font-size: 14px;
+  z-index: 1000;
+}
+
+/* Modal para visualização em tela cheia */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 2000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 40px auto;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 1300px;
+  width: 90%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.modal-content .close {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 30px;
+  color: #333;
+  cursor: pointer;
+}
+
+.graph-info {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.graph-info h1 {
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+}
+
+.graph-info p {
+  font-size: 1rem;
+  color: #555;
+}
+
+.graph-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* Proporção 16:9 */
+  margin-bottom: 20px;
+}
+
+.graph-display iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Media Queries para Responsividade */
+
+/* Para telas até 1024px */
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 220px;
+    padding: 15px;
+  }
+  
+  header h1 {
+    font-size: 22px;
+  }
+}
+
+/* Para telas até 768px */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+  
+  .sidebar {
+    width: 100%;
+    height: auto;
+    margin-bottom: 20px;
+    padding: 10px;
+  }
+  
+  .sidebar ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .sidebar li {
+    margin: 5px;
+  }
+  
+  .sidebar a {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+  
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* Para telas até 480px */
+@media (max-width: 480px) {
+  header h1 {
+    font-size: 18px;
+  }
+  
+  .card h2 {
+    font-size: 1rem;
+  }
+  
+  .card p {
+    font-size: 0.8rem;
+  }
+  
+  footer {
+    font-size: 12px;
+  }
+}

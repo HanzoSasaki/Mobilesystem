@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Gráfico</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Header Fixo -->
+  <header>
+    <h1>Dashboard Gráfico</h1>
+    <a href="../index.html" style="position: absolute; left: 20px; top: 50%; transform: translateY(-50%);">
+      <img src="https://cdn-icons-png.flaticon.com/512/25/25694.png" style="width: 20px; filter: invert(1);" alt="Ícone de Home">
+    </a>
+  </header>
+
+  <!-- Container Principal -->
+  <div class="container">
+    <!-- Sidebar com Itens -->
+    <aside class="sidebar">
+      <ul>
+        <li class="submenu">
+          <a href="#" class="submenu-toggle">Global</a>
+          <ul class="submenu-content">
+            <li><a href="#" data-item="item1">Visão Geral 🔍</a></li>
+            <li><a href="#" data-item="item2">Avaliação de custos 💲</a></li>
+          </ul>
+        </li>
+        <li class="submenu">
+          <a href="#" class="submenu-toggle">Nota Cheia</a>
+          <ul class="submenu-content">
+            <li><a href="#" data-item="item3">Avaliação comparativa</a></li>
+            <li><a href="#" data-item="item4">Avaliação Fevereiro 📆</a></li>
+            <li><a href="#" data-item="item5">Avaliação Março 📆</a></li>
+          </ul>
+        </li>
+        <li class="submenu">
+          <a href="#" class="submenu-toggle">Meia Nota</a>
+          <ul class="submenu-content">
+            <li><a href="#" data-item="item16">Avaliação comparativa</a></li>
+            <li><a href="#" data-item="item17">Avaliação Fevereiro 📆</a></li>
+            <li><a href="#" data-item="item18">Avaliação Março 📆</a></li>
+          </ul>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- Área dos Cards -->
+    <main class="content">
+      <div id="graph-cards" class="card-grid">
+        <!-- Os cards serão carregados aqui via JavaScript -->
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal para exibir o gráfico em tela cheia -->
+  <div id="graph-modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <div class="graph-info">
+        <h1 id="graph-title">Título do Gráfico</h1>
+        <p id="graph-description">Descrição do gráfico.</p>
+      </div>
+      <div class="graph-display">
+        <iframe id="graph-iframe" src="" frameborder="0"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <span class="footer-rights">Todos os direitos reservados</span> - WolfSoftware.in  |
+    <span class="footer-ceo">CEO e Engenheiro de Desenvolvimento - Erick Barbosa</span>
+  </footer>
+
+  <!-- JavaScript -->
+  <script src="script.js"></script>
+</body>
+</html>

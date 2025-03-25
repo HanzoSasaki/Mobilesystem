@@ -1,0 +1,271 @@
+:root {
+  /* Paleta Principal */
+  --azul-escuro: #333;
+  --azul-escuro-secundario: #34495e;
+  --cinza-claro-neutro: #f5f7fa;
+  --branco-puro: #ffffff;
+
+  /* Cores de Apoio */
+  --cinza-medio: #f0f0f0;
+  --cinza-texto: #333333;
+
+  /* Cores de Alerta */
+  --alerta-borda: #ffc107;
+  --alerta-fundo: #fff3cd;
+  --alerta-texto: #856404;
+
+  /* Cores de Efeitos */
+  --sombra-suave-inicio: rgba(0, 0, 0, 0.05);
+  --sombra-suave-fim: rgba(0, 0, 0, 0.2);
+}
+
+/* Resetando o estilo para uma base limpa */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Estilo do body */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--branco-puro);
+  color: var(--cinza-texto);
+}
+
+/* Estilo do header */
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: var(--azul-escuro);
+  color: var(--branco-puro);
+  text-align: center;
+  padding: 15px 0;
+  z-index: 1000;
+  box-shadow: 0 2px 5px var(--sombra-suave-inicio);
+}
+
+header h1 {
+  font-size: 24px;
+}
+
+/* Estilo da alerta */
+.alert-box {
+  background: var(--alerta-fundo);
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 0 10px var(--sombra-suave-fim);
+  border: 1px solid var(--alerta-borda);
+}
+
+.alert-box h2 {
+  color: var(--alerta-texto);
+}
+
+.alert-box p {
+  margin: 10px 0;
+}
+
+.alert-box button {
+  background: var(--alerta-texto);
+  color: var(--branco-puro);
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.alert-box button:hover {
+  background: darkred;
+}
+
+/* Estilo do título principal */
+h1 {
+  margin: 0;
+  font-size: 36px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+/* Estilo dos botões */
+.buttons {
+  margin-top: 20px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+button {
+  padding: 12px 25px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  background-color: var(--azul-escuro);
+  color: var(--branco-puro);
+  transition: background-color 0.3s, transform 0.2s;
+  font-weight: bold;
+}
+
+button:hover {
+  background-color: var(--azul-escuro-secundario);
+  transform: scale(1.05);
+}
+
+button:focus {
+  outline: none;
+}
+
+/* Estilo da tabela */
+table {
+  width: 90%;
+  margin: 30px auto;
+  border-collapse: collapse;
+  box-shadow: 0 4px 12px var(--sombra-suave-inicio);
+  background-color: var(--branco-puro);
+}
+
+table th, table td {
+  padding: 15px;
+  text-align: center;
+  border: 1px solid #ddd;
+  font-size: 16px;
+}
+
+table th {
+  background-color: var(--azul-escuro);
+  color: var(--branco-puro);
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+table tr:nth-child(even) {
+  background-color: var(--cinza-claro-neutro);
+}
+
+table tr:hover {
+  background-color: var(--cinza-medio);
+}
+
+td input {
+  width: 90px;
+  padding: 8px;
+  text-align: center;
+  border: 1px solid var(--azul-escuro);
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+/* Modal styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  background-color: var(--branco-puro);
+  padding: 30px;
+  margin: 5% auto;
+  width: 90%;
+  max-width: 400px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px var(--sombra-suave-fim);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+h2 {
+  margin-bottom: 20px;
+  font-size: 28px;
+  color: var(--azul-escuro);
+  text-align: center;
+  font-weight: bold;
+}
+
+.modal-field {
+  margin-bottom: 20px;
+}
+
+.modal-field label {
+  font-size: 16px;
+  color: var(--cinza-texto);
+  margin-bottom: 8px;
+  display: block;
+  font-weight: bold;
+}
+
+.modal-field input {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.modal-field input[type="number"] {
+  text-align: center;
+}
+
+button#modal-fechar-editar {
+  background-color: #f44336;
+}
+
+button#modal-fechar-editar:hover {
+  background-color: #da190b;
+}
+
+input[type="text"], input[type="number"], select {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+}
+
+input[type="number"] {
+  text-align: center;
+}
+
+/* Lixeira Ícone */
+.lixeira {
+  cursor: pointer;
+  color: #f44336;
+  font-size: 20px;
+  margin-left: 10px;
+  transition: color 0.3s;
+}
+
+.lixeira:hover {
+  color: #da190b;
+}
+
+/* Footer */
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: var(--azul-escuro);
+  color: var(--branco-puro);
+  text-align: center;
+  padding: 10px;
+  font-size: 14px;
+  z-index: 1000;
+}

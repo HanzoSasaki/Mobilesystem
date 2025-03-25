@@ -1,0 +1,191 @@
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  :root {
+    --cinza-escuro: #333;
+    --branco: #fff;
+    --cinza-claro: #f4f4f4;
+    --azul: #007BFF;
+    --cinza-suave: #555;
+    --cinza-borda: #ddd;
+    --fundo-modal: rgba(0, 0, 0, 0.8);
+  }
+  
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--branco);
+    text-align: center;
+  }
+  
+  /* Header */
+  header {
+    background-color: var(--cinza-escuro);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--branco);
+    padding: 10px 20px;
+  }
+  
+  header a.home-button {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  
+  /* Container dos cards */
+  .cards-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 50px;
+  }
+  
+  .card {
+    background: var(--branco);
+    color: var(--cinza-suave);
+    padding: 20px;
+    width: 250px;
+    text-align: center;
+    border-radius: 10px;
+    border: 1px solid var(--cinza-borda);
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: transform 0.3s, background 0.3s;
+  }
+  
+  .card:hover {
+    transform: scale(1.1);
+    background: var(--cinza-claro);
+  }
+  
+  /* Footer */
+  footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #333; /* Cinza escuro do footer */
+    color: #fff; /* Cor do texto no footer */
+    text-align: center;
+    padding: 10px;
+    font-size: 14px;
+    z-index: 1000;
+  }
+  /* Estilos do Modal */
+  .modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--fundo-modal);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+  
+  .modal.show {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .modal-content {
+    background: var(--branco);
+    padding: 30px;
+    border-radius: 10px;
+    width: 800px;
+    text-align: center;
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: scale(0.8);
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+  
+  .modal.show .modal-content {
+    transform: scale(1);
+    opacity: 1;
+  }
+  
+  .close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 18px;
+    color: var(--cinza-escuro);
+    cursor: pointer;
+  }
+  
+  /* Estilo dos inputs, buttons e selects */
+  input,
+  button,
+  select {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+  
+  button {
+    background-color: var(--cinza-escuro);
+    color: var(--branco);
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: var(--azul);
+  }
+  
+  /* Cores de destaque para resultados */
+  h3 {
+    color: var(--cinza-escuro);
+  }
+  
+  .green {
+    background-color: #a0ee90;
+  }
+  
+  .yellow {
+    background-color: #94f08c;
+  }
+  
+  .red {
+    background-color: #ffcccb;
+  }
+  
+  /* Estilo da tabela */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  table,
+  th,
+  td {
+    border: 1px solid var(--cinza-borda);
+  }
+  
+  th,
+  td {
+    padding: 10px;
+    text-align: center;
+  }
+  

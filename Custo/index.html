@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Calculadora de Precificação Mercado Livre</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Header fixo com botão Home -->
+  <header>
+    <a href="/index.html" class="home-button" style="position: absolute; left: 20px; top: 50%; transform: translateY(-50%);">
+        <img src="https://cdn-icons-png.flaticon.com/512/25/25694.png" style="width: 20px; filter: invert(1);" alt="Home" />
+    </a>
+    <h1>Calculadora de Precificação Mercado Livre</h1>
+</header>
+
+
+  <div class="modal-button-container">
+    <button id="openModal" class="modal-button">Abrir Calculadora</button>
+  </div>
+    
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Calculadora de Cubagem</h2>
+      <label for="comprimento">Comprimento (cm):</label>
+      <input type="number" id="comprimento" step="0.01"><br><br>
+      <label for="largura">Largura (cm):</label>
+      <input type="number" id="largura" step="0.01"><br><br>
+      <label for="altura">Altura (cm):</label>
+      <input type="number" id="altura" step="0.01"><br><br>
+      <label for="peso">Peso Real (kg):</label>
+      <input type="number" id="peso" step="0.01"><br><br>
+      <button onclick="calcularCubagem()">Calcular</button>
+      <p id="resultadoCubagem"></p>
+    </div>
+  </div>
+
+
+ 
+  <!-- Conteúdo principal -->
+  <main>
+    <div class="calculator">
+      <label for="custo">Custo do Produto (R$):</label>
+      <input type="number" id="custo" placeholder="Digite o custo do produto" />
+
+      <label for="margem">Margem de Lucro Desejada (%):</label>
+      <input type="number" id="margem" placeholder="Digite a margem desejada" />
+
+      <button onclick="calcularPrecoML()">Calcular Preço Base</button>
+
+      <div id="resultadoBase"></div>
+
+      <!-- Área para selecionar frete se necessário -->
+      <div id="areaFrete">
+        <h3>Cálculo do Frete</h3>
+        <label for="metodoEnvio">Método de Envio:</label>
+        <select id="metodoEnvio">
+          <option value="full">Full</option>
+          <option value="outros">Outros</option>
+        </select>
+
+        <label for="intervaloEnvio">Intervalo de Peso:</label>
+        <select id="intervaloEnvio">
+          <option value="Até 300 g">Até 300 g</option>
+          <option value="De 300 g a 500 g">De 300 g a 500 g</option>
+          <option value="De 500 g a 1 kg">De 500 g a 1 kg</option>
+          <option value="De 1 kg a 2 kg">De 1 kg a 2 kg</option>
+          <option value="De 2 kg a 3 kg">De 2 kg a 3 kg</option>
+          <option value="De 3 kg a 4 kg">De 3 kg a 4 kg</option>
+          <option value="De 4 kg a 5 kg">De 4 kg a 5 kg</option>
+          <option value="De 5 kg a 9 kg">De 5 kg a 9 kg</option>
+          <option value="De 9 kg a 13 kg">De 9 kg a 13 kg</option>
+          <option value="De 13 kg a 17 kg">De 13 kg a 17 kg</option>
+          <option value="De 17 kg a 23 kg">De 17 kg a 23 kg</option>
+          <option value="De 23 kg a 30 kg">De 23 kg a 30 kg</option>
+          <option value="De 30 kg a 40 kg">De 30 kg a 40 kg</option>
+          <option value="De 40 kg a 50 kg">De 40 kg a 50 kg</option>
+          <option value="De 50 kg a 60 kg">De 50 kg a 60 kg</option>
+          <option value="De 60 kg a 70 kg">De 60 kg a 70 kg</option>
+          <option value="De 70 kg a 80 kg">De 70 kg a 80 kg</option>
+          <option value="De 80 kg a 90 kg">De 80 kg a 90 kg</option>
+          <option value="De 90 kg a 100 kg">De 90 kg a 100 kg</option>
+          <option value="De 100 kg a 125 kg">De 100 kg a 125 kg</option>
+          <option value="De 125 kg a 150 kg">De 125 kg a 150 kg</option>
+          <option value="Maior que 150 kg">Maior que 150 kg</option>
+        </select>
+
+        <button onclick="calcularFrete()">Calcular Frete e Preço Final</button>
+      </div>
+
+      <div id="resultadoFinal"></div>
+    </div>
+  </main>
+
+  <!-- Footer fixo -->
+  <footer>
+    <span class="footer-rights">Todos os direitos reservados</span> - WolfSoftware.in  |
+    <span class="footer-ceo">CEO e Engenheiro de Desenvolvimento - Erick Barbosa</span>
+  </footer>
+
+  <script src="script.js">
+   
+  </script>
+</body>
+</html>

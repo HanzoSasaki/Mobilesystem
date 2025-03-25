@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Sistema de Fornecedores e Pedidos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap CSS para uma interface moderna e responsiva -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background-color: #f7f7f7; }
+    .header { background-color: #333; color: white; padding: 15px; text-align: center; }
+    .tab-content { margin-top: 20px; }
+    .card { margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Sistema de compras</h1>
+  </div>
+  
+  <div class="container">
+    <!-- Abas de navegação -->
+    <ul class="nav nav-tabs" id="mainTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="cadastro-tab" data-bs-toggle="tab" data-bs-target="#cadastro" type="button" role="tab">Cadastro</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="fornecedores-tab" data-bs-toggle="tab" data-bs-target="#fornecedores" type="button" role="tab">Fornecedores</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="pedidos-tab" data-bs-toggle="tab" data-bs-target="#pedidos" type="button" role="tab">Pedidos</button>
+      </li>
+    </ul>
+
+    <div class="tab-content" id="mainTabsContent">
+      <!-- Aba de Cadastro -->
+      <div class="tab-pane fade show active" id="cadastro" role="tabpanel">
+        <div class="card">
+          <div class="card-header">
+            Cadastro de Fornecedor
+          </div>
+          <div class="card-body">
+            <form id="supplierForm">
+              <div class="row mb-3">
+                <div class="col-md-4">
+                  <label for="supplierCNPJ" class="form-label">CNPJ:</label>
+                  <input type="text" class="form-control" id="supplierCNPJ" placeholder="00.000.000/0001-00" required>
+                </div>
+                <div class="col-md-8">
+                  <label for="supplierName" class="form-label">Nome do Fornecedor:</label>
+                  <input type="text" class="form-control" id="supplierName" placeholder="Nome completo" required>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="supplierItems" class="form-label">Itens que o Fornecedor Vende (separados por vírgula):</label>
+                <textarea class="form-control" id="supplierItems" rows="3" placeholder="Ex.: Produto A, Produto B, Produto C" required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">Cadastrar Fornecedor</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Aba de Fornecedores -->
+      <div class="tab-pane fade" id="fornecedores" role="tabpanel">
+        <div class="card">
+          <div class="card-header">
+            Lista de Fornecedores
+          </div>
+          <div class="card-body">
+            <input type="text" id="searchInput" class="form-control mb-3" placeholder="Buscar por CNPJ ou Nome">
+            <div id="searchResults" class="list-group" style="max-height:300px; overflow-y:auto;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Aba de Pedidos -->
+      <div class="tab-pane fade" id="pedidos" role="tabpanel">
+        <div class="card">
+          <div class="card-header">
+            Gerar Pedido de Compra
+          </div>
+          <div class="card-body">
+            <form id="orderForm">
+              <div class="mb-3">
+                <label for="orderSupplier" class="form-label">Fornecedor Selecionado:</label>
+                <input type="text" class="form-control" id="orderSupplier" readonly placeholder="Selecione um fornecedor na aba Fornecedores">
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-8">
+                  <label for="productName" class="form-label">Nome do Produto:</label>
+                  <input type="text" class="form-control" id="productName" placeholder="Digite o nome do produto">
+                </div>
+                <div class="col-md-4">
+                  <label for="productQty" class="form-label">Quantidade:</label>
+                  <input type="number" class="form-control" id="productQty" placeholder="0" min="1">
+                </div>
+              </div>
+              <button type="button" class="btn btn-secondary mb-3" onclick="addOrderItem()">Adicionar Item</button>
+            </form>
+            <!-- Tabela de itens adicionados -->
+            <div id="orderItemsTable" style="display: none;">
+              <h5>Itens do Pedido</h5>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Produto</th>
+                    <th>Quantidade</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="orderItemsBody"></tbody>
+              </table>
+            </div>
+            <div class="d-flex justify-content-between">
+              <button type="button" class="btn btn-success" onclick="previewOrder()">Visualizar Pedido</button>
+              <button type="button" class="btn btn-info" onclick="novoPedido()">NOVO PEDIDO</button>
+            </div>
+          </div>
+        </div>
+        <!-- Prévia do Pedido -->
+        <div id="orderPreviewSection" class="card" style="display: none;">
+          <div class="card-header">
+            Visualização do Pedido
+          </div>
+          <div class="card-body" id="orderPreview">
+            <!-- Conteúdo do pedido para visualização -->
+          </div>
+          <div class="card-footer text-end">
+            <button class="btn btn-danger" onclick="generatePDF()">Gerar PDF</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Edição de Item -->
+  <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-warning">
+          <h5 class="modal-title" id="editModalLabel">Editar Item do Pedido</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <form id="editItemForm">
+            <div class="mb-3">
+              <label for="editProductName" class="form-label">Nome do Produto:</label>
+              <input type="text" class="form-control" id="editProductName" required>
+            </div>
+            <div class="mb-3">
+              <label for="editProductQty" class="form-label">Quantidade:</label>
+              <input type="number" class="form-control" id="editProductQty" min="1" required>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary" onclick="saveEditOrderItem()">Salvar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- jsPDF, jsPDF-AutoTable e Bootstrap JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

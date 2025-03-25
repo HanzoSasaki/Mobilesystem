@@ -1,0 +1,162 @@
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #ffffff;
+    color: #333;
+    padding-top: 60px; /* Espaço para o header fixo */
+}
+
+/* Header fixo no topo */
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 15px 0;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    font-size: 24px;
+}
+
+/* Painel de meses */
+.meses-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.mes {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.mes:hover {
+    transform: scale(1.05);
+}
+
+.mes h2 {
+    font-size: 20px;
+    margin-bottom: 15px;
+    text-align: center;
+    color: #333;
+}
+
+.valores p {
+    margin: 10px 0;
+    font-size: 16px;
+}
+
+.valores .valor {
+    color: #333;
+    font-weight: bold;
+}
+
+/* Cards de totais */
+.cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.card h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.card p {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Área para gráficos */
+.graficos-container {
+    padding: 20px;
+}
+
+.graficos-container canvas {
+    max-width: 100%;
+    margin-bottom: 20px;
+}
+
+/* Footer */
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    font-size: 14px;
+    z-index: 1000;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .mes {
+        padding: 15px;
+    }
+
+    .mes h2 {
+        font-size: 1rem;
+        margin-bottom: 10px;
+    }
+
+    .valores p {
+        font-size: 0.9rem;
+        margin: 8px 0;
+    }
+
+    .card h2 {
+        font-size: 0.95rem;
+    }
+
+    .card p {
+        font-size: 1.2rem;
+    }
+}
+
+/* Ajustes para telas muito pequenas */
+@media (max-width: 480px) {
+    .mes, .card {
+        padding: 10px;
+    }
+
+    .mes h2, .card h2 {
+        font-size: 0.9rem;
+    }
+
+    .card p {
+        font-size: 1rem;
+    }
+}

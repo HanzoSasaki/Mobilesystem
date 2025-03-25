@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Estoque</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Controle de Estoque</h1>
+    <a href="../../index.html" style="position: absolute; left: 20px; top: 50%; transform: translateY(-50%);">
+        <img src="https://cdn-icons-png.flaticon.com/512/25/25694.png" style="width: 20px; filter: invert(1);" alt="Ícone de Home">
+    </a>
+</header>
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <div class="buttons">
+        <button id="cadastroBtn">Cadastro de Item</button>
+        <button id="balancoBtn">Balanço de Estoque</button>
+    </div>
+    <div class="alert-box">
+        <h2>Acesso Restrito!</h2>
+        <p>Essa página apenas pode ser acessada pelo administrador do banco de dados.</p>
+        <p>Caso deseje ter acesso ao banco de dados, solicite a instalação do mesmo em seu computador.</p>
+        <p><strong>Atenciosamente,</strong> Wolf I.A</p>
+        <button onclick="fecharAlerta()">OK</button>
+    </div>
+    <!-- Tabela de Produtos -->
+    <div class="table-container">
+        <table id="tabela-produtos">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Quantidade</th>
+                    <th>Preço (R$)</th>
+                    <th>Valor Total (R$)</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <!-- Modal Balanço de Estoque -->
+    <div id="modal-balanco" class="modal">
+        <div class="modal-content">
+            <h2>Balanço de Estoque</h2>
+            <p id="quantidade-total-itens">Quantidade Total de Itens: 0</p>
+            <p id="valor-total-balanco">Valor Total do Estoque: R$ 0,00</p>
+            <p id="quantidade-itens-cadastrados">Quantidade de Itens Cadastrados: 0</p>
+            <button id="modal-fechar-balanco">Fechar</button>
+        </div>
+    </div>
+
+    <!-- Modal Cadastro de Item -->
+    <div id="modal-cadastro" class="modal">
+        <div class="modal-content">
+            <h2>Cadastrar Novo Produto</h2>
+            <input type="text" id="nome" placeholder="Nome do Produto">
+            <input type="number" id="quantidade" placeholder="Quantidade">
+            <input type="number" id="preco" placeholder="Preço por Unidade">
+            <br>
+            <button onclick="adicionarProduto()">Cadastrar</button>
+            <br>
+            <button id="modal-fechar-cadastro">Fechar</button>
+        </div>
+    </div>
+
+    <!-- Modal Edição de Produto -->
+    <div id="modal-editar" class="modal">
+        <div class="modal-content">
+            <h2>Editar Produto</h2>
+            <h3>Edição Simplificada</h3>
+            <input type="hidden" id="modal-editar-id">
+            <label for="modal-editar-nome">Nome Do Produto:</label>
+            <input type="text" id="modal-editar-nome" placeholder="Nome do Produto">
+            <label for="modal-editar-quantidade">Quantidade:</label>
+            <input type="number" id="modal-editar-quantidade" placeholder="Quantidade">
+            <label for="modal-editar-preco">Preço Por Unidade:</label>
+            <input type="number" id="modal-editar-preco" placeholder="Preço por Unidade">
+            
+            <!-- Campos para Atualização de Estoque -->
+            <h3>Atualizar Estoque</h3>
+            <label for="retirar-estoque">Retirar Quantidade:</label>
+            <input type="number" id="retirar-estoque" placeholder="Quantidade a Retirar">
+            <label for="adicionar-estoque">Adicionar Quantidade:</label>
+            <input type="number" id="adicionar-estoque" placeholder="Quantidade a Adicionar">
+
+            <!-- Ação de Salvar -->
+            <br>
+            <button onclick="salvarEdicaoProduto()">Salvar Alterações</button>
+            <br>
+            <button id="modal-fechar-editar">Fechar</button>
+        </div>
+    </div>
+
+
+    <script>
+        function fecharAlerta() {
+            document.querySelector('.alert-box').style.display = 'none';
+        }
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>
