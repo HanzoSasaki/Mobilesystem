@@ -36,6 +36,19 @@ header {
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
+@media (max-width: 768px) {
+  header {
+    font-size: 18px; /* Diminui o tamanho do texto no mobile */
+    padding: 15px;   /* Ajuste do padding para melhor espaçamento */
+  }
+
+  .home-button {
+    top: 50%;
+    left: 10px;   /* Ajuste a posição do ícone no mobile */
+  }
+}
+
+
 .home-button {
   position: absolute;
   top: 50%;
