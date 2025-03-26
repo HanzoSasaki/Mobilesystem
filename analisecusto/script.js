@@ -1,17 +1,16 @@
-// Dados reais de 2025
 const dados = {
     meses: [
         "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
         "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
     ],
     lucroBruto: [
-        null, 183036.54, 165753.30, 0, 0, 0, 0, 0, 0, 0, 0, 0
+        null, 183036.54, 217459.66, 0, 0, 0, 0, 0, 0, 0, 0, 0
     ],
     lucroLiquido: [
-        null, 35846.13, 34921.78, 0, 0, 0, 0, 0, 0, 0, 0, 0
+        null, 35846.13, 53738.58, 0, 0, 0, 0, 0, 0, 0, 0, 0
     ],
     custos: [
-        null, 152309.08, 104420.94, 0, 0, 0, 0, 0, 0, 0, 0, 0
+        null, 152309.08, 109420.94, 0, 0, 0, 0, 0, 0, 0, 0, 0
     ]
 };
 

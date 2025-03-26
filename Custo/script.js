@@ -36,8 +36,8 @@ function calcularPrecoML() {
 
   // Validação: a soma da margem, comissão e imposto deve ser inferior a 100%
   if (margem + 0.14 + imposto >= 1 || margem + 0.18 + imposto >= 1) {
-      alert("A soma da margem, comissão e imposto deve ser inferior a 100%.");
-      return;
+    alert("A soma da margem, comissão e imposto deve ser inferior a 100%.");
+    return;
   }
 
   // Cálculo do preço base considerando imposto de 6,5%
@@ -45,23 +45,23 @@ function calcularPrecoML() {
   basePrecoPremium = custo / (1 - (margem + 0.18 + imposto));
 
   let resultadoBase =
-      "Preço Base Produto Comum: R$ " + basePrecoComum.toFixed(2) + "\n" +
-      "Preço Base Produto Premium: R$ " + basePrecoPremium.toFixed(2);
+    "Preço Base Produto Comum: R$ " + basePrecoComum.toFixed(2) + "\n" +
+    "Preço Base Produto Premium: R$ " + basePrecoPremium.toFixed(2);
   document.getElementById("resultadoBase").innerText = resultadoBase;
 
   // Se o preço base for menor que R$79,90: aplica taxa fixa de R$6,75
   if (basePrecoComum < 79.90) {
-      let finalComum = basePrecoComum + 6.75;
-      let finalPremium = basePrecoPremium + 6.75;
-      document.getElementById("resultadoFinal").innerText =
-          "Preço Final Produto Comum: R$ " + finalComum.toFixed(2) + "\n" +
-          "Preço Final Produto Premium: R$ " + finalPremium.toFixed(2);
-      document.getElementById("areaFrete").style.display = "none";
+    let finalComum = basePrecoComum + 6.75;
+    let finalPremium = basePrecoPremium + 6.75;
+    document.getElementById("resultadoFinal").innerText =
+      "Preço Final Produto Comum: R$ " + finalComum.toFixed(2) + "\n" +
+      "Preço Final Produto Premium: R$ " + finalPremium.toFixed(2);
+    document.getElementById("areaFrete").style.display = "none";
   } else {
-      // Se o preço base for ≥ R$79,90, exibe a área de frete
-      document.getElementById("areaFrete").style.display = "block";
-      document.getElementById("resultadoFinal").innerText =
-          "Após o cálculo do preço base, selecione os dados de frete e clique em 'Calcular Frete e Preço Final'.";
+    // Se o preço base for ≥ R$79,90, exibe a área de frete
+    document.getElementById("areaFrete").style.display = "block";
+    document.getElementById("resultadoFinal").innerText =
+      "Após o cálculo do preço base, selecione os dados de frete e clique em 'Calcular Frete e Preço Final'.";
   }
 }
 
@@ -76,24 +76,24 @@ function calcularFrete() {
   let finalPremium = basePrecoPremium + frete - 6.75;
 
   let resultadoFinal =
-      "Preço Final Produto Comum: R$ " + finalComum.toFixed(2) + "\n" +
-      "Preço Final Produto Premium: R$ " + finalPremium.toFixed(2);
+    "Preço Final Produto Comum: R$ " + finalComum.toFixed(2) + "\n" +
+    "Preço Final Produto Premium: R$ " + finalPremium.toFixed(2);
   document.getElementById("resultadoFinal").innerText = resultadoFinal;
 }
 
 // Abrir o modal
-document.getElementById('openModal').onclick = function() {
+document.getElementById('openModal').onclick = function () {
   document.getElementById('modal').style.display = 'block';
 };
 
 // Fechar o modal
-document.querySelector('.close').onclick = function() {
+document.querySelector('.close').onclick = function () {
   document.getElementById('modal').style.display = 'none';
 };
 
-window.onclick = function(event) {
+window.onclick = function (event) {
   if (event.target == document.getElementById('modal')) {
-      document.getElementById('modal').style.display = 'none';
+    document.getElementById('modal').style.display = 'none';
   }
 };
 
@@ -103,6 +103,6 @@ function calcularCubagem() {
   const altura = parseFloat(document.getElementById('altura').value);
   const pesoReal = parseFloat(document.getElementById('peso').value);
   const cubagem = (comprimento * largura * altura) / 6000;
-  document.getElementById('resultadoCubagem').innerText = 
-      `Peso Cubado: ${cubagem.toFixed(2)} kg | Peso Real: ${pesoReal} kg`;
+  document.getElementById('resultadoCubagem').innerText =
+    `Peso Cubado: ${cubagem.toFixed(2)} kg | Peso Real: ${pesoReal} kg`;
 }
