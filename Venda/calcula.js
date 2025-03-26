@@ -121,7 +121,7 @@ function calcularPromocao() {
     const precoVenda = parseFloat(
         document.getElementById("promo-precoVenda").value
     );
-    const imposto = 0.065;
+    const imposto = 0.02;    //imposto de 2%
     const comissao = 0.20;
     const taxaPedido = 4;
 
