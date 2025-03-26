@@ -28,6 +28,12 @@
         </div>
     </div>
 
+
+    <div class="aviso" id="aviso">
+        ⚠️ ATENÇÃO: A partir de 25/03/2025, o imposto foi atualizado para 10% em nota cheia e 1,8% em meia nota. O sistema levará até 48h para se adequar. Contate o desenvolvedor para dúvidas. 
+        <button class="fechar-aviso" onclick="fecharAviso()">Fechar</button>
+    </div>
+
     <!-- Loader de carregamento -->
     <div id="loader" class="loader">
         <div class="spinner"></div>
@@ -143,6 +149,27 @@
         }
     </script> 
     
+ 
+    <script>
+        document.getElementById("previsao-link").addEventListener("click", function(event) {
+            event.preventDefault(); // Evita que o link seja seguido
+            alert("Em manutenção");
+        });
+    </script>
+
+</div>
+</div>
+
+<footer>
+<span class="footer-rights">Todos os direitos reservados</span> - WolfSoftware.in  |
+<span class="footer-ceo">CEO e Engenheiro de Desenvolvimento - Erick Barbosa</span>
+</footer>
+
+<script>
+function fecharAviso() {
+    document.getElementById("aviso").style.display = "none";
+}
+</script>
 
 </body>
 </html>
