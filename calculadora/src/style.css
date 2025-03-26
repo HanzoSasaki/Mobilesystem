@@ -149,9 +149,11 @@ tr:nth-child(even) {
   padding: 2rem;
   border-radius: 10px;
   width: 90%;
-  max-width: 500px;
+  max-width: 600px;
   position: relative;
   animation: modalEntrada 0.3s ease;
+  overflow-y: auto;
+  max-height: 80vh; /* Limitar altura para evitar que o modal ultrapasse a tela */
 }
 
 @keyframes modalEntrada {
@@ -171,7 +173,7 @@ tr:nth-child(even) {
 }
 
 .form-group {
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 label {
@@ -215,6 +217,7 @@ input:focus, select:focus {
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
+/* Ajustes para o modal em dispositivos móveis */
 @media (max-width: 768px) {
   body {
       padding: 1rem;
@@ -227,6 +230,26 @@ input:focus, select:focus {
 
   .modal-content {
       padding: 1.5rem;
+      width: 90%;
+      max-width: 450px;
+      max-height: 80vh; /* Limitar altura do modal em telas menores */
+      overflow-y: auto; /* Habilitar rolagem se o conteúdo for grande */
+  }
+
+  .form-group {
+      margin-bottom: 1rem;
+  }
+
+  label {
+      font-size: 0.9rem;
+  }
+
+  input, select {
+      font-size: 0.9rem;
+  }
+
+  .fechar-modal {
+      font-size: 1.25rem;
   }
 
   .item-flex {
@@ -234,6 +257,7 @@ input:focus, select:focus {
       align-items: stretch;
   }
 }
+
 footer {
   position: fixed;
   bottom: 0;
@@ -246,4 +270,3 @@ footer {
   font-size: 14px;
   z-index: 1000;
 }
-
