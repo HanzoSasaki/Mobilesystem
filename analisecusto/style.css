@@ -1,18 +1,41 @@
-/* Reset básico */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+:root {
+    --primary-color: #ffffff;
+    --secondary-color: #ffffff;
+    --text-color: #ffffff;
+    --bg-color: #ffffff; /* Alterado para branco */
+    --card-bg: #ffffff;
+    --success-color: #27ae60;
+    --error-color: #e74c3c;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --radius: 12px;
+    --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+  
+
+/* Reset modernizado */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
 }
 
 body {
-    font-family: Arial, sans-serif;
-    background-color: #ffffff;
-    color: #333;
-    padding-top: 60px; /* Espaço para o header fixo */
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  line-height: 1.6;
+  padding-top: 80px;
+  padding-bottom: 60px;
 }
 
-/* Header fixo no topo */
+/* Header estilizado */
 header {
     position: fixed;
     top: 0;
@@ -27,87 +50,120 @@ header {
 }
 
 header h1 {
-    font-size: 24px;
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
 }
 
-/* Painel de meses */
+/* Layout responsivo */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Grid de meses melhorado */
 .meses-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-    padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  padding: 1.5rem 0;
 }
 
 .mes {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s;
+  background: var(--card-bg);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+  will-change: transform;
 }
 
 .mes:hover {
-    transform: scale(1.05);
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
 }
 
 .mes h2 {
-    font-size: 20px;
-    margin-bottom: 15px;
-    text-align: center;
-    color: #333;
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  color: var(--primary-color);
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+.mes h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 2px;
+  background: var(--secondary-color);
 }
 
 .valores p {
-    margin: 10px 0;
-    font-size: 16px;
+  display: flex;
+  justify-content: space-between;
+  margin: 0.75rem 0;
+  font-size: 0.95rem;
 }
 
-.valores .valor {
-    color: #333;
-    font-weight: bold;
+.valor {
+  color: var(--secondary-color);
+  font-weight: 700;
 }
 
-/* Cards de totais */
+/* Cards modernos */
 .cards-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-    padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  padding: 1.5rem 0;
 }
 
 .card {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    text-align: center;
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 2rem;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+  border-top: 4px solid var(--secondary-color);
+}
+
+.card:hover {
+  transform: translateY(-3px);
 }
 
 .card h2 {
-    font-size: 18px;
-    margin-bottom: 10px;
-    color: #333;
+  font-size: 1rem;
+  color: #7f8c8d;
+  margin-bottom: 1rem;
+  font-weight: 500;
 }
 
 .card p {
-    font-size: 24px;
-    font-weight: bold;
-    color: #333;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin: 0;
 }
 
-/* Área para gráficos */
+/* Área de gráficos */
 .graficos-container {
-    padding: 20px;
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 2rem;
+  margin: 1.5rem 0;
+  box-shadow: var(--shadow);
 }
 
-.graficos-container canvas {
-    max-width: 100%;
-    margin-bottom: 20px;
-}
-
-/* Footer */
+/* Footer melhorado */
 footer {
     position: fixed;
     bottom: 0;
@@ -121,42 +177,50 @@ footer {
     z-index: 1000;
 }
 
-/* Responsividade */
+
+/* Responsividade aprimorada */
 @media (max-width: 768px) {
-    .mes {
-        padding: 15px;
-    }
+  html {
+    font-size: 14px;
+  }
 
-    .mes h2 {
-        font-size: 1rem;
-        margin-bottom: 10px;
-    }
+  .meses-container,
+  .cards-container {
+    grid-template-columns: 1fr;
+  }
 
-    .valores p {
-        font-size: 0.9rem;
-        margin: 8px 0;
-    }
+  .mes {
+    padding: 1.25rem;
+  }
 
-    .card h2 {
-        font-size: 0.95rem;
-    }
-
-    .card p {
-        font-size: 1.2rem;
-    }
+  .card {
+    padding: 1.5rem;
+  }
 }
 
-/* Ajustes para telas muito pequenas */
-@media (max-width: 480px) {
-    .mes, .card {
-        padding: 10px;
-    }
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    transform: none !important;
+  }
+}
 
-    .mes h2, .card h2 {
-        font-size: 0.9rem;
-    }
+/* Melhorias de acessibilidade */
+@media (prefers-contrast: high) {
+  :root {
+    --primary-color: #000;
+    --secondary-color: #0044cc;
+    --bg-color: #fff;
+  }
+}
 
-    .card p {
-        font-size: 1rem;
-    }
+/* Estilos para modo escuro */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primary-color: #ecf0f1;
+    --secondary-color: #3498db;
+    --text-color: #ecf0f1;
+    --bg-color: #2c3e50;
+    --card-bg: #34495e;
+  }
 }
