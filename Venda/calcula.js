@@ -57,13 +57,18 @@ function fecharModal() {
     // Remove a classe "show" para disparar a animação de fechamento
     document.getElementById("modal").classList.remove("show");
 }
-
 function calcularPreco() {
-    let custo = parseFloat(document.getElementById("custo").value) || 0;
-    let imposto = parseFloat(document.getElementById("imposto").value) / 100 || 0;
-    let comissao = parseFloat(document.getElementById("comissao").value) / 100 || 0;
-    let taxa = parseFloat(document.getElementById("taxa").value) || 0;
-    let margem = parseFloat(document.getElementById("margem").value) / 100 || 0;
+    let custo = parseFloat(document.getElementById("custo").value) || NaN;
+    let imposto = parseFloat(document.getElementById("imposto").value) / 100 || NaN;
+    let comissao = parseFloat(document.getElementById("comissao").value) / 100 || NaN;
+    let taxa = parseFloat(document.getElementById("taxa").value) || NaN;
+    let margem = parseFloat(document.getElementById("margem").value) / 100 || NaN;
+
+    // Verificação de campos vazios
+    if (isNaN(custo) || isNaN(imposto) || isNaN(comissao) || isNaN(taxa) || isNaN(margem)) {
+        alert("Por favor, preencha todos os campos para efetuar o cálculo.");
+        return;
+    }
 
     let precoVenda = (custo + taxa) / (1 - (imposto + comissao + margem));
 
@@ -77,13 +82,14 @@ function calcularValorFinal() {
     const tipoNota = document.getElementById("tipoNota").value;
     const porcentagemAdicional = parseFloat(document.getElementById("porcentagem").value);
 
+    // Verificação de campos vazios
     if (
         isNaN(custo) ||
         isNaN(icms) ||
         isNaN(ipi) ||
         isNaN(porcentagemAdicional)
     ) {
-        alert("Por favor, preencha todos os campos corretamente.");
+        alert("Por favor, preencha todos os campos para efetuar o cálculo.");
         return;
     }
 
@@ -121,12 +127,13 @@ function calcularPromocao() {
     const precoVenda = parseFloat(
         document.getElementById("promo-precoVenda").value
     );
-    const imposto = 0.0108;//imposto de 1,08%
+    const imposto = 0.0108; //imposto de 1,08%
     const comissao = 0.20;
     const taxaPedido = 4;
 
+    // Verificação de campos vazios
     if (isNaN(custo) || isNaN(precoVenda)) {
-        alert("Por favor, preencha os campos corretamente.");
+        alert("Por favor, preencha todos os campos para efetuar o cálculo.");
         return;
     }
 

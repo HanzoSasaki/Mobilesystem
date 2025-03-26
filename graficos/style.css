@@ -10,6 +10,8 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  background-color: #f0f2f5;
+  color: #333;
 }
 
 /* Header Fixo */
@@ -18,63 +20,78 @@ header {
   top: 0;
   left: 0;
   width: 100%;
-  background-color: #333;
+  background-color: #343a40;
   color: #fff;
   text-align: center;
-  padding: 15px 0;
+  padding: 15px;
   z-index: 1000;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
 }
 
 header h1 {
-  font-size: 24px;
+  font-size: 1.8rem;
+  margin: 0 auto;
+}
+
+header .home-link {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+header .home-link img {
+  width: 20px;
+  filter: invert(1);
 }
 
 /* Container Principal */
 .container {
   display: flex;
   flex: 1;
-  margin-top: 60px;
-  flex-wrap: wrap;
+  margin-top: 70px; /* Compensa o header fixo */
+  padding: 20px;
+  gap: 20px;
 }
 
 /* Sidebar */
 .sidebar {
-  width: 250px;
-  background-color: #f4f4f4;
+  flex: 0 0 250px;
+  background-color: #fff;
   padding: 20px;
-  height: calc(100vh - 120px);
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  height: calc(100vh - 90px);
   overflow-y: auto;
 }
 
 .sidebar ul {
   list-style: none;
-  padding-left: 0;
 }
 
 .sidebar li {
   margin-bottom: 15px;
 }
 
-/* Links da Sidebar */
 .sidebar a {
   text-decoration: none;
-  color: #333;
-  font-weight: bold;
+  color: #343a40;
+  font-weight: 600;
   padding: 10px;
   display: block;
   border-radius: 4px;
-  transition: background-color 0.3s, color 0.3s;
+  transition: background-color 0.3s;
 }
 
 .sidebar a:hover {
-  background-color: #007BFF;
+  background-color: #007bff;
   color: #fff;
 }
 
-/* Submenu Estilizado */
+/* Submenu */
 .submenu > .submenu-toggle {
   position: relative;
+  cursor: pointer;
 }
 
 .submenu > .submenu-toggle::after {
@@ -97,23 +114,24 @@ header h1 {
 }
 
 .submenu.active .submenu-content {
-  max-height: 500px; /* Valor suficiente para conter as opções */
+  max-height: 500px;
 }
 
 /* Área de Conteúdo */
 .content {
   flex: 1;
-  padding: 20px;
   background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
   overflow-y: auto;
+  border: 1px solid #ddd;
 }
 
 /* Grid de Cards */
 .card-grid {
   display: grid;
   gap: 20px;
-  justify-content: center;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 }
 
 /* Estilo de cada Card */
@@ -122,23 +140,41 @@ header h1 {
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
   cursor: pointer;
-  transition: transform 0.3s;
 }
 
 .card:hover {
-  transform: scale(1.02);
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
 }
 
 .card h2 {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   margin-bottom: 10px;
 }
 
 .card p {
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: #555;
+}
+
+/* Gráfico Responsivo */
+.graph-display {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* Proporção 16:9 */
+  margin-bottom: 20px;
+}
+
+.graph-display iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
 }
 
 /* Footer Fixo */
@@ -147,14 +183,15 @@ footer {
   bottom: 0;
   left: 0;
   width: 100%;
-  background-color: #333;
+  background-color: #343a40;
   color: #fff;
   text-align: center;
   padding: 10px;
-  font-size: 14px;
+  font-size: 0.9rem;
   z-index: 1000;
 }
 
+/* Modal Centralizado */
 /* Modal para visualização em tela cheia */
 .modal {
   display: none;
@@ -193,9 +230,10 @@ footer {
   cursor: pointer;
 }
 
+/* Informações do Gráfico */
 .graph-info {
-  margin-bottom: 20px;
   text-align: center;
+  margin-bottom: 20px;
 }
 
 .graph-info h1 {
@@ -208,88 +246,92 @@ footer {
   color: #555;
 }
 
-.graph-display {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  width: 100%;
-  padding-bottom: 56.25%; /* Proporção 16:9 */
-  margin-bottom: 20px;
-}
+/* Media Queries */
 
-.graph-display iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border: none;
-}
-
-/* Media Queries para Responsividade */
-
-/* Para telas até 1024px */
+/* Tablets e telas médias */
 @media (max-width: 1024px) {
-  .sidebar {
-    width: 220px;
+  .container {
+    flex-direction: column;
     padding: 15px;
   }
   
-  header h1 {
-    font-size: 22px;
-  }
-}
-
-/* Para telas até 768px */
-@media (max-width: 768px) {
-  .container {
-    flex-direction: column;
-  }
-  
   .sidebar {
-    width: 100%;
     height: auto;
+    width: 100%;
     margin-bottom: 20px;
-    padding: 10px;
-  }
-  
-  .sidebar ul {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  
-  .sidebar li {
-    margin: 5px;
-  }
-  
-  .sidebar a {
-    padding: 8px 12px;
-    font-size: 14px;
   }
   
   .card-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   }
 }
 
-
-/* Para telas até 480px */
-@media (max-width: 480px) {
+/* Dispositivos móveis */
+@media (max-width: 768px) {
   header h1 {
-    font-size: 18px;
+    font-size: 1.5rem;
+  }
+  
+  .container {
+    padding: 10px;
+  }
+  
+  .sidebar {
+    padding: 15px;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  .content {
+    padding: 15px;
+  }
+  
+  .card-grid {
+    grid-template-columns: 1fr; /* Exibe os cards em coluna */
+  }
+  
+  .card {
+    padding: 15px;
+    font-size: 0.95rem;
   }
   
   .card h2 {
-    font-size: 1rem;
+    font-size: 1.2rem;
   }
   
   .card p {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* Dispositivos móveis menores */
+@media (max-width: 480px) {
+  header h1 {
+    font-size: 1.3rem;
   }
   
-  footer {
-    font-size: 12px;
+  .container {
+    padding: 5px;
+  }
+  
+  .sidebar {
+    padding: 10px;
+  }
+  
+  .content {
+    padding: 10px;
+  }
+  
+  .card {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+  
+  .card h2 {
+    font-size: 1.1rem;
+  }
+  
+  .card p {
+    font-size: 0.85rem;
   }
 }

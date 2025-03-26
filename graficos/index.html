@@ -5,14 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard Gráfico</title>
   <link rel="stylesheet" href="style.css">
+  <!-- É interessante agrupar estilos customizados no CSS, evitando estilos inline -->
+  <style>
+    /* Exemplo de estilo para o link do header, caso prefira evitar inline */
+    header .home-link {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    header .home-link img {
+      width: 20px;
+      filter: invert(1);
+    }
+  </style>
 </head>
 <body>
   <!-- Header Fixo -->
   <header>
-    <h1>Dashboard Gráfico</h1>
-    <a href="../index.html" style="position: absolute; left: 20px; top: 50%; transform: translateY(-50%);">
-      <img src="https://cdn-icons-png.flaticon.com/512/25/25694.png" style="width: 20px; filter: invert(1);" alt="Ícone de Home">
+    <a href="../index.html" class="home-link">
+      <img src="https://cdn-icons-png.flaticon.com/512/25/25694.png" alt="Ícone de Home">
     </a>
+    <h1>Dashboard Gráfico</h1>
   </header>
 
   <!-- Container Principal -->
@@ -68,6 +82,7 @@
     </div>
   </div>
 
+  <!-- Footer Fixo -->
   <footer>
     <span class="footer-rights">Todos os direitos reservados</span> - WolfSoftware.in  |
     <span class="footer-ceo">CEO e Engenheiro de Desenvolvimento - Erick Barbosa</span>

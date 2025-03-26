@@ -15,8 +15,7 @@
   --alerta-texto: #856404;
 
   /* Cores de Efeitos */
-  --sombra-suave-inicio: rgba(0, 0, 0, 0.05);
-  --sombra-suave-fim: rgba(0, 0, 0, 0.2);
+  --sombra-suave: rgba(0, 0, 0, 0.1);
 }
 
 /* Estilo geral */
@@ -37,67 +36,72 @@ header {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 15px;
   position: relative;
-  box-shadow: 0px 2px 5px var(--sombra-suave-inicio);
+  box-shadow: 0px 2px 5px var(--sombra-suave);
+}
+
+header h1 {
+  font-size: clamp(1.2rem, 4vw, 2rem);
+  text-align: center;
+  margin: 0;
 }
 
 .back-button {
   position: absolute;
   left: 20px;
-  font-size: 20px;
-  color: var(--cinza-texto);
-  text-decoration: none;
 }
 
-.back-button i {
-  font-size: 24px;
+.back-button img {
+  width: 24px;
+  filter: invert(1);
 }
 
-/* Alertas */
 .alert {
   background: var(--alerta-fundo);
   border: 1px solid var(--alerta-borda);
   color: var(--alerta-texto);
-  padding: 15px;
+  padding: 20px;
   margin: 20px auto;
-  width: 80%;
+  width: 90%;
+  max-width: 600px;
   border-radius: 8px;
   display: flex;
-  align-items: center;
-  gap: 10px;
+  align-items: flex-start;
+  gap: 15px;
+  box-shadow: 0px 4px 10px var(--sombra-suave-fim);
+  font-size: 1rem;
+  line-height: 1.5;
 }
 
 .alert-icon {
-  font-size: 1.5rem;
+  font-size: 1.8rem;
+  color: var(--alerta-texto);
+  flex-shrink: 0;
 }
 
-/* Container de Login */
+.alert p {
+  margin: 0;
+  flex: 1;
+}
+
+.alert strong {
+  display: block;
+  font-size: 1.2rem;
+  margin-bottom: 5px;
+}
+
+/* Login */
 .login-container {
   background: var(--branco-puro);
   padding: 20px;
   margin: 20px auto;
-  width: 50%;
+  width: 90%;
+  max-width: 500px;
   border-radius: 10px;
-  box-shadow: 0px 2px 10px var(--sombra-suave-inicio);
+  box-shadow: 0px 2px 10px var(--sombra-suave);
   text-align: left;
 }
 
-.login-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 1.2rem;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-.login-icon {
-  font-size: 1.5rem;
-  color: var(--azul-escuro);
-}
-
-/* Senhas */
 .senhas-container {
   background: var(--cinza-medio);
   padding: 10px;
@@ -117,7 +121,8 @@ header {
   display: flex;
   flex-direction: column;
   gap: 15px;
-  width: 60%;
+  width: 90%;
+  max-width: 600px;
   margin: auto;
 }
 
@@ -125,11 +130,11 @@ header {
   background: var(--branco-puro);
   padding: 15px;
   border-radius: 8px;
-  box-shadow: 0px 2px 10px var(--sombra-suave-inicio);
+  box-shadow: 0px 2px 10px var(--sombra-suave);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 1.1rem;
+  font-size: 1rem;
 }
 
 .download-section i {
@@ -150,16 +155,16 @@ header {
 .btn-download:hover {
   background: var(--azul-escuro-secundario);
 }
+
+/* Footer */
 footer {
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
-  background-color: #333; /* Cinza escuro do footer */
-  color: #fff; /* Cor do texto no footer */
+  background-color: var(--azul-escuro);
+  color: var(--branco-puro);
   text-align: center;
   padding: 10px;
   font-size: 14px;
-  z-index: 1000;
 }
-
