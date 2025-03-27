@@ -1,263 +1,218 @@
- // Variáveis globais
- let suppliers = JSON.parse(localStorage.getItem('suppliers')) || [];
- let orderItems = [];
- let currentEditIndex = null; // Armazena o índice do item em edição
+function abrirCalculadora(tipo) {
+  let title = "";
+  let content = "";
+  switch (tipo) {
+    case "venda":
+      title = "Calculadora de Precificação Shopee";
+      content = `
+          <label for="custo">Custo do Produto (R$):</label>
+          <input type="number" id="custo" placeholder="Digite o custo">
+          
+          <label for="imposto">Imposto (%):</label>
+          <input type="number" id="imposto" placeholder="Digite o imposto">
+          
+          <label for="comissao">Comissão Marketplace (%):</label>
+          <input type="number" id="comissao" placeholder="Digite a comissão">
+          
+          <label for="taxa">Taxa por Pedido (R$):</label>
+          <input type="number" id="taxa" placeholder="Digite a taxa">
+          
+          <label for="margem">Margem de Lucro Desejada (%):</label>
+          <input type="number" id="margem" placeholder="Digite a margem">
+          
+          <button onclick="calcularPreco()">Calcular Preço de Venda</button>
+  
+          <!-- Exibição dos resultados -->
+          <div id="resultado"></div>
+          <div id="lucroShopee"></div>
+      `;
+      break;
+  
+      case "lucro":
+          title = "Calculadora Tributária (ICMS e IPI)";
+          content = `<label for="tipoNota">Tipo da Nota</label>
+           <select id="tipoNota">
+               <option value="inteira">Nota Inteira</option>
+               <option value="meiaNota">Meia Nota</option>
+               <option value="nota3">Nota 1/3</option>
+           </select>
+           <label for="custo">Custo do Produto (R$):</label>
+           <input type="number" id="custo" placeholder="Digite o valor do custo" required>
+           <label for="icms">ICMS (%):</label>
+           <input type="number" id="icms" placeholder="Digite a porcentagem de ICMS">
+           <label for="ipi">IPI (%):</label>
+           <input type="number" id="ipi" placeholder="Digite a porcentagem de IPI">
+           <label for="porcentagem">Porcentagem Adicional (%)</label>
+           <input type="number" id="porcentagem" step="0.01" placeholder="Digite a porcentagem adicional">
+           <button onclick="calcularValorFinal()">Calcular</button>`;
+          break;
+      case "imposto":
+          title = "Simulação de Promoção";
+          content = `
+           <label for="promo-custo">Preço de Custo (R$):</label>
+           <input type="number" id="promo-custo" placeholder="Digite o preço de custo">
+           <label for="promo-precoVenda">Preço de Venda (R$):</label>
+           <input type="number" id="promo-precoVenda" placeholder="Digite o preço de venda">
+           <button onclick="calcularPromocao()">Calcular Promoção</button>
+           <div id="promo-result"></div>
+          `;
+          break;
+  }
+  document.getElementById("modal-title").innerText = title;
+  document.getElementById("modal-body").innerHTML = content;
+  document.getElementById("resultado").innerText = "";
+  // Em vez de alterar o display, adicionamos a classe "show" para ativar a animação
+  document.getElementById("modal").classList.add("show");
+}
 
- // Função para salvar os fornecedores no localStorage
- function saveSuppliers() {
-   localStorage.setItem('suppliers', JSON.stringify(suppliers));
- }
+function fecharModal() {
+  // Remove a classe "show" para disparar a animação de fechamento
+  document.getElementById("modal").classList.remove("show");
+}
+function calcularPreco() {
+  let custo = parseFloat(document.getElementById("custo").value) || NaN;
+  let imposto = parseFloat(document.getElementById("imposto").value) / 100 || NaN;
+  let comissao = parseFloat(document.getElementById("comissao").value) / 100 || NaN;
+  let taxa = parseFloat(document.getElementById("taxa").value) || NaN;
+  let margem = parseFloat(document.getElementById("margem").value) / 100 || NaN;
 
- // Cadastro de fornecedor
- document.getElementById('supplierForm').addEventListener('submit', function(e) {
-   e.preventDefault();
-   const cnpj = document.getElementById('supplierCNPJ').value.trim();
-   const name = document.getElementById('supplierName').value.trim();
-   const items = document.getElementById('supplierItems').value.split(',').map(item => item.trim());
-   const supplier = { cnpj, name, items };
-   suppliers.push(supplier);
-   saveSuppliers();
-   alert('Fornecedor cadastrado com sucesso!');
-   this.reset();
-   renderSearchResults('');
- });
+  if (isNaN(custo) || isNaN(imposto) || isNaN(comissao) || isNaN(taxa) || isNaN(margem)) {
+    alert("Por favor, preencha todos os campos para efetuar o cálculo.");
+    return;
+  }
 
- // Atualiza os resultados de busca
- document.getElementById('searchInput').addEventListener('input', function() {
-   renderSearchResults(this.value.trim().toLowerCase());
- });
+  // Cálculo do preço de venda sugerido
+  let precoVenda = (custo + taxa) / (1 - (imposto + comissao + margem));
 
- function renderSearchResults(query) {
-   const resultsDiv = document.getElementById('searchResults');
-   resultsDiv.innerHTML = '';
-   suppliers.forEach((supplier, index) => {
-     if (supplier.cnpj.toLowerCase().includes(query) || supplier.name.toLowerCase().includes(query)) {
-       const btn = document.createElement('button');
-       btn.className = 'list-group-item list-group-item-action';
-       btn.textContent = `${supplier.name} - ${supplier.cnpj}`;
-       btn.onclick = () => selectSupplier(index);
-       resultsDiv.appendChild(btn);
-     }
-   });
- }
+  // Cálculo do lucro
+  let custoTotal = custo + (precoVenda * imposto) + (precoVenda * comissao) + taxa;
+  let lucro = precoVenda - custoTotal;
+  let margemLucro = (lucro / precoVenda) * 100;
 
- let selectedSupplierIndex = null;
- function selectSupplier(index) {
-   selectedSupplierIndex = index;
-   const supplier = suppliers[index];
-   document.getElementById('orderSupplier').value = `${supplier.name} (${supplier.cnpj})`;
-   alert(`Fornecedor ${supplier.name} selecionado!`);
-   // Alterna para a aba de Pedidos
-   const pedidosTab = new bootstrap.Tab(document.querySelector('#pedidos-tab'));
-   pedidosTab.show();
- }
+  // Exibir os resultados da precificação
+  document.getElementById("resultado").innerHTML = `
+      <p><strong>Preço de Venda Sugerido:</strong> R$ ${precoVenda.toFixed(2)}</p>
+      <p class="green"><strong>Lucro Líquido:</strong> R$ ${lucro.toFixed(2)} (${margemLucro.toFixed(2)}%)</p>
+  `;
 
- // Adiciona um item à lista de pedido
- function addOrderItem() {
-   const productName = document.getElementById('productName').value.trim();
-   const productQty = document.getElementById('productQty').value.trim();
-   if (!productName || !productQty) {
-     alert('Preencha o nome do produto e a quantidade.');
-     return;
-   }
-   orderItems.push({ product: productName, quantity: productQty });
-   document.getElementById('productName').value = '';
-   document.getElementById('productQty').value = '';
-   renderOrderItems();
- }
+  // Cálculo do lucro na Shopee (adicionando a lógica)
+  let plataforma = "shopee"; // Plataforma fixa para Shopee
+  let impostoShopee = 0.0108;
+  let comissaoShopee = 0.20;
+  let taxaPedidoShopee = 4.00;
 
- // Renderiza a tabela de itens do pedido com botões para editar e excluir
- function renderOrderItems() {
-   const tbody = document.getElementById('orderItemsBody');
-   tbody.innerHTML = '';
-   orderItems.forEach((item, index) => {
-     const row = document.createElement('tr');
+  let custoTotalShopee = custo + (precoVenda * impostoShopee) + (precoVenda * comissaoShopee) + taxaPedidoShopee;
+  let lucroShopee = precoVenda - custoTotalShopee;
+  let margemLucroShopee = (lucroShopee / precoVenda) * 100;
 
-     const cellProduct = document.createElement('td');
-     cellProduct.textContent = item.product;
-     row.appendChild(cellProduct);
+  // Exibir o lucro que você vai receber na Shopee
+  document.getElementById("lucroShopee").innerHTML = `
+      <p class="green"><strong>Lucro Bruto:</strong> R$ ${lucroShopee.toFixed(2)} (${margemLucroShopee.toFixed(2)}%)</p>
+  `;
+}
 
-     const cellQty = document.createElement('td');
-     cellQty.textContent = item.quantity;
-     row.appendChild(cellQty);
 
-     const cellActions = document.createElement('td');
-     // Botão de editar (abre modal)
-     const editBtn = document.createElement('button');
-     editBtn.className = 'btn btn-sm btn-warning';
-     editBtn.textContent = 'Editar';
-     editBtn.onclick = () => openEditModal(index);
-     cellActions.appendChild(editBtn);
-     // Botão de excluir
-     const delBtn = document.createElement('button');
-     delBtn.className = 'btn btn-sm btn-danger';
-     delBtn.textContent = 'Excluir';
-     delBtn.onclick = () => deleteOrderItem(index);
-     cellActions.appendChild(delBtn);
 
-     row.appendChild(cellActions);
-     tbody.appendChild(row);
-   });
-   document.getElementById('orderItemsTable').style.display = orderItems.length ? 'block' : 'none';
- }
+function calcularValorFinal() {
+  const custo = parseFloat(document.getElementById("custo").value);
+  const icms = parseFloat(document.getElementById("icms").value);
+  const ipi = parseFloat(document.getElementById("ipi").value);
+  const tipoNota = document.getElementById("tipoNota").value;
+  const porcentagemAdicional = parseFloat(document.getElementById("porcentagem").value);
 
- // Abre o modal de edição e preenche os campos com os dados do item
- function openEditModal(index) {
-   currentEditIndex = index;
-   const item = orderItems[index];
-   document.getElementById('editProductName').value = item.product;
-   document.getElementById('editProductQty').value = item.quantity;
-   const editModal = new bootstrap.Modal(document.getElementById('editModal'));
-   editModal.show();
- }
+  // Verificação de campos vazios
+  if (
+      isNaN(custo) ||
+      isNaN(icms) ||
+      isNaN(ipi) ||
+      isNaN(porcentagemAdicional)
+  ) {
+      alert("Por favor, preencha todos os campos para efetuar o cálculo.");
+      return;
+  }
 
- // Salva as alterações do modal
- function saveEditOrderItem() {
-   const novoProduto = document.getElementById('editProductName').value.trim();
-   const novaQtd = document.getElementById('editProductQty').value.trim();
-   if (!novoProduto || !novaQtd) {
-     alert('Preencha ambos os campos.');
-     return;
-   }
-   orderItems[currentEditIndex] = { product: novoProduto, quantity: novaQtd };
-   renderOrderItems();
-   // Fecha o modal
-   const editModalEl = document.getElementById('editModal');
-   const modalInstance = bootstrap.Modal.getInstance(editModalEl);
-   modalInstance.hide();
- }
+  let valorFinal;
+  if (icms === 18 && ipi === 0) {
+      valorFinal = custo;
+  } else if (icms === 18) {
+      valorFinal = custo + (custo * ipi) / 100;
+  } else {
+      const diferencaICMS = 18 - icms;
+      valorFinal =
+          custo +
+          (custo * diferencaICMS) / 100 +
+          (custo * ipi) / 100;
+  }
 
- // Função para excluir um item do pedido
- function deleteOrderItem(index) {
-   if (confirm("Deseja realmente excluir este item?")) {
-     orderItems.splice(index, 1);
-     renderOrderItems();
-   }
- }
+  // Condições baseadas no tipo da nota
+  if (tipoNota === "meiaNota") {
+      valorFinal += custo;
+  } else if (tipoNota === "nota3") {
+      valorFinal += custo * 2;
+  }
 
- // Visualização do pedido
- function previewOrder() {
-   if (selectedSupplierIndex === null) {
-     alert('Selecione um fornecedor na aba Fornecedores.');
-     return;
-   }
-   if (orderItems.length === 0) {
-     alert('Adicione ao menos um item ao pedido.');
-     return;
-   }
-   const supplier = suppliers[selectedSupplierIndex];
-   let previewHTML = `
-     <div class="mb-3 text-center">
-       <h3>Pedido de Compra</h3>
-     </div>
-     <p><strong>Fornecedor:</strong> ${supplier.name}</p>
-     <p><strong>CNPJ:</strong> ${supplier.cnpj}</p>
-     <hr>
-     <h5>Itens do Pedido</h5>
-     <table class="table table-bordered">
-       <thead>
-         <tr>
-           <th>Produto</th>
-           <th>Quantidade</th>
-         </tr>
-       </thead>
-       <tbody>
-   `;
-   orderItems.forEach(item => {
-     previewHTML += `<tr><td>${item.product}</td><td>${item.quantity}</td></tr>`;
-   });
-   previewHTML += `</tbody></table>`;
-   document.getElementById('orderPreview').innerHTML = previewHTML;
-   document.getElementById('orderPreviewSection').style.display = 'block';
- }
+  // Somando a porcentagem adicional sobre o valor do custo
+  if (porcentagemAdicional > 0) {
+      valorFinal += custo * (porcentagemAdicional / 100);
+  }
 
- // Salva o pedido no localStorage
- function saveOrderToLocalStorage(orderData) {
-   let orders = JSON.parse(localStorage.getItem('orders')) || [];
-   orders.push(orderData);
-   localStorage.setItem('orders', JSON.stringify(orders));
- }
+  document.getElementById("resultado").style.display = "block";
+  document.getElementById("resultado").textContent = `Valor Final: R$ ${valorFinal.toFixed(2)}`;
+}
 
- // Geração do PDF com layout estilizado e salvando o pedido
- async function generatePDF() {
-   const { jsPDF } = window.jspdf;
-   const doc = new jsPDF('p', 'pt', 'a4');
+function calcularPromocao() {
+  const custo = parseFloat(document.getElementById("promo-custo").value);
+  const precoVenda = parseFloat(
+      document.getElementById("promo-precoVenda").value
+  );
+  const imposto = 0.0108; //imposto de 1,08%
+  const comissao = 0.20;
+  const taxaPedido = 4;
 
-   // Definindo margens e largura útil
-   const margin = 40;
-   const pageWidth = doc.internal.pageSize.getWidth();
-   const usableWidth = pageWidth - margin * 2;
-   let y = margin;
+  // Verificação de campos vazios
+  if (isNaN(custo) || isNaN(precoVenda)) {
+      alert("Por favor, preencha todos os campos para efetuar o cálculo.");
+      return;
+  }
 
-   // Cabeçalho centralizado
-   doc.setFontSize(16);
-   doc.setFont("helvetica", "normal");
-   doc.text("Pedido De Orçamento - Moras & Barbosa Ltda", pageWidth / 2, y, { align: "center" });
-   y += 16;
+  let tableHTML = `<table>
+               <thead>
+                 <tr>
+                   <th>Desconto (%)</th>
+                   <th>Preço com Desconto (R$)</th>
+                   <th>Lucro (R$)</th>
+                 </tr>
+               </thead>
+               <tbody>`;
 
-   doc.setFontSize(12);
-   doc.setFont("helvetica", "bold");
-   doc.text("CNPJ: 40.811.585/0001-44", pageWidth / 2, y, { align: "center" });
-   y += 20;
+  for (let desconto = 5; desconto <= 90; desconto += 5) {
+      const precoComDesconto =
+          precoVenda - precoVenda * (desconto / 100);
+      const valorImposto = precoComDesconto * imposto;
+      const valorComissao = precoComDesconto * comissao;
+      const lucro =
+          precoComDesconto - custo - valorImposto - valorComissao - taxaPedido;
+      const descontoValor = precoVenda - precoComDesconto;
 
-   // Mensagem padrão
-   const hoje = new Date();
-   const dataFormatada = hoje.toLocaleDateString('pt-BR');
-   const mensagem = `Olá, espero que se encontre bem ao receber esse pedido. Segue abaixo um resumo de todos os itens que vou precisar para minha próxima compra na data de ${dataFormatada}.\n\nPara possíveis negociações, peço encarecidamente que entre em contato com nosso representante de compras no WhatsApp.`;
-   doc.setFont("helvetica", "normal");
-   doc.setFontSize(10);
-   const splitMsg = doc.splitTextToSize(mensagem, usableWidth);
-   doc.text(splitMsg, margin, y);
-   y += (splitMsg.length * 10) + 20;
+      let classeLucro = "";
+      // Se o valor do desconto estiver entre R$1 e R$10, a célula fica amarela (sobrescrevendo)
+      if (descontoValor >= 1 && descontoValor <= 10) {
+          classeLucro = "green";
+      } else if (lucro > 0) {
+          classeLucro = "green";
+      } else if (lucro === 0) {
+          classeLucro = "green";
+      } else {
+          classeLucro = "red";
+      }
 
-   // Tabela dos itens do pedido com jsPDF-AutoTable
-   const tableColumns = ["Produto", "Quantidade"];
-   const tableData = orderItems.map(item => [item.product, item.quantity]);
-   doc.autoTable({
-     head: [tableColumns],
-     body: tableData,
-     startY: y,
-     margin: { left: margin, right: margin },
-     theme: 'grid',
-     headStyles: { fillColor: [0, 123, 255], halign: 'center' },
-     styles: { fontSize: 10, halign: 'center' }
-   });
-   y = doc.lastAutoTable.finalY + 20;
-
-   // Texto final no rodapé
-   const footerText = `Declaro que a necessidade do valor do pedido, como resposta para uma cotação completa dos itens, agradeço desde já.\n\nMoras & Barbosa commerce`;
-   const splitFooter = doc.splitTextToSize(footerText, usableWidth);
-   doc.text(splitFooter, margin, y);
-
-   // Salva o PDF
-   doc.save('pedido-compra.pdf');
-
-   // Salva o pedido no localStorage (dados do fornecedor e itens)
-   const supplier = suppliers[selectedSupplierIndex];
-   const orderData = {
-     supplier,
-     orderItems,
-     data: dataFormatada
-   };
-   saveOrderToLocalStorage(orderData);
-
-   // Limpa os dados do pedido para um novo orçamento
-   novoPedido();
-
-   alert("Pedido finalizado e salvo com sucesso!");
- }
-
- // Função para iniciar um novo pedido (limpa os campos e itens)
- function novoPedido() {
-   orderItems = [];
-   renderOrderItems();
-   document.getElementById('orderItemsTable').style.display = 'none';
-   document.getElementById('orderPreviewSection').style.display = 'none';
-   document.getElementById('orderSupplier').value = '';
-   selectedSupplierIndex = null;
- }
-
- // Ao carregar a página, renderiza os fornecedores salvos
- window.addEventListener('load', () => {
-   renderSearchResults('');
- });
+      tableHTML += `<tr>
+<td>${desconto}%</td>
+<td>${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(precoComDesconto)}</td>
+<td class="${classeLucro}">${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(lucro)}</td>
+</tr>
+`;
+  }
+  tableHTML += `</tbody></table>`;
+  document.getElementById("promo-result").innerHTML = tableHTML;
+}
