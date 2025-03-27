@@ -159,20 +159,19 @@ function abrirCalculadora(tipo) {
     document.getElementById("resultado").style.display = "block";
     document.getElementById("resultado").textContent = `Valor Final: R$ ${valorFinal.toFixed(2)}`;
   }
-  
   function calcularPromocao() {
     const custo = parseFloat(document.getElementById("promo-custo").value);
     const precoVenda = parseFloat(
-        document.getElementById("promo-precoVenda").value
+      document.getElementById("promo-precoVenda").value
     );
-    const imposto = 0.0108; //imposto de 1,08%
+    const imposto = 0.0108; // imposto de 1,08%
     const comissao = 0.20;
     const taxaPedido = 4;
   
     // Verificação de campos vazios
     if (isNaN(custo) || isNaN(precoVenda)) {
-        alert("Por favor, preencha todos os campos para efetuar o cálculo.");
-        return;
+      alert("Por favor, preencha todos os campos para efetuar o cálculo.");
+      return;
     }
   
     let tableHTML = `<table>
@@ -181,38 +180,43 @@ function abrirCalculadora(tipo) {
                      <th>Desconto (%)</th>
                      <th>Preço com Desconto (R$)</th>
                      <th>Lucro (R$)</th>
+                     <th>Margem Líquida (%)</th>
                    </tr>
                  </thead>
                  <tbody>`;
   
     for (let desconto = 5; desconto <= 90; desconto += 5) {
-        const precoComDesconto =
-            precoVenda - precoVenda * (desconto / 100);
-        const valorImposto = precoComDesconto * imposto;
-        const valorComissao = precoComDesconto * comissao;
-        const lucro =
-            precoComDesconto - custo - valorImposto - valorComissao - taxaPedido;
-        const descontoValor = precoVenda - precoComDesconto;
+      const precoComDesconto =
+        precoVenda - precoVenda * (desconto / 100);
+      const valorImposto = precoComDesconto * imposto;
+      const valorComissao = precoComDesconto * comissao;
+      const lucro =
+        precoComDesconto - custo - valorImposto - valorComissao - taxaPedido;
+      const descontoValor = precoVenda - precoComDesconto;
   
-        let classeLucro = "";
-        // Se o valor do desconto estiver entre R$1 e R$10, a célula fica amarela (sobrescrevendo)
-        if (descontoValor >= 1 && descontoValor <= 10) {
-            classeLucro = "green";
-        } else if (lucro > 0) {
-            classeLucro = "green";
-        } else if (lucro === 0) {
-            classeLucro = "green";
-        } else {
-            classeLucro = "red";
-        }
+      // Calcular margem líquida em %
+      const margemLiquida = (lucro / precoComDesconto) * 100;
   
-        tableHTML += `<tr>
-  <td>${desconto}%</td>
-  <td>${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(precoComDesconto)}</td>
-  <td class="${classeLucro}">${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(lucro)}</td>
-  </tr>
-  `;
+      let classeLucro = "";
+      // Se o valor do desconto estiver entre R$1 e R$10, a célula fica amarela (sobrescrevendo)
+      if (descontoValor >= 1 && descontoValor <= 10) {
+        classeLucro = "green";
+      } else if (lucro > 0) {
+        classeLucro = "green";
+      } else if (lucro === 0) {
+        classeLucro = "green";
+      } else {
+        classeLucro = "red";
+      }
+  
+      tableHTML += `<tr>
+        <td>${desconto}%</td>
+        <td>${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(precoComDesconto)}</td>
+        <td class="${classeLucro}">${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(lucro)}</td>
+        <td>${margemLiquida.toFixed(2)}%</td>
+      </tr>`;
     }
+  
     tableHTML += `</tbody></table>`;
     document.getElementById("promo-result").innerHTML = tableHTML;
   }
