@@ -9,7 +9,7 @@ function calcularMargem() {
         return;
     }
 
-    let imposto = 0.065;
+    let imposto = 0.10;
     let comissao = plataforma === "shopee" ? 0.20 : 0.13;
     let taxaPedido = plataforma === "shopee" ? 4.00 : 1.00;
 
@@ -63,7 +63,7 @@ function gerarRelatorioPDF() {
         return;
     }
 
-    let imposto =0.0108;
+    let imposto = 0.10;
     let comissao = plataforma === "shopee" ? 0.20 : 0.13;
     let taxaPedido = plataforma === "shopee" ? 4.00 : 1.00;
 
