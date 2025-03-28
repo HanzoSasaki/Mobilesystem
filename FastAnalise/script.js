@@ -1,142 +1,223 @@
-function calcularMargem() {
-    let produto = document.getElementById("produto").value;
-    let precoCusto = parseFloat(document.getElementById("precoCusto").value);
-    let precoVenda = parseFloat(document.getElementById("precoVenda").value);
-    let plataforma = document.getElementById("plataforma").value;
-
-    if (!produto || isNaN(precoCusto) || isNaN(precoVenda)) {
-        alert("Preencha todos os campos corretamente!");
-        return;
-    }
-
-    let imposto = 0.065;
-    let comissao = plataforma === "shopee" ? 0.20 : 0.13;
-    let taxaPedido = plataforma === "shopee" ? 4.00 : 1.00;
-
-    let custoTotal = precoCusto + (precoVenda * imposto) + (precoVenda * comissao) + taxaPedido;
-    let margemR = precoVenda - custoTotal;
-    let margemP = (margemR / precoVenda) * 100;
-
-    let status = "Manter";
-    let classe = "positivo";
+function abrirCalculadora(tipo) {
+    let title = "";
+    let content = "";
+    switch (tipo) {
+      case "venda":
+        title = "Calculadora de Precificação Shopee";
+        content = `
+            <label for="custo">Custo do Produto (R$):</label>
+            <input type="number" id="custo" placeholder="Digite o custo">
+            
+            <label for="imposto">Imposto (%):</label>
+            <input type="number" id="imposto" placeholder="Digite o imposto">
+            
+            <label for="comissao">Comissão Marketplace (%):</label>
+            <input type="number" id="comissao" placeholder="Digite a comissão">
+            
+            <label for="taxa">Taxa por Pedido (R$):</label>
+            <input type="number" id="taxa" placeholder="Digite a taxa">
+            
+            <label for="margem">Margem de Lucro Desejada (%):</label>
+            <input type="number" id="margem" placeholder="Digite a margem">
+            
+            <button onclick="calcularPreco()">Calcular Preço de Venda</button>
     
-    if (margemR < 0) {
-        status = "Alterar URGENTE";
-        classe = "negativo";
-    } else if (margemP < 10) {
-        status = "Manter, porém fora da margem meta";
-        classe = "fora-meta";
+            <!-- Exibição dos resultados -->
+            <div id="resultado"></div>
+            <div id="lucroShopee"></div>
+        `;
+        break;
+    
+        case "lucro":
+            title = "Calculadora Tributária (ICMS e IPI)";
+            content = `<label for="tipoNota">Tipo da Nota</label>
+             <select id="tipoNota">
+                 <option value="inteira">Nota Inteira</option>
+                 <option value="meiaNota">Meia Nota</option>
+                 <option value="nota3">Nota 1/3</option>
+             </select>
+             <label for="custo">Custo do Produto (R$):</label>
+             <input type="number" id="custo" placeholder="Digite o valor do custo" required>
+             <label for="icms">ICMS (%):</label>
+             <input type="number" id="icms" placeholder="Digite a porcentagem de ICMS">
+             <label for="ipi">IPI (%):</label>
+             <input type="number" id="ipi" placeholder="Digite a porcentagem de IPI">
+             <label for="porcentagem">Porcentagem Adicional (%)</label>
+             <input type="number" id="porcentagem" step="0.01" placeholder="Digite a porcentagem adicional">
+             <button onclick="calcularValorFinal()">Calcular</button>`;
+            break;
+        case "imposto":
+            title = "Simulação de Promoção";
+            content = `
+             <label for="promo-custo">Preço de Custo (R$):</label>
+             <input type="number" id="promo-custo" placeholder="Digite o preço de custo">
+             <label for="promo-precoVenda">Preço de Venda (R$):</label>
+             <input type="number" id="promo-precoVenda" placeholder="Digite o preço de venda">
+             <button onclick="calcularPromocao()">Calcular Promoção</button>
+             <div id="promo-result"></div>
+            `;
+            break;
     }
-
-    document.getElementById("resultado").innerHTML = `<tr class="${classe}">
-        <td>${produto}</td>
-        <td>R$ ${margemR.toFixed(2)}</td>
-        <td>${margemP.toFixed(2)}%</td>
-        <td>${status}</td>
-    </tr>`;
-
-    let simulacaoHTML = "";
-    for (let desconto = 5; desconto <= 90; desconto += 5) {
-        let precoFinal = precoVenda * (1 - desconto / 100);
-        let lucro = precoFinal - custoTotal;
-        let classeLucro = lucro > 0 ? "positivo" : lucro === 0 ? "fora-meta" : "negativo";
-        simulacaoHTML += `<tr class="${classeLucro}">
-            <td>${desconto}%</td>
-            <td>R$ ${precoFinal.toFixed(2)}</td>
-            <td>R$ ${lucro.toFixed(2)}</td>
-            <td>${lucro > 0 ? "Lucro" : lucro === 0 ? "Empate" : "Prejuízo"}</td>
-        </tr>`;
+    document.getElementById("modal-title").innerText = title;
+    document.getElementById("modal-body").innerHTML = content;
+    document.getElementById("resultado").innerText = "";
+    // Em vez de alterar o display, adicionamos a classe "show" para ativar a animação
+    document.getElementById("modal").classList.add("show");
+  }
+  
+  function fecharModal() {
+    // Remove a classe "show" para disparar a animação de fechamento
+    document.getElementById("modal").classList.remove("show");
+  }
+  function calcularPreco() {
+    let custo = parseFloat(document.getElementById("custo").value) || NaN;
+    let imposto = parseFloat(document.getElementById("imposto").value) / 100 || NaN;
+    let comissao = parseFloat(document.getElementById("comissao").value) / 100 || NaN;
+    let taxa = parseFloat(document.getElementById("taxa").value) || NaN;
+    let margem = parseFloat(document.getElementById("margem").value) / 100 || NaN;
+  
+    if (isNaN(custo) || isNaN(imposto) || isNaN(comissao) || isNaN(taxa) || isNaN(margem)) {
+      alert("Por favor, preencha todos os campos para efetuar o cálculo.");
+      return;
     }
-    document.getElementById("simulacao").innerHTML = simulacaoHTML;
-}
-function gerarRelatorioPDF() {
-    const { jsPDF } = window.jspdf;
-    let doc = new jsPDF();
-
-    let produto = document.getElementById("produto").value;
-    let precoCusto = parseFloat(document.getElementById("precoCusto").value);
-    let precoVenda = parseFloat(document.getElementById("precoVenda").value);
-    let plataforma = document.getElementById("plataforma").value;
-
-    if (!produto || isNaN(precoCusto) || isNaN(precoVenda)) {
-        alert("Preencha todos os campos corretamente!");
+  
+    // Cálculo do preço de venda sugerido
+    let precoVenda = (custo + taxa) / (1 - (imposto + comissao + margem));
+  
+    // Cálculo do lucro
+    let custoTotal = custo + (precoVenda * imposto) + (precoVenda * comissao) + taxa;
+    let lucro = precoVenda - custoTotal;
+    let margemLucro = (lucro / precoVenda) * 100;
+  
+    // Exibir os resultados da precificação
+    document.getElementById("resultado").innerHTML = `
+        <p><strong>Preço de Venda Sugerido:</strong> R$ ${precoVenda.toFixed(2)}</p>
+        <p class="green"><strong>Lucro Líquido:</strong> R$ ${lucro.toFixed(2)} (${margemLucro.toFixed(2)}%)</p>
+    `;
+  
+    // Cálculo do lucro na Shopee (adicionando a lógica)
+    let plataforma = "shopee"; // Plataforma fixa para Shopee
+    let impostoShopee = 0.0108;
+    let comissaoShopee = 0.20;
+    let taxaPedidoShopee = 4.00;
+  
+    let custoTotalShopee = custo + (precoVenda * impostoShopee) + (precoVenda * comissaoShopee) + taxaPedidoShopee;
+    let lucroShopee = precoVenda - custoTotalShopee;
+    let margemLucroShopee = (lucroShopee / precoVenda) * 100;
+  
+    // Exibir o lucro que você vai receber na Shopee
+    document.getElementById("lucroShopee").innerHTML = `
+        <p class="green"><strong>Lucro Bruto:</strong> R$ ${lucroShopee.toFixed(2)} (${margemLucroShopee.toFixed(2)}%)</p>
+    `;
+  }
+  
+  
+  
+  function calcularValorFinal() {
+    const custo = parseFloat(document.getElementById("custo").value);
+    const icms = parseFloat(document.getElementById("icms").value);
+    const ipi = parseFloat(document.getElementById("ipi").value);
+    const tipoNota = document.getElementById("tipoNota").value;
+    const porcentagemAdicional = parseFloat(document.getElementById("porcentagem").value);
+  
+    // Verificação de campos vazios
+    if (
+        isNaN(custo) ||
+        isNaN(icms) ||
+        isNaN(ipi) ||
+        isNaN(porcentagemAdicional)
+    ) {
+        alert("Por favor, preencha todos os campos para efetuar o cálculo.");
         return;
     }
-
-    let imposto =0.0108;
-    let comissao = plataforma === "shopee" ? 0.20 : 0.13;
-    let taxaPedido = plataforma === "shopee" ? 4.00 : 1.00;
-
-    let custoTotal = precoCusto + (precoVenda * imposto) + (precoVenda * comissao) + taxaPedido;
-    let margemR = precoVenda - custoTotal;
-    let margemP = (margemR / precoVenda) * 100;
-
-    let status = " Manter";
-    let precoRecomendado = null;
-    let tabelaAlternativa = []; // Para armazenar preços sugeridos
-
-    if (margemR < 0) {
-        status = " Alterar URGENTE!";
-        precoRecomendado = custoTotal * 1.10; // Preço mínimo recomendado com 10% de margem
-        tabelaAlternativa = [
-            ["10%", `R$ ${(custoTotal * 1.10).toFixed(2)}`],
-            ["20%", `R$ ${(custoTotal * 1.20).toFixed(2)}`],
-            ["30%", `R$ ${(custoTotal * 1.30).toFixed(2)}`],
-            ["40%", `R$ ${(custoTotal * 1.40).toFixed(2)}`]
-        ];
-    } else if (margemP < 10) {
-        status = " Fora da margem meta";
-    }
-
-    // Cabeçalho do relatório
-    doc.setFontSize(18);
-    doc.text("Relatório de Análise de Preço", 15, 15);
-    doc.setFontSize(12);
-    doc.text(`Produto: ${produto}`, 15, 25);
-    doc.text(`Plataforma: ${plataforma.toUpperCase()}`, 15, 32);
-
-    // Tabela com os dados principais
-    let dadosTabela = [
-        [`R$ ${precoCusto.toFixed(2)}`, `R$ ${precoVenda.toFixed(2)}`, `R$ ${custoTotal.toFixed(2)}`, `R$ ${margemR.toFixed(2)}`, `${margemP.toFixed(2)}%`, status]
-    ];
-
-    if (precoRecomendado) {
-        dadosTabela[0].push(` R$ ${precoRecomendado.toFixed(2)}`);
-    }
-
-    doc.autoTable({
-        startY: 40,
-        head: precoRecomendado
-            ? [["Preço de Custo", "Preço de Venda", "Custo Total", "Margem R$", "Margem %", "Status", "Preço Recomendado"]]
-            : [["Preço de Custo", "Preço de Venda", "Custo Total", "Margem R$", "Margem %", "Status"]],
-        body: dadosTabela,
-    });
-
-    // Se estiver no prejuízo, mostra a tabela de preços recomendados
-    if (margemR < 0) {
-        doc.text("Sugestão de Preços Recomendados", 15, doc.lastAutoTable.finalY + 10);
-        doc.autoTable({
-            startY: doc.lastAutoTable.finalY + 15,
-            head: [["Margem de Lucro", "Preço Recomendado"]],
-            body: tabelaAlternativa,
-        });
+  
+    let valorFinal;
+    if (icms === 18 && ipi === 0) {
+        valorFinal = custo;
+    } else if (icms === 18) {
+        valorFinal = custo + (custo * ipi) / 100;
     } else {
-        // Se estiver no lucro, faz a simulação de descontos
-        let simulacao = [];
-        for (let desconto = 5; desconto <= 90; desconto += 5) {
-            let precoFinal = precoVenda * (1 - desconto / 100);
-            let lucro = precoFinal - custoTotal;
-            simulacao.push([`${desconto}%`, `R$ ${precoFinal.toFixed(2)}`, `R$ ${lucro.toFixed(2)}`, lucro > 0 ? "Lucro" : lucro === 0 ? "Empate" : "Prejuízo"]);
-        }
-
-        doc.text(" Simulação de Preços com Descontos", 15, doc.lastAutoTable.finalY + 10);
-        doc.autoTable({
-            startY: doc.lastAutoTable.finalY + 15,
-            head: [["Desconto", "Preço Final", "Lucro", "Status"]],
-            body: simulacao,
-        });
+        const diferencaICMS = 18 - icms;
+        valorFinal =
+            custo +
+            (custo * diferencaICMS) / 100 +
+            (custo * ipi) / 100;
     }
-
-    // Salvar PDF
-    doc.save(`Relatorio_${produto}.pdf`);
-}
+  
+    // Condições baseadas no tipo da nota
+    if (tipoNota === "meiaNota") {
+        valorFinal += custo;
+    } else if (tipoNota === "nota3") {
+        valorFinal += custo * 2;
+    }
+  
+    // Somando a porcentagem adicional sobre o valor do custo
+    if (porcentagemAdicional > 0) {
+        valorFinal += custo * (porcentagemAdicional / 100);
+    }
+  
+    document.getElementById("resultado").style.display = "block";
+    document.getElementById("resultado").textContent = `Valor Final: R$ ${valorFinal.toFixed(2)}`;
+  }
+  function calcularPromocao() {
+    const custo = parseFloat(document.getElementById("promo-custo").value);
+    const precoVenda = parseFloat(
+      document.getElementById("promo-precoVenda").value
+    );
+    const imposto = 0.0108; // imposto de 1,08%
+    const comissao = 0.20;
+    const taxaPedido = 4;
+  
+    // Verificação de campos vazios
+    if (isNaN(custo) || isNaN(precoVenda)) {
+      alert("Por favor, preencha todos os campos para efetuar o cálculo.");
+      return;
+    }
+  
+    let tableHTML = `<table>
+                 <thead>
+                   <tr>
+                     <th>Desconto (%)</th>
+                     <th>Preço com Desconto (R$)</th>
+                     <th>Lucro (R$)</th>
+                     <th>Margem Líquida (%)</th>
+                   </tr>
+                 </thead>
+                 <tbody>`;
+  
+    for (let desconto = 5; desconto <= 90; desconto += 5) {
+      const precoComDesconto =
+        precoVenda - precoVenda * (desconto / 100);
+      const valorImposto = precoComDesconto * imposto;
+      const valorComissao = precoComDesconto * comissao;
+      const lucro =
+        precoComDesconto - custo - valorImposto - valorComissao - taxaPedido;
+      const descontoValor = precoVenda - precoComDesconto;
+  
+      // Calcular margem líquida em %
+      const margemLiquida = (lucro / precoComDesconto) * 100;
+  
+      let classeLucro = "";
+      // Se o valor do desconto estiver entre R$1 e R$10, a célula fica amarela (sobrescrevendo)
+      if (descontoValor >= 1 && descontoValor <= 10) {
+        classeLucro = "green";
+      } else if (lucro > 0) {
+        classeLucro = "green";
+      } else if (lucro === 0) {
+        classeLucro = "green";
+      } else {
+        classeLucro = "red";
+      }
+  
+      tableHTML += `<tr>
+        <td>${desconto}%</td>
+        <td>${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(precoComDesconto)}</td>
+        <td class="${classeLucro}">${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(lucro)}</td>
+        <td>${margemLiquida.toFixed(2)}%</td>
+      </tr>`;
+    }
+  
+    tableHTML += `</tbody></table>`;
+    document.getElementById("promo-result").innerHTML = tableHTML;
+  }
+  
