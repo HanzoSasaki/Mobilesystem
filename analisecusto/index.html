@@ -7,6 +7,37 @@
     <title>Análise de Custos 2025</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      .alerta {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--error-color, #e74c3c);
+            color: var(--text-color, #ffffff);
+            padding: 15px;
+            border-radius: var(--radius, 12px);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+            box-shadow: var(--shadow, 0px 4px 6px rgba(0, 0, 0, 0.1));
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            display: none;
+            z-index: 1000;
+        }
+        .alerta button {
+            background: none;
+            border: none;
+            font-weight: bold;
+            color: var(--text-color, #ffffff);
+            cursor: pointer;
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            font-size: 18px;
+        }
+</style>
 </head>
 
 <body>
@@ -17,7 +48,12 @@
             <img src="https://cdn-icons-png.flaticon.com/512/25/25694.png" style="width: 20px; filter: invert(1);" alt="Ícone de Home">
         </a>
     </header>
-    
+    <div class="alerta" id="alerta">
+         <button onclick="fecharAlerta()">&#10006;</button>
+       <br>
+        Os dados são atualizados de 15 em 15 dias para precisão de dados, pois é necessário uma quantidade relevante de informação para efetuar os cálculos.<br>
+        Todo dia 1 do mês posterior terá o fechamento do mês anterior, dando o valor total, e na metade desse mês haverá informações base para comparações entre custos.
+    </div>
     <!-- Painel de meses e valores -->
     <main>
         <div class="meses-container">
@@ -58,7 +94,19 @@
     
     
     
-    
+          <script>
+          function mostrarAlerta() {
+            document.getElementById("alerta").style.display = "block";
+        }
+
+        function fecharAlerta() {
+            document.getElementById("alerta").style.display = "none";
+        }
+
+        window.onload = function() {
+            setTimeout(mostrarAlerta, 1000); // Mostra o alerta após 1 segundo
+        };
+        </script>
     <script src="script.js"></script>
 </body>
 
