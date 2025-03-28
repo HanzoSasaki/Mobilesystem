@@ -198,7 +198,9 @@ function abrirCalculadora(tipo) {
       const margemLiquida = (lucro / precoComDesconto) * 100;
   
       let classeLucro = "";
-      // Se o valor do desconto estiver entre R$1 e R$10, a célula fica amarela (sobrescrevendo)
+      let classeMargem = "";
+  
+      // Lógica de cores para a célula de lucro
       if (descontoValor >= 1 && descontoValor <= 10) {
         classeLucro = "green";
       } else if (lucro > 0) {
@@ -209,11 +211,20 @@ function abrirCalculadora(tipo) {
         classeLucro = "red";
       }
   
+      // Lógica de cores para a célula de margem líquida
+      if (margemLiquida > 0) {
+        classeMargem = "green";
+      } else if (margemLiquida < 0) {
+        classeMargem = "red";
+      } else {
+        classeMargem = "green"; // Para margem 0, podemos manter como verde
+      }
+  
       tableHTML += `<tr>
         <td>${desconto}%</td>
         <td>${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(precoComDesconto)}</td>
         <td class="${classeLucro}">${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(lucro)}</td>
-        <td>${margemLiquida.toFixed(2)}%</td>
+        <td class="${classeMargem}">${margemLiquida.toFixed(2)}%</td>
       </tr>`;
     }
   
