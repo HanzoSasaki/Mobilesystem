@@ -17,6 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
       { title: "Desempenho Armazem Global (1,8%)", description: "Grafico responsavel pela visualização de desempenho em evolução dia a dia ", url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTtvK3X3YMZzQe3M1I5lz6AkpNcdR8RomqEPefP_meogRr3LeZXELjeHajUYf4Cv_lFItd7YFf84NLf/pubchart?oid=97826037&format=interactive" }
 
 
+
+      
     ],
 
     item2: [
