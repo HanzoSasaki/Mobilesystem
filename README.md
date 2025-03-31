@@ -55,7 +55,7 @@ root
 - **Permissões:** Restrinja acessos com base em funções dos usuários.
 
 ## Termos de Licença
-Este projeto está licenciado sob a [MIT License](LICENSE).
+Este projeto está licenciado sob a [MIT License](LICENSE.md).
 
 ### Restrições
 - **Proibida a cópia desse software.**
