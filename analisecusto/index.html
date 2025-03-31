@@ -41,27 +41,54 @@
 
         /* Ajustando o gráfico para ficar dentro do container */
         .grafico-container {
-    background: #fff;
+    background:  #fff;
     border-radius: var(--radius, 12px);
     padding: 1rem;
     box-shadow: var(--shadow, 0px 4px 6px rgba(0, 0, 0, 0.1));
-    margin-top: 2rem;
-    width: 90%; /* Usa 90% da largura da tela */
+    margin: 2rem auto 0;
+    width: 92%; /* Margem lateral automática */
     max-width: 800px;
-    min-width: 280px; /* Evita que fique pequeno demais */
-    height: auto; /* Altura automática */
+    height: 400px; /* Altura padrão */
     display: flex;
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    margin: auto;
     position: relative;
+    
+    /* Torna o elemento responsivo */
+    aspect-ratio: 16/9; /* Proporção inicial (ajuste conforme necessário) */
+    height: auto; /* Sobrescreve a altura fixa quando aspect-ratio está ativo */
 }
 
 .grafico-container canvas {
     width: 100% !important;
-    height: auto !important;
-    max-height: 400px; /* Mantém um tamanho máximo */
+    height: 100% !important;
+    object-fit: contain; /* Mantém a proporção do gráfico */
+}
+
+/* Media Queries para ajustes específicos */
+@media (max-width: 1200px) {
+    .grafico-container {
+        aspect-ratio: 2/1; /* Proporção mais larga para telas médias */
+    }
+}
+
+@media (max-width: 768px) {
+    .grafico-container {
+        aspect-ratio: unset; /* Remove aspect-ratio */
+        height: 60vh; /* Usa altura da viewport */
+        min-height: 300px; /* Altura mínima garantida */
+        width: 95%; /* Aproveita melhor o espaço */
+        padding: 0.5rem; /* Reduz padding */
+    }
+}
+
+@media (max-width: 480px) {
+    .grafico-container {
+        height: 50vh; /* Altura menor para telas pequenas */
+        min-height: 250px;
+        margin-top: 1rem; /* Reduz margem superior */
+    }
 }
 
     </style>
