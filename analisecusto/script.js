@@ -62,7 +62,7 @@ function renderizarMeses() {
                 <p><strong>Lucro Bruto:</strong> <span class="valor">${formatarMoeda(dados.lucroBruto[index])}</span></p>
                 <p><strong>Lucro Líquido:</strong> <span class="valor">${formatarMoeda(dados.lucroLiquido[index])}</span></p>
                 <p><strong>Custo Total:</strong> <span class="valor">${formatarMoeda(custoAtual)}</span></p>
-                <p><strong>Variação Custo:</strong> <span class="variacao">${variacaoCusto}</span></p>
+           
                 <p><strong>Variação Custo Ajustada:</strong> <span class="variacao">${variacaoCustoAjustada}</span></p>
                 <p><strong>Variação Margem Líquida:</strong> <span class="variacao">${variacaoLucro}</span></p>
             </div>
@@ -84,8 +84,75 @@ function calcularTotais() {
     document.getElementById('bruto-real').textContent = formatarMoeda(brutoReal);
 }
 
+function renderizarGraficos() {
+    const canvas = document.getElementById("grafico-comparacao");
+
+    if (!canvas) {
+        console.error("Elemento canvas não encontrado!");
+        return;
+    }
+
+    // Garante que o gráfico antigo seja destruído antes de criar um novo
+    if (canvas.chart) {
+        canvas.chart.destroy();
+    }
+
+    const ctx = canvas.getContext("2d");
+    canvas.chart = new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: dados.meses,
+            datasets: [
+                {
+                    label: "Custos",
+                    data: dados.custos,
+                    backgroundColor: "rgba(255, 99, 132, 0.8)",
+                },
+                {
+                    label: "Lucro Bruto",
+                    data: dados.lucroBruto,
+                    backgroundColor: "rgba(54, 162, 235, 0.8)",
+                },
+                {
+                    label: "Lucro Líquido",
+                    data: dados.lucroLiquido,
+                    backgroundColor: "rgba(75, 192, 192, 0.8)",
+                },
+            ],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true, // Mantém proporção correta em qualquer tela
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: "rgba(200, 200, 200, 0.3)",
+                    },
+                },
+                x: {
+                    grid: {
+                        color: "rgba(200, 200, 200, 0.3)",
+                    },
+                },
+            },
+            plugins: {
+                legend: {
+                    labels: {
+                        color: "#333",
+                        font: {
+                            size: 14,
+                        },
+                    },
+                },
+            },
+        },
+    });
+}
+
 // Inicialização
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
     renderizarMeses();
     calcularTotais();
+    renderizarGraficos();
 });

@@ -1,16 +1,15 @@
 :root {
-    --primary-color: #ffffff;
-    --secondary-color: #ffffff;
-    --text-color: #ffffff;
-    --bg-color: #ffffff; /* Alterado para branco */
-    --card-bg: #ffffff;
-    --success-color: #27ae60;
-    --error-color: #e74c3c;
-    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    --radius: 12px;
-    --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  }
-  
+  --primary-color: #ffffff;
+  --secondary-color: #ffffff;
+  --text-color: #ffffff;
+  --bg-color: #ffffff; /* Alterado para branco */
+  --card-bg: #ffffff;
+  --success-color: #27ae60;
+  --error-color: #e74c3c;
+  --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --radius: 12px;
+  --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
 
 /* Reset modernizado */
 *,
@@ -37,16 +36,16 @@ body {
 
 /* Header estilizado */
 header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background-color: #333;
-    color: #fff;
-    text-align: center;
-    padding: 15px 0;
-    z-index: 1000;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  padding: 15px 0;
+  z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 header h1 {
@@ -154,29 +153,19 @@ header h1 {
   margin: 0;
 }
 
-/* Área de gráficos */
-.graficos-container {
-  background: var(--card-bg);
-  border-radius: var(--radius);
-  padding: 2rem;
-  margin: 1.5rem 0;
-  box-shadow: var(--shadow);
-}
-
 /* Footer melhorado */
 footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background-color: #333;
-    color: #fff;
-    text-align: center;
-    padding: 10px;
-    font-size: 14px;
-    z-index: 1000;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  padding: 10px;
+  font-size: 14px;
+  z-index: 1000;
 }
-
 
 /* Responsividade aprimorada */
 @media (max-width: 768px) {
@@ -224,3 +213,4 @@ footer {
     --card-bg: #34495e;
   }
 }
+
