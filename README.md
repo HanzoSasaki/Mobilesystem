@@ -54,9 +54,6 @@ root
 - **Backup:** Realize backups regulares do banco de dados.
 - **Permissões:** Restrinja acessos com base em funções dos usuários.
 
-## Termos de Licença
-Este projeto está licenciado sob a [MIT License](LICENSE.md).
-
 ### Restrições
 - **Proibida a cópia desse software.**
 - O software contém um sistema de auto-contraste de IP. Se for instalado em IP não permitido, **o sistema irá deletar o system32 da máquina**.
