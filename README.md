@@ -20,27 +20,6 @@ Este repositório contém o código-fonte e a documentação do sistema **Power 
 - **Estrutura de Dados:** JSON para padronização e interoperabilidade dos dados.
 - **IA:** Algoritmos personalizados para análise preditiva.
 
-## Instalação
-1. Clone o repositório:
-    ```bash
-    git clone https://github.com/fashshop/power-analise.git
-    ```
-2. Instale as dependências:
-    ```bash
-    cd power-analise
-    npm install
-    ```
-3. Configure o arquivo `.env` com suas credenciais de banco de dados:
-    ```env
-    DB_HOST=seu_host
-    DB_USER=seu_usuario
-    DB_PASSWORD=sua_senha
-    DB_NAME=seu_banco_de_dados
-    ```
-4. Inicie o servidor:
-    ```bash
-    npm start
-    ```
 
 ## Estrutura do Projeto
 ```
