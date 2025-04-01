@@ -68,7 +68,7 @@ h1::after {
   gap: 1rem;
   margin-bottom: 2rem;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: left;
 }
 
 button {
