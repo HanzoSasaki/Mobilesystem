@@ -98,105 +98,121 @@ function gerarGrafico(linhas) {
 
 // Função para gerar o PDF do relatório (versão aprimorada)
 function gerarPDF() {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF('p', 'pt', 'a4');
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('p', 'pt', 'a4');
   
-  // Configurações gerais
-  const margin = 40;
-  let yPos = margin;
-  const pageWidth = doc.internal.pageSize.getWidth();
+    // Configurações gerais
+    const margin = 40;
+    let yPos = margin;
+    const pageWidth = doc.internal.pageSize.getWidth();
   
-  // Cabeçalho profissional
-  doc.setFillColor(0, 123, 255);
-  doc.rect(0, 0, pageWidth, 60, 'F');
-  doc.setFontSize(18);
-  doc.setTextColor(255);
-  doc.text("Relatório de Taxa de Erros e Devolução", margin, 40);
+    // Cabeçalho profissional (agora em cinza escuro #333)
+    doc.setFillColor(51, 51, 51); // Cor #333 (cinza escuro)
+    doc.rect(0, 0, pageWidth, 60, 'F'); // Retângulo do cabeçalho
   
-  // Data formatada
-  const dataFormatada = new Date().toLocaleDateString("pt-BR", {
+    doc.setFont('helvetica', 'bold'); // Fonte em negrito
+    doc.setFontSize(20);
+    doc.setTextColor(255); // Texto branco
+  
+    // Centraliza o texto no cabeçalho
+    const title = "Relatório de Taxa de Erros e Devolução";
+    const textWidth = doc.getTextWidth(title);
+    const textX = (pageWidth - textWidth) / 2;
+    doc.text(title, textX, 38);
+  
+    // Data formatada
+    const dataFormatada = new Date().toLocaleDateString("pt-BR", {
       day: '2-digit',
       month: 'long',
       year: 'numeric'
-  });
+    });
   
-  // Informações do relatório
-  doc.setTextColor(0);
-  doc.setFontSize(11);
-  yPos += 30;
-  doc.text(`Data do relatório: ${dataFormatada}`, margin, yPos);
-  doc.text(`Total de ocorrências: ${totalOcorrencias}`, pageWidth - margin - 100, yPos, { align: 'right' });
+    // Informações do relatório (adicionando espaçamento curto abaixo do título)
+    doc.setTextColor(0);
+    doc.setFontSize(12);
+    yPos += 50; // Pequeno espaço entre o título e as informações do relatório
+    doc.text(`Data do relatório: ${dataFormatada}`, margin, yPos);
+    doc.text(`Total de ocorrências: ${totalOcorrencias}`, pageWidth - margin - 100, yPos, { align: 'right' });
   
-  // Seção de insights
-  yPos += 30;
-  doc.setFontSize(14);
-  doc.setTextColor(0, 123, 255);
-  doc.text("Principais Insights", margin, yPos);
+    // Seção de insights
+    yPos += 25;
+    doc.setFontSize(14);
+    doc.setTextColor(51, 51, 51); // Cinza escuro #333 para títulos
+    doc.text("Principais Insights", margin, yPos);
   
-  // Box de destaque
-  yPos += 20;
-  const porcentagem = totalOcorrencias > 0 ? ((maiorCount / totalOcorrencias) * 100).toFixed(2) : 0;
-  const insights = [
+    // Box de destaque
+    yPos += 15;
+    const porcentagem = totalOcorrencias > 0 ? ((maiorCount / totalOcorrencias) * 100).toFixed(2) : 0;
+    const insights = [
       `Motivo mais frequente: ${motivoMaisFrequente}`,
       `Ocorrências: ${maiorCount} (${porcentagem}%)`,
       `Total geral de registros: ${totalOcorrencias}`
-  ];
+    ];
   
-  doc.setFillColor(240, 248, 255);
-  doc.rect(margin, yPos - 10, pageWidth - 2 * margin, 50, 'F');
-  doc.setFontSize(12);
-  doc.setTextColor(0);
-  insights.forEach((text, index) => {
+    doc.setFillColor(240, 240, 240); // Fundo cinza claro para destacar insights
+    doc.rect(margin, yPos - 10, pageWidth - 2 * margin, 50, 'F');
+    doc.setFontSize(12);
+    doc.setTextColor(0);
+    insights.forEach((text, index) => {
       doc.text(text, margin + 10, yPos + (index * 15));
-  });
+    });
   
-  // Seção do gráfico
-  yPos += 80;
-  doc.setFontSize(14);
-  doc.setTextColor(0, 123, 255);
-  doc.text("Distribuição de Ocorrências", margin, yPos);
+    // Seção do gráfico
+    yPos += 80;
+    doc.setFontSize(14);
+    doc.setTextColor(51, 51, 51);
+    doc.text("Distribuição de Ocorrências", margin, yPos);
   
-  // Adiciona gráfico
-  const canvas = document.getElementById("myChart");
-  if (canvas) {
+    // Adiciona gráfico
+    const canvas = document.getElementById("myChart");
+    if (canvas) {
       const imgData = canvas.toDataURL("image/png", 1.0);
       const imgWidth = pageWidth - 2 * margin;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
       doc.addImage(imgData, 'PNG', margin, yPos + 10, imgWidth, imgHeight);
       yPos += imgHeight + 30;
+    }
+  
+    // Tabela de dados
+    doc.setFontSize(14);
+    doc.setTextColor(51, 51, 51);
+    doc.text("Detalhamento das Ocorrências", margin, yPos);
+  
+    doc.autoTable({
+        html: "#dataTable",
+        startY: yPos + 10,
+        margin: { left: margin, right: margin },
+        tableWidth: pageWidth - 2 * margin, // Define a largura total da tabela
+        headStyles: { 
+          fillColor: [51, 51, 51], // Cabeçalho em cinza escuro
+          textColor: 255,
+          fontSize: 10,
+          halign: 'center'
+        },
+        bodyStyles: { 
+          fontSize: 9,
+          halign: 'center'
+        },
+        styles: { 
+          overflow: 'linebreak' 
+        },
+        columnStyles: {
+          0: { cellWidth: 40, halign: 'center' },
+          1: { cellWidth: 60, halign: 'center' },
+          6: { cellWidth: 30, halign: 'center' }
+        },
+        theme: 'grid'
+      });
+      
+  
+    // Rodapé
+    const finalY = doc.lastAutoTable.finalY + 20;
+    doc.setFontSize(10);
+    doc.setTextColor(100);
+    doc.text("Relatório gerado automaticamente pelo sistema - Confidencial", margin, finalY);
+    doc.text(`Página 1/1`, pageWidth - margin, finalY, { align: 'right' });
+  
+    // Salva o PDF
+    doc.save(`Relatorio_Erros_${dataFormatada.replace(/\//g, '-')}.pdf`);
   }
   
-  // Tabela de dados
-  doc.setFontSize(14);
-  doc.setTextColor(0, 123, 255);
-  doc.text("Detalhamento das Ocorrências", margin, yPos);
-  
-  doc.autoTable({
-      html: "#dataTable",
-      startY: yPos + 10,
-      margin: { left: margin, right: margin },
-      headStyles: { 
-          fillColor: [0, 123, 255],
-          textColor: 255,
-          fontSize: 10
-      },
-      bodyStyles: { fontSize: 9 },
-      styles: { overflow: 'linebreak' },
-      columnStyles: {
-          0: { cellWidth: 40 },
-          1: { cellWidth: 60 },
-          6: { cellWidth: 30 }
-      },
-      theme: 'grid'
-  });
-  
-  // Rodapé
-  const finalY = doc.lastAutoTable.finalY + 20;
-  doc.setFontSize(10);
-  doc.setTextColor(100);
-  doc.text("Relatório gerado automaticamente pelo sistema - Confidencial", margin, finalY);
-  doc.text(`Página 1/1`, pageWidth - margin, finalY, { align: 'right' });
-  
-  // Salva o PDF
-  doc.save(`Relatorio_Erros_${dataFormatada.replace(/\//g, '-')}.pdf`);
-}
