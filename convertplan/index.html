@@ -1,76 +1,69 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Filtro Fastsho I.A</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório de Erros</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
-<body class="bg-gray-100 font-sans">
+<body>
 
-  <!-- Header -->
-  <header class="flex items-center justify-between p-6 bg-gradient-to-r from-orange-500 to-orange-700 text-white shadow-md fixed top-0 left-0 w-full z-10">
-    <a href="../index.html" class="home-button">
-        <img src="https://cdn-icons-png.flaticon.com/512/25/25694.png" alt="Ícone de Home" class="w-6 h-6" style="filter: invert(1);">
-    </a>
-    <h1 class="text-2xl font-bold text-center flex-1">Filtro Shopee API</h1>
-</header>
 
-  <!-- Alerta de Atenção -->
-  <div class="alert-container mt-24 px-4">
-    <div class="alert bg-yellow-200 border-l-4 border-yellow-500 p-4 rounded-lg shadow-lg flex items-center">
-      <span class="alert-icon text-2xl text-yellow-500 mr-3">⚠️</span>
-      <p class="alert-text text-gray-700 text-lg">
-        ATENÇÃO: Este filtro serve para ajudar na alimentação de dados do banco de análise. Verifique os itens pois são filtrados por uma inteligência artificial. A precisão do filtro é de 80%.
-      </p>
+    <header>
+        <h1>Análise de Taxa de Erros</h1>
+        <a href="../index.html" style="position: absolute; left: 20px; top: 50%; transform: translateY(-50%);">
+            <img src="https://cdn-icons-png.flaticon.com/512/25/25694.png" style="width: 20px; filter: invert(1);" alt="Ícone de Home">
+        </a>
+    </header>
+   
+<br>
+<br>
+<br>
+    
+    <div class="container">
+        <div class="buttons">
+            <button onclick="gerarPDF()">📄 Baixar Relatório PDF</button>
+           
+        </div>
+
+        <div class="table-container">
+            <table id="dataTable">
+                <thead>
+                    <tr>
+                        <th>ID do Pedido</th>
+                        <th>Data</th>
+                        <th>Motivo do Erro</th>
+                        <th>Especificação</th>
+                        <th>Status</th>
+                        <th>Loja</th>
+                        <th>Quantidade</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Os dados serão preenchidos dinamicamente -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="myChart" width="400" height="200"></canvas>
+        </div>
     </div>
-  </div>
 
-  <!-- Conteúdo Principal -->
-  <main class="mt-8 max-w-4xl mx-auto px-4">
-    <!-- Card para o campo de variações -->
-    <div class="card bg-white shadow-lg rounded-lg p-6 mb-6">
-      <div class="mb-4">
-        <label for="productVariations" class="block text-lg font-medium mb-2">COLE AS VARIAÇÕES PARA BUSCA</label>
-        <textarea id="productVariations" rows="5" class="block w-full p-4 border rounded-md shadow-sm focus:ring-2 focus:ring-orange-500" placeholder="Digite as variações separadas por linhas..."></textarea>
-      </div>
-    </div>
+    <!-- Bibliotecas necessárias -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- Botões "Filtrar dados" e "Download CSV" -->
-    <div class="flex justify-center space-x-6">
-      <button id="processButton" class="bg-orange-500 text-white font-semibold py-3 px-8 rounded-md hover:bg-orange-600 transition ease-in-out duration-200">
-        Filtrar dados
-      </button>
-      <button id="downloadButton" class="bg-green-500 text-white font-semibold py-3 px-8 rounded-md hover:bg-green-600 transition ease-in-out duration-200 hidden">
-        Download CSV
-      </button>
-    </div>
-
-    <!-- Tabela de Resultados -->
-    <div class="table-container mt-8 p-6 bg-white rounded-lg shadow-lg">
-      <h2 class="text-xl font-semibold mb-4">Resultados</h2>
-      <table class="w-full border-collapse border border-gray-300">
-        <thead>
-          <tr class="bg-gray-100">
-            <th class="border border-gray-300 p-3 text-left text-sm font-medium text-gray-600">Variação</th>
-            <th class="border border-gray-300 p-3 text-left text-sm font-medium text-gray-600">Nome do Produto</th>
-            <th class="border border-gray-300 p-3 text-left text-sm font-medium text-gray-600">Custo</th>
-          </tr>
-        </thead>
-        <tbody id="resultTable"></tbody>
-      </table>
-    </div>
-  </main>
-
-
-  <footer>
-    <span class="footer-rights">Todos os direitos reservados</span> - WolfSoftware.in  |
-    <span class="footer-ceo">CEO e Engenheiro de Desenvolvimento - Erick Barbosa</span>
-  </footer>
-
-
-
-  <script src="script.js"></script>
+    <!-- Script principal -->
+    <script src="script.js"></script>
+    <footer>
+        <span class="footer-rights">Todos os direitos reservados</span> - WolfSoftware.in  |
+        <span class="footer-ceo">CEO e Engenheiro de Desenvolvimento - Erick Barbosa</span>
+    </footer>
 </body>
+
 </html>
