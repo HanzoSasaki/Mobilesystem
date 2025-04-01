@@ -22,9 +22,9 @@ function abrirCalculadora(tipo) {
             
             <button onclick="calcularPreco()">Calcular Preço de Venda</button>
     
-            <!-- Exibição dos resultados -->
             <div id="resultado"></div>
             <div id="lucroShopee"></div>
+            <div id="promocoes"></div>
         `;
         break;
     
@@ -75,43 +75,55 @@ function abrirCalculadora(tipo) {
     let comissao = parseFloat(document.getElementById("comissao").value) / 100 || NaN;
     let taxa = parseFloat(document.getElementById("taxa").value) || NaN;
     let margem = parseFloat(document.getElementById("margem").value) / 100 || NaN;
-  
+
     if (isNaN(custo) || isNaN(imposto) || isNaN(comissao) || isNaN(taxa) || isNaN(margem)) {
-      alert("Por favor, preencha todos os campos para efetuar o cálculo.");
-      return;
+        alert("Por favor, preencha todos os campos para efetuar o cálculo.");
+        return;
     }
-  
-    // Cálculo do preço de venda sugerido
+
     let precoVenda = (custo + taxa) / (1 - (imposto + comissao + margem));
-  
-    // Cálculo do lucro
     let custoTotal = custo + (precoVenda * imposto) + (precoVenda * comissao) + taxa;
     let lucro = precoVenda - custoTotal;
     let margemLucro = (lucro / precoVenda) * 100;
-  
-    // Exibir os resultados da precificação
-    document.getElementById("resultado").innerHTML = `
+
+    let resultadoHTML = `
         <p><strong>Preço de Venda Sugerido:</strong> R$ ${precoVenda.toFixed(2)}</p>
         <p class="green"><strong>Lucro Líquido:</strong> R$ ${lucro.toFixed(2)} (${margemLucro.toFixed(2)}%)</p>
     `;
-  
-    // Cálculo do lucro na Shopee (adicionando a lógica)
-    let plataforma = "shopee"; // Plataforma fixa para Shopee
-    let impostoShopee = 0.0108;
-    let comissaoShopee = 0.20;
-    let taxaPedidoShopee = 4.00;
-  
-    let custoTotalShopee = custo + (precoVenda * impostoShopee) + (precoVenda * comissaoShopee) + taxaPedidoShopee;
-    let lucroShopee = precoVenda - custoTotalShopee;
-    let margemLucroShopee = (lucroShopee / precoVenda) * 100;
-  
-    // Exibir o lucro que você vai receber na Shopee
-    document.getElementById("lucroShopee").innerHTML = `
-        <p class="green"><strong>Lucro Bruto:</strong> R$ ${lucroShopee.toFixed(2)} (${margemLucroShopee.toFixed(2)}%)</p>
-    `;
-  }
-  
-  
+
+    document.getElementById("resultado").innerHTML = resultadoHTML;
+
+    let promocoesHTML = `<h3>Promoções Possíveis:</h3><table>
+        <thead>
+            <tr>
+                <th>Desconto (%)</th>
+                <th>Preço com Desconto (R$)</th>
+                <th>Lucro (R$)</th>
+                <th>Margem Líquida (%)</th>
+            </tr>
+        </thead>
+        <tbody>`;
+
+    for (let desconto = 5; desconto <= 50; desconto += 5) {
+        let precoComDesconto = precoVenda - (precoVenda * (desconto / 100));
+        let custoTotalDesconto = custo + (precoComDesconto * imposto) + (precoComDesconto * comissao) + taxa;
+        let lucroDesconto = precoComDesconto - custoTotalDesconto;
+        let margemDesconto = (lucroDesconto / precoComDesconto) * 100;
+
+        if (lucroDesconto > 0) {
+            promocoesHTML += `<tr>
+                <td>${desconto}%</td>
+                <td>R$ ${precoComDesconto.toFixed(2)}</td>
+                <td class="green">R$ ${lucroDesconto.toFixed(2)}</td>
+                <td class="green">${margemDesconto.toFixed(2)}%</td>
+            </tr>`;
+        }
+    }
+
+    promocoesHTML += `</tbody></table>`;
+    document.getElementById("promocoes").innerHTML = promocoesHTML;
+}
+
   
   function calcularValorFinal() {
     const custo = parseFloat(document.getElementById("custo").value);
