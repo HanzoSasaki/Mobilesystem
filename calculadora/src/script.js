@@ -1,3 +1,8 @@
+// Função utilitária para formatação de moeda
+function formatCurrency(value) {
+    return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+
 let funcionarios = JSON.parse(localStorage.getItem("funcionarios")) || [];
 funcionarios = funcionarios.map(func => ({
     ...func,
@@ -183,10 +188,10 @@ function exibirFuncionarios() {
         tbody.innerHTML += `
             <tr>
                 <td>${func.nome}</td>
-                <td>R$ ${func.salarioBase.toFixed(2)}</td>
+                <td>${formatCurrency(func.salarioBase)}</td>
                 <td>${func.faltas.reduce((acc, f) => acc + f.dias, 0)}</td>
-                <td>R$ ${calculo.descontos.toFixed(2)}</td>
-                <td>R$ ${calculo.totalLiquido.toFixed(2)}</td>
+                <td>${formatCurrency(calculo.descontos)}</td>
+                <td>${formatCurrency(calculo.totalLiquido)}</td>
                 <td>
                     <div class="acoes-cell">
                         <button class="btn" onclick="editarFuncionario(${index})">Editar</button>
@@ -251,7 +256,6 @@ function calcularINSS(salario) {
 
     // Verifica se o salário ultrapassa o teto do INSS
     if (salario > tetoINSS) {
-        // Calcula o desconto máximo aplicando todas as faixas até o teto
         let descontoMaximo = 0;
         for (const [min, max, aliquota] of faixas) {
             const base = max - min;
@@ -263,7 +267,6 @@ function calcularINSS(salario) {
     let desconto = 0;
     for (const [min, max, aliquota] of faixas) {
         if (salario > min) {
-            // Calcula a base de contribuição na faixa atual
             const baseCalculo = Math.min(salario, max) - min;
             if (baseCalculo > 0) {
                 desconto += baseCalculo * aliquota;
@@ -309,7 +312,7 @@ function gerarHolerite(index) {
     doc.text("CNPJ: 40.811.585/0001-44", 105, 28, { align: "center" });
     
     doc.setLineWidth(0.5);
-    doc.line(20, 35, 190, 35); // Linha separadora
+    doc.line(20, 35, 190, 35);
     
     doc.setFontSize(12);
     doc.setFont("helvetica", "normal");
@@ -318,18 +321,18 @@ function gerarHolerite(index) {
 
     // Tabela de Valores
     const dados = [
-        ["Salário Base", `R$ ${func.salarioBase.toFixed(2)}`],
-        ["Horas Extras", `R$ ${calculo.detalhes.valorTotalHE.toFixed(2)}`],
-        ["Bonificação", `R$ ${calculo.detalhes.bonificacao.toFixed(2)}`],
-        ["INSS", `R$ ${calculo.detalhes.inss.toFixed(2)}`],
-        ["IRRF", `R$ ${calculo.detalhes.irrf.toFixed(2)}`],
-        ["Descontos por Faltas", `R$ ${calculo.detalhes.descontosFaltas.toFixed(2)}`],
-        [{ content: "TOTAL LÍQUIDO", styles: { fontStyle: 'bold' } }, { content: `R$ ${calculo.totalLiquido.toFixed(2)}`, styles: { fontStyle: 'bold', textColor: [0, 128, 0] } }]
+        ["Salário Base", formatCurrency(func.salarioBase)],
+        ["Horas Extras", formatCurrency(calculo.detalhes.valorTotalHE)],
+        ["Bonificação", formatCurrency(calculo.detalhes.bonificacao)],
+        ["INSS", formatCurrency(calculo.detalhes.inss)],
+        ["IRRF", formatCurrency(calculo.detalhes.irrf)],
+        ["Descontos por Faltas", formatCurrency(calculo.detalhes.descontosFaltas)],
+        [{ content: "TOTAL LÍQUIDO", styles: { fontStyle: 'bold' } }, { content: formatCurrency(calculo.totalLiquido), styles: { fontStyle: 'bold', textColor: [0, 128, 0] } }]
     ];
 
     doc.autoTable({
         startY: 50,
-        head: [["Descrição", "Valor (R$)"]],
+        head: [["Descrição", "Valor"]],
         body: dados,
         theme: 'grid',
         headStyles: {
@@ -351,10 +354,10 @@ function gerarHolerite(index) {
     const finalY = doc.lastAutoTable.finalY + 15;
     doc.setFontSize(10);
     doc.text(`Eu, ${func.nome}, declaro estar ciente que:`, 20, finalY);
-    doc.text(`- Meu valor líquido é de R$ ${calculo.totalLiquido.toFixed(2)}`, 20, finalY + 5);
+    doc.text(`- Meu valor líquido é de ${formatCurrency(calculo.totalLiquido)}`, 20, finalY + 5);
     doc.text(`- Total de horas extras: ${calculo.detalhes.totalHorasExtras}h`, 20, finalY + 10);
-    doc.text(`- Valor total das horas extras: R$ ${calculo.detalhes.valorTotalHE.toFixed(2)}`, 20, finalY + 15);
-    doc.text(`- Bonificação: R$ ${calculo.detalhes.bonificacao.toFixed(2)}`, 20, finalY + 20);
+    doc.text(`- Valor total das horas extras: ${formatCurrency(calculo.detalhes.valorTotalHE)}`, 20, finalY + 15);
+    doc.text(`- Bonificação: ${formatCurrency(calculo.detalhes.bonificacao)}`, 20, finalY + 20);
 
     // Assinaturas
     const assinaturaY = finalY + 30;
@@ -365,8 +368,8 @@ function gerarHolerite(index) {
     // Rodapé informativo
     const rodapeY = 270;
     doc.setLineWidth(0.5);
-    doc.line(20, rodapeY - 10, 190, rodapeY - 10); // Linha separadora acima do rodapé
-
+    doc.line(20, rodapeY - 10, 190, rodapeY - 10);
+    
     doc.setFontSize(10);
     doc.setFont("helvetica", "italic");
     doc.text(
@@ -397,7 +400,6 @@ document.addEventListener('DOMContentLoaded', () => {
     adicionarHoraExtra('horasExtrasContainer');
     exibirFuncionarios();
 });
-
 
 function getFifthBusinessDay(year, month) {
     let count = 0;
