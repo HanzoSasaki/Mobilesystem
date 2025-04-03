@@ -4,154 +4,249 @@ const dados = {
         "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
     ],
     diasNoMes: [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
-    lucroBruto: [
-        null, 191674.33, 249460.28, 8150.30, 0, 0, 0, 0, 0, 0, 0, 0
-    ],
-    lucroLiquido: [
-        null, 44483.92, 63888.81, 2514.39, 0, 0, 0, 0, 0, 0, 0, 0
-    ],
-    custos: [
-        null, 151719.50, 149160.28, 1000, 0, 0, 0, 0, 0, 0, 0, 0
-    ]
+    lucroBruto: new Array(12).fill(null),
+    lucroLiquido: new Array(12).fill(null),
+    custos: new Array(12).fill(null)
 };
 
-// Função para formatar valores monetários
+const TSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTtvK3X3YMZzQe3M1I5lz6AkpNcdR8RomqEPefP_meogRr3LeZXELjeHajUYf4Cv_lFItd7YFf84NLf/pub?gid=1283668224&single=true&output=tsv";
+
+// Função principal para carregar dados
+async function carregarDados() {
+    try {
+        const response = await fetch(TSV_URL);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const tsv = await response.text();
+        processarTSV(tsv);
+    } catch (error) {
+        console.error('Erro ao carregar dados:', error);
+        alert('Erro ao carregar dados. Verifique o console para detalhes.');
+    }
+}
+
+// Processamento do TSV
+function processarTSV(tsv) {
+    const linhas = tsv.split('\n')
+        .map(line => line.trim())
+        .filter(line => line.length > 0);
+
+    const mesesMap = {
+        'janeiro': 0, 'fevereiro': 1, 'marco': 2,
+        'abril': 3, 'maio': 4, 'junho': 5,
+        'julho': 6, 'agosto': 7, 'setembro': 8,
+        'outubro': 9, 'novembro': 10, 'dezembro': 11
+    };
+
+    linhas.slice(1).forEach((linha, index) => {
+        try {
+            const colunas = linha.split('\t');
+            if (colunas.length < 4) {
+                console.warn(`Linha ${index + 1} ignorada: formato inválido`);
+                return;
+            }
+
+            // Normalização do nome do mês
+            const mes = colunas[0].toLowerCase()
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, "")
+                .replace(/ç/g, 'c');
+
+            const mesIndex = mesesMap[mes];
+            if (mesIndex === undefined) {
+                console.warn(`Mês desconhecido: "${colunas[0]}"`);
+                return;
+            }
+
+            // Função de conversão segura
+            const converterValor = (valor) => {
+                if (!valor || valor.trim() === '-' || valor.trim() === 'R$') return null;
+                try {
+                    return parseFloat(
+                        valor.replace(/[^0-9,]/g, '')
+                            .replace(',', '.')
+                    );
+                } catch {
+                    return null;
+                }
+            };
+
+            // Atribuição com verificação
+            dados.lucroBruto[mesIndex] = converterValor(colunas[1]);
+            dados.lucroLiquido[mesIndex] = converterValor(colunas[2]);
+            dados.custos[mesIndex] = converterValor(colunas[3]);
+
+        } catch (error) {
+            console.error(`Erro na linha ${index + 2}:`, error);
+        }
+    });
+}
+
+// Formatação monetária
 function formatarMoeda(valor) {
-    return valor && valor !== 0 ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor) : 'N/A';
+    return valor !== null && !isNaN(valor) ?
+        new Intl.NumberFormat('pt-BR', {
+            style: 'currency',
+            currency: 'BRL',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }).format(valor) : 'N/A';
 }
 
-// Função para calcular a variação percentual
+// Cálculo de variações
 function calcularVariacao(atual, anterior) {
-    if (anterior === null || anterior === 0 || atual === 0) return "N/A";
-    let variacao = ((atual - anterior) / anterior) * 100;
-    return variacao.toFixed(2) + "% " + (variacao > 0 ? "a mais" : "a menos");
+    if ([atual, anterior].some(v => v === null || v === 0 || isNaN(v))) return "N/A";
+    const variacao = ((atual - anterior) / anterior) * 100;
+    return `${variacao.toFixed(2)}% ${variacao >= 0 ? '▲' : '▼'}`;
 }
 
-// Função para calcular a variação ajustada considerando a diferença de dias no mês
 function calcularVariacaoAjustada(atual, anterior, diasAtual, diasAnterior) {
-    if (anterior === null || anterior === 0 || diasAnterior === 0 || atual === 0) return "N/A";
-    let custoDiarioAnterior = anterior / diasAnterior;
-    let custoEquivalenteAnterior = custoDiarioAnterior * diasAtual;
-    let variacaoAjustada = ((atual - custoEquivalenteAnterior) / custoEquivalenteAnterior) * 100;
-    return variacaoAjustada.toFixed(2) + "% " + (variacaoAjustada > 0 ? "a mais" : "a menos");
+    if ([atual, anterior, diasAtual, diasAnterior].some(v => v === null || v === 0 || isNaN(v))) return "N/A";
+    const equivalente = (anterior / diasAnterior) * diasAtual;
+    const variacao = ((atual - equivalente) / equivalente) * 100;
+    return `${variacao.toFixed(2)}% ${variacao >= 0 ? '▲' : '▼'}`;
 }
 
-// Função para renderizar os meses
+// Renderização dos meses
 function renderizarMeses() {
     const container = document.querySelector('.meses-container');
+    if (!container) {
+        console.error('Container de meses não encontrado!');
+        return;
+    }
+    container.innerHTML = '';
+
     dados.meses.forEach((mes, index) => {
-        if (index === 0 || dados.lucroBruto[index] === 0 || dados.lucroLiquido[index] === 0 || dados.custos[index] === 0) return; // Ignora meses sem dados carregados
-
-        const custoAtual = dados.custos[index];
-        const custoAnterior = dados.custos[index - 1];
-        const lucroAtual = dados.lucroLiquido[index];
-        const lucroAnterior = dados.lucroLiquido[index - 1];
-
-        const diasAtual = dados.diasNoMes[index];
-        const diasAnterior = dados.diasNoMes[index - 1];
-
-        const variacaoCusto = calcularVariacao(custoAtual, custoAnterior);
-        const variacaoLucro = calcularVariacao(lucroAtual, lucroAnterior);
-        const variacaoCustoAjustada = calcularVariacaoAjustada(custoAtual, custoAnterior, diasAtual, diasAnterior);
+        if (dados.lucroBruto[index] === null && dados.lucroLiquido[index] === null) return;
 
         const mesDiv = document.createElement('div');
-        mesDiv.className = 'mes';
+        mesDiv.className = 'mes-card';
         mesDiv.innerHTML = `
-            <h2>${mes}</h2>
-            <div class="valores">
-                <p><strong>Lucro Bruto:</strong> <span class="valor">${formatarMoeda(dados.lucroBruto[index])}</span></p>
-                <p><strong>Lucro Líquido:</strong> <span class="valor">${formatarMoeda(dados.lucroLiquido[index])}</span></p>
-                <p><strong>Custo Total:</strong> <span class="valor">${formatarMoeda(custoAtual)}</span></p>
-           
-                <p><strong>Variação Custo Ajustada:</strong> <span class="variacao">${variacaoCustoAjustada}</span></p>
-                <p><strong>Variação Margem Líquida:</strong> <span class="variacao">${variacaoLucro}</span></p>
+            <h3>${mes}</h3>
+            <div class="detalhes-mes">
+                <p>💰 Lucro Bruto: ${formatarMoeda(dados.lucroBruto[index])}</p>
+                <p>💵 Lucro Líquido: ${formatarMoeda(dados.lucroLiquido[index])}</p>
+                <p>📉 Custos: ${formatarMoeda(dados.custos[index])}</p>
+                <br>
+                <div class="variacoes">
+                <h3>Comparação com o mês anterior:</h3>
+                    <p>📈 Variação margem: ${calcularVariacao(dados.lucroLiquido[index], dados.lucroLiquido[index-1])}</p>
+                    <p>📅 Variação Custos: ${calcularVariacaoAjustada(
+                        dados.custos[index],
+                        dados.custos[index-1],
+                        dados.diasNoMes[index],
+                        dados.diasNoMes[index-1]
+                    )}</p>
+                </div>
             </div>
         `;
         container.appendChild(mesDiv);
     });
 }
 
-// Função para calcular e exibir os totais
+// Cálculo de totais
 function calcularTotais() {
-    const totalCustos = dados.custos.reduce((acc, custo) => custo ? acc + custo : acc, 0);
-    const totalLucroBruto = dados.lucroBruto.reduce((acc, lucro) => lucro ? acc + lucro : acc, 0);
-    const totalLucroLiquido = dados.lucroLiquido.reduce((acc, lucro) => lucro ? acc + lucro : acc, 0);
-    const brutoReal = totalLucroBruto - totalLucroLiquido;
+    const total = (arr) => arr.reduce((acc, val) => (val !== null ? acc + val : acc), 0);
+    
+    const atualizarElemento = (id, valor) => {
+        const elemento = document.getElementById(id);
+        if (elemento) elemento.textContent = formatarMoeda(valor);
+    };
 
-    document.getElementById('total-custos').textContent = formatarMoeda(totalCustos);
-    document.getElementById('total-lucro-bruto').textContent = formatarMoeda(totalLucroBruto);
-    document.getElementById('total-lucro-liquido').textContent = formatarMoeda(totalLucroLiquido);
-    document.getElementById('bruto-real').textContent = formatarMoeda(brutoReal);
+    const totalLucroBruto = total(dados.lucroBruto);
+    const totalLucroLiquido = total(dados.lucroLiquido);
+    const totalCustos = total(dados.custos);
+    
+    // Cálculo: total custos - total lucro bruto
+    const brutoReal =totalLucroBruto - totalCustos;
+
+    atualizarElemento('total-lucro-bruto', totalLucroBruto);
+    atualizarElemento('total-lucro-liquido', totalLucroLiquido);
+    atualizarElemento('total-custos', totalCustos);
+    atualizarElemento('bruto-real', brutoReal);
 }
 
-function renderizarGraficos() {
-    const canvas = document.getElementById("grafico-comparacao");
 
+// Renderização do gráfico
+// Renderização do gráfico
+function renderizarGraficos() {
+    const canvas = document.getElementById('grafico-financeiro');
     if (!canvas) {
-        console.error("Elemento canvas não encontrado!");
+        console.error('Elemento canvas não encontrado!');
         return;
     }
 
-    // Garante que o gráfico antigo seja destruído antes de criar um novo
-    if (canvas.chart) {
-        canvas.chart.destroy();
+    // Cria arrays filtrados para exibir somente os meses com dados (meses que aparecerão nos cards)
+    const labels = [];
+    const filteredLucroBruto = [];
+    const filteredLucroLiquido = [];
+    const filteredCustos = [];
+
+    dados.meses.forEach((mes, index) => {
+        // Considera o mês somente se houver lucroBruto ou lucroLiquido (semelhante à renderização dos cards)
+        if (dados.lucroBruto[index] === null && dados.lucroLiquido[index] === null) return;
+        labels.push(mes);
+        filteredLucroBruto.push(dados.lucroBruto[index]);
+        filteredLucroLiquido.push(dados.lucroLiquido[index]);
+        filteredCustos.push(dados.custos[index]);
+    });
+
+    // Destrói gráfico anterior (se existir) para evitar duplicação
+    if (window.graficoAtual) {
+        window.graficoAtual.destroy();
     }
 
-    const ctx = canvas.getContext("2d");
-    canvas.chart = new Chart(ctx, {
-        type: "bar",
+    const ctx = canvas.getContext('2d');
+    window.graficoAtual = new Chart(ctx, {
+        type: 'bar',
         data: {
-            labels: dados.meses,
+            labels: labels,
             datasets: [
                 {
-                    label: "Custos",
-                    data: dados.custos,
-                    backgroundColor: "rgba(255, 99, 132, 0.8)",
+                    label: 'Lucro Bruto',
+                    data: filteredLucroBruto,
+                    backgroundColor: 'rgba(54, 162, 235, 0.8)',
+                    borderWidth: 1
                 },
                 {
-                    label: "Lucro Bruto",
-                    data: dados.lucroBruto,
-                    backgroundColor: "rgba(54, 162, 235, 0.8)",
+                    label: 'Lucro Líquido',
+                    data: filteredLucroLiquido,
+                    backgroundColor: 'rgba(75, 192, 192, 0.8)',
+                    borderWidth: 1
                 },
                 {
-                    label: "Lucro Líquido",
-                    data: dados.lucroLiquido,
-                    backgroundColor: "rgba(75, 192, 192, 0.8)",
-                },
-            ],
+                    label: 'Custos',
+                    data: filteredCustos,
+                    backgroundColor: 'rgba(255, 99, 132, 0.8)',
+                    borderWidth: 1
+                }
+            ]
         },
         options: {
             responsive: true,
-            maintainAspectRatio: true, // Mantém proporção correta em qualquer tela
+            maintainAspectRatio: false,
             scales: {
                 y: {
                     beginAtZero: true,
-                    grid: {
-                        color: "rgba(200, 200, 200, 0.3)",
-                    },
-                },
-                x: {
-                    grid: {
-                        color: "rgba(200, 200, 200, 0.3)",
-                    },
-                },
+                    ticks: {
+                        callback: (value) => 'R$ ' + value.toLocaleString('pt-BR')
+                    }
+                }
             },
             plugins: {
-                legend: {
-                    labels: {
-                        color: "#333",
-                        font: {
-                            size: 14,
-                        },
-                    },
-                },
-            },
-        },
+                tooltip: {
+                    callbacks: {
+                        label: (context) => {
+                            return `${context.dataset.label}: ${formatarMoeda(context.raw)}`;
+                        }
+                    }
+                }
+            }
+        }
     });
 }
 
 // Inicialização
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    await carregarDados();
     renderizarMeses();
     calcularTotais();
     renderizarGraficos();
