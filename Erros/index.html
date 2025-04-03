@@ -7,30 +7,18 @@
   <title>Relatório de Erros</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-  <style>
-    /* Estilos temporários - serão movidos para o CSS */
-    .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; 
-      width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4); }
-    .modal-content { background: white; margin: 2rem auto; padding: 20px; 
-      border-radius: 8px; max-width: 600px; position: relative; }
-    .close { color: #aaa; float: right; font-size: 28px; cursor: pointer; }
-    .close:hover { color: #555; }
-    #previewPDF { width: 100%; height: 80vh; border: none; margin-top: 1rem; }
-    .filter-group { margin-bottom: 1rem; display: flex; gap: 10px; align-items: center; }
-    .button { padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
-    .button:hover { background: #0056b3; }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
- <header>
-        <h1>Análise Comparativa</h1>
+    <header>
+        <h1>Análise de Erros</h1>
         <a href="../index.html" style="position: absolute; left: 20px; top: 50%; transform: translateY(-50%);">
             <img src="https://cdn-icons-png.flaticon.com/512/25/25694.png" style="width: 20px; filter: invert(1);" alt="Ícone de Home">
         </a>
     </header>
 
-  <main class="content-area">
+  <main class="container">
     <section class="filters-section">
       <div class="filter-group">
         <label for="dataRange">Período:</label>
@@ -46,8 +34,8 @@
     </section>
 
     <section class="data-section">
-      <div class="table-wrapper">
-        <table id="dataTable" class="data-table">
+      <div class="table-container">
+        <table id="dataTable">
           <thead>
             <tr>
               <th scope="col">ID</th>
@@ -65,17 +53,22 @@
         </table>
       </div>
 
-      <div class="chart-wrapper">
-        <canvas id="myChart"></canvas>
+      <div class="chart-card">
+        <h2 class="chart-title">Distribuição de Erros</h2>
+        <div class="chart-container">
+          <canvas id="myChart"></canvas>
+        </div>
       </div>
     </section>
   </main>
 
   <!-- Modal Configuração PDF -->
-  <div id="modalPDF" class="modal" aria-hidden="true">
+  <div id="modalPDF" class="modal">
     <div class="modal-content">
-      <span class="close" onclick="fecharModalPDF()">&times;</span>
-      <h2 class="modal-title">Configurar Relatório</h2>
+      <div class="modal-header">
+        <h2 class="modal-title">Configurar Relatório</h2>
+        <span class="close" onclick="fecharModalPDF()">&times;</span>
+      </div>
       <div class="modal-body">
         <div class="form-group">
           <label for="filtroLoja">Loja:</label>
@@ -85,15 +78,7 @@
             <option value="Fastshop">Fastshop</option>
           </select>
         </div>
-        <!-- Modal de Pré-visualização -->
-<div id="modalPreview" class="modal">
-    <div class="modal-content">
-      <span class="close" onclick="fecharPreviewPDF()">&times;</span>
-      <h2>Pré-visualização do Relatório</h2>
-      <iframe id="previewPDF"></iframe>
-      <button onclick="salvarPDF()" class="btn-salvar">Salvar PDF</button>
-    </div>
-  </div>
+
         <div class="form-group">
           <label for="dataPDF">Período:</label>
           <input type="text" id="dataPDF" class="date-input" placeholder="Selecione datas" readonly>
@@ -107,19 +92,23 @@
   </div>
 
   <!-- Modal Pré-visualização PDF -->
-  <div id="modalPreview" class="modal" aria-hidden="true">
+  <div id="modalPreview" class="modal">
     <div class="modal-content wide-modal">
-      <span class="close" onclick="fecharPreviewPDF()">&times;</span>
-      <h2 class="modal-title">Pré-visualização</h2>
-      <iframe id="previewPDF"></iframe>
-      <div class="modal-actions">
-        <button onclick="salvarPDF()" class="button save-button">Salvar PDF</button>
-        <button onclick="fecharPreviewPDF()" class="button cancel-button">Fechar</button>
+      <div class="modal-header">
+        <h2 class="modal-title">Pré-visualização</h2>
+        <span class="close" onclick="fecharPreviewPDF()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <iframe id="previewPDF" class="pdf-preview"></iframe>
+        <div class="modal-actions">
+          <button onclick="salvarPDF()" class="button save-button">Salvar PDF</button>
+          <button onclick="fecharPreviewPDF()" class="button cancel-button">Fechar</button>
+        </div>
       </div>
     </div>
   </div>
 
-  <footer class="main-footer">
+  <footer>
     <div class="footer-content">
       <span class="copyright">&copy; WolfSoftware.in - Todos os direitos reservados</span>
       <span class="credits">CEO e Engenheiro de Desenvolvimento - Erick Barbosa</span>
