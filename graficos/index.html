@@ -1,90 +1,124 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Gráfico</title>
+  <title>Dashboard Financeiro Completo</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  <!-- É interessante agrupar estilos customizados no CSS, evitando estilos inline -->
   <style>
-    /* Exemplo de estilo para o link do header, caso prefira evitar inline */
-    header .home-link {
-      position: absolute;
-      left: 20px;
-      top: 50%;
-      transform: translateY(-50%);
-    }
-    header .home-link img {
-      width: 20px;
-      filter: invert(1);
-    }
+   
   </style>
 </head>
+
 <body>
-  <!-- Header Fixo -->
- 
+  <nav class="nav-container">
+    <div class="nav-links">
+      <a href="#comparativos" class="nav-link">Comparativos</a>
+      <a href="#margens" class="nav-link">Margens</a>
+      <a href="#desempenho" class="nav-link">Desempenho</a>
+    </div>
+  </nav>
 
-  <!-- Container Principal -->
-  <div class="container">
-    <!-- Sidebar com Itens -->
-    <aside class="sidebar">
-      <ul>
-        <li class="submenu">
-          <a href="#" class="submenu-toggle">Global</a>
-          <ul class="submenu-content">
-            <li><a href="#" data-item="item1">Visão Geral 🔍</a></li>
-            <li><a href="#" data-item="item2">Avaliação de custos 💲</a></li>
-          </ul>
-        </li>
-
-        <li class="submenu">
-          <a href="#" class="submenu-toggle">Analise Principal (1,08%)</a>
-          <ul class="submenu-content">
-            <li><a href="#" data-item="item16">Avaliação comparativa</a></li>
-            <li><a href="#" data-item="item17">Avaliação Fevereiro 📆</a></li>
-            <li><a href="#" data-item="item18">Avaliação Março 📆</a></li>
-          </ul>
-        </li>
-
-        
-        <li class="submenu">
-          <a href="#" class="submenu-toggle">Analises em nota cheia (10%)</a>
-          <ul class="submenu-content">
-            <li><a href="#" data-item="item3">Avaliação comparativa</a></li>
-            <li><a href="#" data-item="item4">Avaliação Fevereiro 📆</a></li>
-            <li><a href="#" data-item="item5">Avaliação Março 📆</a></li>
-          </ul>
-        </li>
-        
-      </ul>
-    </aside>
-
-    <!-- Área dos Cards -->
-    <main class="content">
-      <div id="graph-cards" class="card-grid">
-        <!-- Os cards serão carregados aqui via JavaScript -->
+  <div class="dashboard-container">
+    <!-- Seção de Comparativos -->
+    <section class="chart-section" id="comparativos">
+      <div class="section-header">
+        <h2 class="section-title">Comparativo entre Meses</h2>
       </div>
-    </main>
+      <div class="iframe-container">
+        <iframe class="responsive-iframe"
+          src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTtvK3X3YMZzQe3M1I5lz6AkpNcdR8RomqEPefP_meogRr3LeZXELjeHajUYf4Cv_lFItd7YFf84NLf/pubchart?oid=3462284&amp;format=interactive"
+          loading="lazy"></iframe>
+      </div>
+      <div class="section-controls">
+        <button class="control-btn" onclick="openModal(this)">
+          <i class="fas fa-expand"></i> Expandir
+        </button>
+      </div>
+    </section>
+
+    <!-- Seção de Margens -->
+    <section class="chart-section" id="margens">
+      <div class="section-header">
+        <h2 class="section-title">Margens e Percentuais</h2>
+      </div>
+      <div class="iframe-container">
+        <iframe class="responsive-iframe"
+          src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTtvK3X3YMZzQe3M1I5lz6AkpNcdR8RomqEPefP_meogRr3LeZXELjeHajUYf4Cv_lFItd7YFf84NLf/pubchart?oid=1849107478&amp;format=interactive"
+          loading="lazy"></iframe>
+      </div>
+      <div class="section-controls">
+        <button class="control-btn" onclick="openModal(this)">
+          <i class="fas fa-expand"></i> Expandir
+        </button>
+      </div>
+    </section>
+
+    <!-- Seção de Totais -->
+    <section class="chart-section">
+      <div class="section-header">
+        <h2 class="section-title">Totais em Margem</h2>
+      </div>
+      <div class="iframe-container">
+        <iframe class="responsive-iframe"
+          src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTtvK3X3YMZzQe3M1I5lz6AkpNcdR8RomqEPefP_meogRr3LeZXELjeHajUYf4Cv_lFItd7YFf84NLf/pubchart?oid=206366972&amp;format=interactive"
+          loading="lazy"></iframe>
+      </div>
+      <div class="section-controls">
+        <button class="control-btn" onclick="openModal(this)">
+          <i class="fas fa-expand"></i> Expandir
+        </button>
+      </div>
+    </section>
+
+    <!-- Seção de Percentuais -->
+    <section class="chart-section">
+      <div class="section-header">
+        <h2 class="section-title">Margem Percentual</h2>
+      </div>
+      <div class="iframe-container">
+        <iframe class="responsive-iframe"
+          src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTtvK3X3YMZzQe3M1I5lz6AkpNcdR8RomqEPefP_meogRr3LeZXELjeHajUYf4Cv_lFItd7YFf84NLf/pubchart?oid=1868001360&amp;format=interactive"
+          loading="lazy"></iframe>
+      </div>
+      <div class="section-controls">
+        <button class="control-btn" onclick="openModal(this)">
+          <i class="fas fa-expand"></i> Expandir
+        </button>
+      </div>
+    </section>
+
+    <!-- Seção de Desempenho -->
+    <section class="chart-section" id="desempenho">
+      <div class="section-header">
+        <h2 class="section-title">Desempenho Global</h2>
+      </div>
+      <div class="iframe-container">
+        <iframe class="responsive-iframe"
+          src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTtvK3X3YMZzQe3M1I5lz6AkpNcdR8RomqEPefP_meogRr3LeZXELjeHajUYf4Cv_lFItd7YFf84NLf/pubchart?oid=1624847692&amp;format=interactive"
+          loading="lazy"></iframe>
+      </div>
+      <div class="section-controls">
+        <button class="control-btn" onclick="openModal(this)">
+          <i class="fas fa-expand"></i> Expandir
+        </button>
+      </div>
+    </section>
   </div>
 
-  <!-- Modal para exibir o gráfico em tela cheia -->
-  <div id="graph-modal" class="modal">
+  <!-- Modal -->
+  <div class="modal" id="chartModal">
     <div class="modal-content">
-      <span class="close">&times;</span>
-      <div class="graph-info">
-        <h1 id="graph-title">Título do Gráfico</h1>
-        <p id="graph-description">Descrição do gráfico.</p>
-      </div>
-      <div class="graph-display">
-        <iframe id="graph-iframe" src="" frameborder="0"></iframe>
-      </div>
+      <span class="close-modal" onclick="closeModal()">×</span>
+      <iframe id="modalIframe" class="responsive-iframe"></iframe>
     </div>
   </div>
 
-  <!-- Footer Fixo -->
- 
+  <script src="script.js">  </script>
+    
 
-  <!-- JavaScript -->
-  <script src="script.js"></script>
 </body>
+
 </html>
