@@ -41,75 +41,84 @@
 
         /* Ajustando o gráfico para ficar dentro do container */
         .grafico-container {
-    background:  #fff;
-    border-radius: var(--radius, 12px);
-    padding: 1rem;
-    box-shadow: var(--shadow, 0px 4px 6px rgba(0, 0, 0, 0.1));
-    margin: 2rem auto 0;
-    width: 92%; /* Margem lateral automática */
-    max-width: 800px;
-    height: 400px; /* Altura padrão */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    position: relative;
-    
-    /* Torna o elemento responsivo */
-    aspect-ratio: 16/9; /* Proporção inicial (ajuste conforme necessário) */
-    height: auto; /* Sobrescreve a altura fixa quando aspect-ratio está ativo */
-}
+            background: #fff;
+            border-radius: var(--radius, 12px);
+            padding: 1rem;
+            box-shadow: var(--shadow, 0px 4px 6px rgba(0, 0, 0, 0.1));
+            margin: 2rem auto 0;
+            width: 92%;
+            /* Margem lateral automática */
+            max-width: 800px;
+            height: 400px;
+            /* Altura padrão */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
 
-.grafico-container canvas {
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: contain; /* Mantém a proporção do gráfico */
-}
+            /* Torna o elemento responsivo */
+            aspect-ratio: 16/9;
+            /* Proporção inicial (ajuste conforme necessário) */
+            height: auto;
+            /* Sobrescreve a altura fixa quando aspect-ratio está ativo */
+        }
 
-/* Media Queries para ajustes específicos */
-@media (max-width: 1200px) {
-    .grafico-container {
-        aspect-ratio: 2/1; /* Proporção mais larga para telas médias */
-    }
-}
+        .grafico-container canvas {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: contain;
+            /* Mantém a proporção do gráfico */
+        }
 
-@media (max-width: 768px) {
-    .grafico-container {
-        aspect-ratio: unset; /* Remove aspect-ratio */
-        height: 60vh; /* Usa altura da viewport */
-        min-height: 300px; /* Altura mínima garantida */
-        width: 95%; /* Aproveita melhor o espaço */
-        padding: 0.5rem; /* Reduz padding */
-    }
-}
+        /* Media Queries para ajustes específicos */
+        @media (max-width: 1200px) {
+            .grafico-container {
+                aspect-ratio: 2/1;
+                /* Proporção mais larga para telas médias */
+            }
+        }
 
-@media (max-width: 480px) {
-    .grafico-container {
-        height: 50vh; /* Altura menor para telas pequenas */
-        min-height: 250px;
-        margin-top: 1rem; /* Reduz margem superior */
-    }
-}
+        @media (max-width: 768px) {
+            .grafico-container {
+                aspect-ratio: unset;
+                /* Remove aspect-ratio */
+                height: 60vh;
+                /* Usa altura da viewport */
+                min-height: 300px;
+                /* Altura mínima garantida */
+                width: 95%;
+                /* Aproveita melhor o espaço */
+                padding: 0.5rem;
+                /* Reduz padding */
+            }
+        }
 
+        @media (max-width: 480px) {
+            .grafico-container {
+                height: 50vh;
+                /* Altura menor para telas pequenas */
+                min-height: 250px;
+                margin-top: 1rem;
+                /* Reduz margem superior */
+            }
+        }
     </style>
 </head>
 
 <body>
     <!-- Header fixo no topo -->
-    <header>
-        <h1>Análise Comparativa</h1>
-        <a href="../index.html" style="position: absolute; left: 20px; top: 50%; transform: translateY(-50%);">
-            <img src="https://cdn-icons-png.flaticon.com/512/25/25694.png" style="width: 20px; filter: invert(1);" alt="Ícone de Home">
-        </a>
-    </header>
-    
+
+
     <div class="alerta" id="alerta">
         <button onclick="fecharAlerta()">&#10006;</button>
         <br>
-        Os dados são atualizados de 15 em 15 dias para precisão de dados, pois é necessário uma quantidade relevante de informação para efetuar os cálculos.<br>
-        Todo dia 1 do mês posterior terá o fechamento do mês anterior, dando o valor total, e na metade desse mês haverá informações base para comparações entre custos.
+        Os dados são atualizados de 15 em 15 dias para precisão de dados, pois é necessário uma quantidade relevante de
+        informação para efetuar os cálculos.<br>
+        Todo dia 1 do mês posterior terá o fechamento do mês anterior, dando o valor total, e na metade desse mês haverá
+        informações base para comparações entre custos.
     </div>
-    
+
     <!-- Painel de meses e valores -->
     <main>
         <div class="meses-container">
@@ -139,15 +148,10 @@
 
         <!-- Área para gráficos -->
         <div class="grafico-container">
-         <canvas id="grafico-financeiro" width="400" height="300"></canvas>
-          
+            <canvas id="grafico-financeiro" width="400" height="300"></canvas>
+
         </div>
     </main>
-
-    <footer>
-        <span class="footer-rights">Todos os direitos reservados</span> - WolfSoftware.in  |
-        <span class="footer-ceo">CEO e Engenheiro de Desenvolvimento - Erick Barbosa</span>
-    </footer>
 
     <script>
         function mostrarAlerta() {
@@ -158,7 +162,7 @@
             document.getElementById("alerta").style.display = "none";
         }
 
-        window.onload = function() {
+        window.onload = function () {
             setTimeout(mostrarAlerta, 1000); // Mostra o alerta após 1 segundo
         };
     </script>

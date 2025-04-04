@@ -95,14 +95,14 @@ function formatarMoeda(valor) {
 function calcularVariacao(atual, anterior) {
     if ([atual, anterior].some(v => v === null || v === 0 || isNaN(v))) return "N/A";
     const variacao = ((atual - anterior) / anterior) * 100;
-    return `${variacao.toFixed(2)}% ${variacao >= 0 ? '▲' : '▼'}`;
+    return `${variacao.toFixed(2)}% ${variacao >= 0 ? '' : ''}`;
 }
 
 function calcularVariacaoAjustada(atual, anterior, diasAtual, diasAnterior) {
     if ([atual, anterior, diasAtual, diasAnterior].some(v => v === null || v === 0 || isNaN(v))) return "N/A";
     const equivalente = (anterior / diasAnterior) * diasAtual;
     const variacao = ((atual - equivalente) / equivalente) * 100;
-    return `${variacao.toFixed(2)}% ${variacao >= 0 ? '▲' : '▼'}`;
+    return `${variacao.toFixed(2)}% ${variacao >= 0 ? '' : ''}`;
 }
 
 // Renderização dos meses

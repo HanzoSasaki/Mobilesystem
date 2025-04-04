@@ -1,201 +1,176 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FAST SHOP B.I</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        .aviso {
-            background-color: #ffcc00;
-            color: #333;
-            text-align: center;
-            padding: 10px;
-            font-weight: bold;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 1000;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .fechar-aviso {
-            background-color: red;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            margin-left: 15px;
-            font-size: 14px;
-            border-radius: 3px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAST SHOP B.I - ERP</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-    <!-- Modal de Senha -->
-    <div id="password-modal" style="
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0, 0, 0, 0.8); display: flex; justify-content: center;
-        align-items: center; z-index: 9999;">
-        <div style="background: white; padding: 20px; text-align: center;
-                    box-shadow: 0px 0px 10px rgba(0,0,0,0.3); border-radius: 5px;">
-            <h2>Digite a senha</h2>
-            <input type="password" id="password-input" placeholder="Senha"
-                style="padding: 10px; width: 100%; margin-top: 10px;">
-            <button onclick="verificarSenha()" style="margin-top: 10px; padding: 10px; width: 100%;
-                           background-color: #007BFF; color: white; border: none; cursor: pointer;">
-                Acessar
-            </button>
-            <p id="error-message" style="color: red; margin-top: 10px;"></p>
-        </div>
+  <!-- Modal de Senha -->
+  <div id="password-modal">
+    <div class="modal-content">
+      <h2>Digite a senha</h2>
+      <input type="password" id="password-input" placeholder="Senha">
+      <button onclick="verificarSenha()">Acessar</button>
+      <p id="error-message"></p>
     </div>
+  </div>
 
-
-    <!-- git add .  
-         git commit -m "Atualizando site"
-         git push origin main -->
-
-
-    <div class="aviso" id="aviso">
-        ⚠️ ATENÇÃO: A partir de 25/03/2025, o imposto foi atualizado para 10% em nota cheia e 1,8% em meia nota. O
-        sistema está em atualização de precificação. Contate o desenvolvedor para dúvidas.
-        <button class="fechar-aviso" onclick="fecharAviso()">Fechar</button>
+  <!-- Modal de Usuários Permitidos -->
+  <div class="modal" id="users-modal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="fecharModalUsers()">&times;</button>
+      <h2>Usuários Permitidos</h2>
+      <ul class="modal-list">
+        <li>João Silva</li>
+        <li>Maria Oliveira</li>
+        <li>Carlos Souza</li>
+      </ul>
     </div>
+  </div>
 
-    <!-- Loader de carregamento -->
-    <div id="loader" class="loader">
-        <div class="spinner"></div>
+  <!-- Aviso -->
+  <div class="aviso" id="aviso">
+    ⚠️ ATENÇÃO: A partir de 25/03/2025, o imposto foi atualizado para 10% em nota cheia e 1,8% em meia nota.
+    Contate o desenvolvedor para dúvidas.
+    <button class="fechar-aviso" onclick="fecharAviso()" style="color: red;">Fechar</button>
+  </div>
+
+  <!-- Header -->
+  <header class="app-header">
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+  
+    <div class="header-logo">
+      <img src="img/1.jpg" alt="Logo" class="logo">
     </div>
+  
+    <div class="header-title">
+        <h3>ERP - Moras & Barbosa</h3>
+      </div>
+      
+  </header>
+  
 
-    <div class="header">
-        FAST SHOP B.I
-    </div>
+  <!-- Container principal -->
+  <div class="container">
+    <!-- Sidebar (Menu) -->
+    <nav class="sidebar">
+      <div class="nav-section">
+        <span class="nav-title">Menu</span>
+        <a href="analisedia/meianota/meia.html" class="nav-item">
+          <i class="fas fa-calendar-day"></i>
+          <span>Análise Diária</span>
+        </a>
+        <a href="Folha/index.html" class="nav-item">
+          <i class="fas fa-file-invoice-dollar"></i>
+          <span>Folha de Pagamento</span>
+        </a>
+        <a href="Erros/index.html" class="nav-item">
+          <i class="fas fa-exclamation-triangle"></i>
+          <span>Taxa de Erros</span>
+        </a>
+        <a href="analisecusto/index.html" class="nav-item">
+          <i class="fas fa-search"></i>
+          <span>Análise Comparativa</span>
+        </a>
+        <a href="downloadplan/index.html" class="nav-item">
+          <i class="fas fa-folder-open"></i>
+          <span>Planilhas e Relatórios</span>
+        </a>
+        <a href="graficos/index.html" class="nav-item">
+          <i class="fas fa-chart-bar"></i>
+          <span>Relatórios Gráficos</span>
+        </a>
+        <a href="Financeiro/index.html" class="nav-item">
+          <i class="fas fa-balance-scale"></i>
+          <span>Financeiro</span>
+        </a>
+        <a href="FastAnalise/index.html" class="nav-item">
+          <i class="fas fa-flask"></i>
+          <span>Fast Análise</span>
+        </a>
+        <a href="Custo/index.html" class="nav-item">
+          <i class="fas fa-store"></i>
+          <span>Calculadora ML</span>
+        </a>
+        <a href="banco de dados/estoque-sistema/index.html" class="nav-item">
+          <i class="fas fa-database"></i>
+          <span>Estoque Digital</span>
+        </a>
+      </div>
+    </nav>
 
-    <div class="container">
-        <!-- Menu com 4 itens -->
-        <div class="menu">
-            <!-- Itens do menu com ícones -->
-            <a href="analisedia/meianota/meia.html" class="menu-item">
-                <i class="fas fa-calendar-day"></i>
-                <span>Analise Diaria</span>
-            </a>
-            <a href="Folha/index.html" class="menu-item">
-                <i class="fas fa-file-invoice-dollar"></i>
-                <span>Gestão de Folha de Pagamento</span>
-            </a>
+    <!-- Área de Conteúdo -->
+    <main class="content-area">
+      <iframe id="contentFrame" name="contentFrame" src="" frameborder="0"></iframe>
+    </main>
+  </div>
 
-            <a href="Erros/index.html" class="menu-item">
-                <i class="fas fa-exclamation-triangle"></i> 
-                <span>Análise de Taxa de Erros</span>
-            </a>
-            <a href="analisecusto/index.html" class="menu-item">
-                <i class="fas fa-search"></i>
-                <span> Análise Comparativa</span>
-            </a>
-            <a href="downloadplan/index.html" class="menu-item">
-                <i class="fas fa-folder-open"></i>
-                <span>Gerenciamento de planilhas e relatorios</span>
-            </a>
-            <a href="graficos/index.html" class="menu-item">
-                <i class="fas fa-chart-bar"></i>
-                <span>Relatórios Gráficos</span>
-            </a>
+  <!-- Script Principal -->
+  <script>
+    function toggleMenu() {
+      const sidebar = document.querySelector('.sidebar');
+      sidebar.classList.toggle('open');
+    }
 
-            <a href="Financeiro/index.html" class="menu-item">
-                <i class="fas fa-balance-scale"></i>
-                <span>Financeiro</span>
-            </a>
+    document.querySelectorAll('.nav-item').forEach(function(item) {
+      item.addEventListener('click', function(e) {
+        e.preventDefault();
+        const url = this.getAttribute('href');
+        document.getElementById('contentFrame').src = url;
+        const sidebar = document.querySelector('.sidebar');
+        sidebar.classList.remove('open'); // fecha menu após clique no mobile
+      });
+    });
 
-            <a href="FastAnalise/index.html" class="menu-item">
-                <i class="fas fa-flask"></i>
-                <span>Fast analise</span>
-            </a>
+    const senhaCorreta = "246851";
+    const tempoBloqueio = 2 * 60 * 60 * 1000;
 
-            <a href="Custo/index.html" class="menu-item">
-                <i class="fas fa-store"></i>
-                <span>Calculadora mercado livre </span>
-            </a>
-            <a href="banco de dados/estoque-sistema/index.html" class="menu-item">
-                <i class="fas fa-database"></i>
-                <span>Estoque Digital</span>
-            </a>
-            <br>
-            <br>
+    document.addEventListener("DOMContentLoaded", function () {
+      let ultimaVerificacao = localStorage.getItem("ultimaVerificacao");
+      if (ultimaVerificacao && (Date.now() - ultimaVerificacao < tempoBloqueio)) {
+        document.getElementById("password-modal").style.display = "none";
+      } else {
+        document.getElementById("password-modal").style.display = "flex";
+      }
 
-            <script>
-                document.getElementById("previsao-link").addEventListener("click", function (event) {
-                    event.preventDefault(); // Evita que o link seja seguido
-                    alert("Em manutenção");
-                });
-            </script>
-
-        </div>
-    </div>
-
-    <footer>
-        <span class="footer-rights">Todos os direitos reservados</span> - WolfSoftware.in |
-        <span class="footer-ceo">CEO e Engenheiro de Desenvolvimento - Erick Barbosa</span>
-    </footer>
-
-    <script src="script.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
-    <script>
-        const senhaCorreta = "246851";  // Defina a senha correta
-        const tempoBloqueio = 2 * 60 * 60 * 1000; // 2 horas em milissegundos
-
-        window.onload = function () {
-            let ultimaVerificacao = localStorage.getItem("ultimaVerificacao");
-
-            if (ultimaVerificacao && (Date.now() - ultimaVerificacao < tempoBloqueio)) {
-                // Se a senha foi verificada há menos de 2 horas, não mostra o modal
-                document.getElementById("password-modal").style.display = "none";
-            } else {
-                // Mostra o modal se o tempo de 2 horas tiver passado
-                document.getElementById("password-modal").style.display = "block";
-            }
-        };
-
-        function verificarSenha() {
-            let senhaDigitada = document.getElementById("password-input").value;
-            let errorMsg = document.getElementById("error-message");
-
-            if (senhaDigitada === senhaCorreta) {
-                localStorage.setItem("ultimaVerificacao", Date.now()); // Salva o horário da verificação
-                document.getElementById("password-modal").style.display = "none"; // Oculta o modal
-            } else {
-                errorMsg.innerText = "Senha incorreta! Tente novamente.";
-            }
+      document.getElementById("password-input").addEventListener("keyup", function (event) {
+        if (event.key === "Enter") {
+          verificarSenha();
         }
+      });
+    });
 
-    </script>
+    function verificarSenha() {
+      let senhaDigitada = document.getElementById("password-input").value;
+      let errorMsg = document.getElementById("error-message");
+      if (senhaDigitada === senhaCorreta) {
+        localStorage.setItem("ultimaVerificacao", Date.now());
+        document.getElementById("password-modal").style.display = "none";
+      } else {
+        errorMsg.textContent = "Senha incorreta! Tente novamente.";
+      }
+    }
 
+    function fecharAviso() {
+      document.getElementById("aviso").style.display = "none";
+    }
 
-    <script>
-        document.getElementById("previsao-link").addEventListener("click", function (event) {
-            event.preventDefault(); // Evita que o link seja seguido
-            alert("Em manutenção");
-        });
-    </script>
+    function abrirModalUsers() {
+      document.getElementById("users-modal").style.display = "flex";
+    }
 
-    </div>
-    </div>
+    function fecharModalUsers() {
+      document.getElementById("users-modal").style.display = "none";
+    }
 
-    <footer>
-        <span class="footer-rights">Todos os direitos reservados</span> - WolfSoftware.in |
-        <span class="footer-ceo">CEO e Engenheiro de Desenvolvimento - Erick Barbosa</span>
-    </footer>
-
-    <script>
-        function fecharAviso() {
-            document.getElementById("aviso").style.display = "none";
-        }
-    </script>
+    function abrirConfig() {
+      alert("Abrindo configurações...");
+    }
+  </script>
 
 </body>
-
 </html>
