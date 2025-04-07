@@ -226,10 +226,10 @@ function calcularSalario(func) {
 function calcularINSS(salario) {
     const tetoINSS = 908.85;
     const faixas = [
-        { min: 0, max: 1412.00, aliquota: 0.075 },
-        { min: 1412.01, max: 2666.68, aliquota: 0.09 },
-        { min: 2666.69, max: 4000.03, aliquota: 0.12 },
-        { min: 4000.04, max: 7786.02, aliquota: 0.14 }
+        { min: 0,        max: 1518.00,  aliquota: 0.075 },
+        { min: 1518.01,  max: 2793.88,  aliquota: 0.09 },
+        { min: 2793.89,  max: 4190.84,  aliquota: 0.12 },
+        { min: 4190.85,  max: 8157.41,  aliquota: 0.14 }
     ];
 
     let desconto = 0;
@@ -257,8 +257,6 @@ function calcularIRRF(baseCalculo) {
     const faixa = faixas.find(f => baseCalculo >= f.min && baseCalculo <= f.max);
     return Math.max((baseCalculo * faixa.aliquota) - faixa.deducao, 0);
 }
-
-  
 
 // Geradores de PDF (Versões Corrigidas)
 function gerarHolerite(index) {
@@ -482,6 +480,8 @@ function gerarNotaHoraExtra(index) {
   
     doc.save(`NotaHoraExtra_${func.nome}_${dataAtual.replace(/\//g, '-')}.pdf`);
   }
+  
+
 // Funções Auxiliares
 function getFifthBusinessDay(year, month) {
     let count = 0;
