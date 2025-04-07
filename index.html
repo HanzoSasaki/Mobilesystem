@@ -109,68 +109,111 @@
     </main>
   </div>
 
+
+
+
+
+
+  <script src="script.js"></script>
   <!-- Script Principal -->
-  <script>
+ <script>
+    // Função do menu hamburguer
     function toggleMenu() {
-      const sidebar = document.querySelector('.sidebar');
-      sidebar.classList.toggle('open');
+        const sidebar = document.querySelector('.sidebar');
+        sidebar.classList.toggle('open');
     }
 
-    document.querySelectorAll('.nav-item').forEach(function(item) {
-      item.addEventListener('click', function(e) {
-        e.preventDefault();
-        const url = this.getAttribute('href');
-        document.getElementById('contentFrame').src = url;
-        const sidebar = document.querySelector('.sidebar');
-        sidebar.classList.remove('open'); // fecha menu após clique no mobile
-      });
-    });
-
+    // Controle de senha (mantido original)
     const senhaCorreta = "246851";
     const tempoBloqueio = 2 * 60 * 60 * 1000;
 
     document.addEventListener("DOMContentLoaded", function () {
-      let ultimaVerificacao = localStorage.getItem("ultimaVerificacao");
-      if (ultimaVerificacao && (Date.now() - ultimaVerificacao < tempoBloqueio)) {
-        document.getElementById("password-modal").style.display = "none";
-      } else {
-        document.getElementById("password-modal").style.display = "flex";
-      }
-
-      document.getElementById("password-input").addEventListener("keyup", function (event) {
-        if (event.key === "Enter") {
-          verificarSenha();
+        let ultimaVerificacao = localStorage.getItem("ultimaVerificacao");
+        if (ultimaVerificacao && (Date.now() - ultimaVerificacao < tempoBloqueio)) {
+            document.getElementById("password-modal").style.display = "none";
+        } else {
+            document.getElementById("password-modal").style.display = "flex";
         }
-      });
+
+        document.getElementById("password-input").addEventListener("keyup", function (event) {
+            if (event.key === "Enter") {
+                verificarSenha();
+            }
+        });
     });
 
     function verificarSenha() {
-      let senhaDigitada = document.getElementById("password-input").value;
-      let errorMsg = document.getElementById("error-message");
-      if (senhaDigitada === senhaCorreta) {
-        localStorage.setItem("ultimaVerificacao", Date.now());
-        document.getElementById("password-modal").style.display = "none";
-      } else {
-        errorMsg.textContent = "Senha incorreta! Tente novamente.";
-      }
+        let senhaDigitada = document.getElementById("password-input").value;
+        let errorMsg = document.getElementById("error-message");
+        if (senhaDigitada === senhaCorreta) {
+            localStorage.setItem("ultimaVerificacao", Date.now());
+            document.getElementById("password-modal").style.display = "none";
+        } else {
+            errorMsg.textContent = "Senha incorreta! Tente novamente.";
+        }
     }
 
+    // Funções de aviso e modais (mantidas originais)
     function fecharAviso() {
-      document.getElementById("aviso").style.display = "none";
+        document.getElementById("aviso").style.display = "none";
     }
 
     function abrirModalUsers() {
-      document.getElementById("users-modal").style.display = "flex";
+        document.getElementById("users-modal").style.display = "flex";
     }
 
     function fecharModalUsers() {
-      document.getElementById("users-modal").style.display = "none";
+        document.getElementById("users-modal").style.display = "none";
     }
 
-    function abrirConfig() {
-      alert("Abrindo configurações...");
+    // ------ NOVO CONTROLE DO MENU E IFRAME (CORRIGIDO) ------
+    function setActiveMenuItem(url) {
+        document.querySelectorAll('.nav-item').forEach(item => {
+            const itemHref = new URL(item.href, window.location.href).pathname;
+            const targetPath = new URL(url, window.location.href).pathname;
+            
+            item.classList.remove('active');
+            if (itemHref === targetPath) {
+                item.classList.add('active');
+            }
+        });
     }
-  </script>
+
+    // Controle de clique nos itens do menu
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            const url = this.href;
+            
+            // Atualiza iframe
+            document.getElementById('contentFrame').src = url;
+            
+            // Atualiza estado do menu
+            setActiveMenuItem(url);
+            
+            // Fecha menu mobile
+            document.querySelector('.sidebar').classList.remove('open');
+        });
+    });
+
+    // Inicialização ao carregar a página
+    window.addEventListener('DOMContentLoaded', () => {
+        // Carrega página inicial no iframe
+        const initialPage = document.querySelector('.nav-item').href;
+        document.getElementById('contentFrame').src = initialPage;
+        setActiveMenuItem(initialPage);
+    });
+
+    // Sincronização com iframe (apenas mesmo domínio)
+    document.getElementById('contentFrame').addEventListener('load', function() {
+        try {
+            const iframeUrl = this.contentWindow.location.href;
+            setActiveMenuItem(iframeUrl);
+        } catch (error) {
+            // Ignora erros de cross-origin
+        }
+    });
+</script>
 
 </body>
 </html>

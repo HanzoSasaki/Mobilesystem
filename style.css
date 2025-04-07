@@ -65,7 +65,11 @@
     cursor: pointer;
     z-index: 1001;
   }
-  
+  .nav-item.active {
+    background: #007BFF;
+    /* Mantenha o mesmo estilo do hover */
+    color: white;
+  }
   /* Sidebar */
   .sidebar {
     background: #333;

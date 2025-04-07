@@ -56,7 +56,6 @@ function adicionarHoraExtra(containerId) {
 // CRUD Funcionários
 function adicionarFuncionario(event) {
     event.preventDefault();
-
     const novoFuncionario = {
         nome: document.getElementById('nomeCadastro').value,
         salarioBase: parseFloat(document.getElementById('salarioBaseCadastro').value),
@@ -65,7 +64,6 @@ function adicionarFuncionario(event) {
         horasExtras: []
     };
 
-    // Coletar Faltas
     document.querySelectorAll('#ausenciasContainer .item-flex').forEach(grupo => {
         novoFuncionario.faltas.push({
             dias: parseInt(grupo.querySelector('.dias-falta').value) || 0,
@@ -73,7 +71,6 @@ function adicionarFuncionario(event) {
         });
     });
 
-    // Coletar Horas Extras
     document.querySelectorAll('#horasExtrasContainer .item-flex').forEach(grupo => {
         novoFuncionario.horasExtras.push({
             horas: parseFloat(grupo.querySelector('.horas-extra').value) || 0,
@@ -91,29 +88,26 @@ function editarFuncionario(index) {
     funcionarioEditando = index;
     const func = funcionarios[index];
 
-    // Preencher dados básicos
     document.getElementById('editNome').value = func.nome;
     document.getElementById('editSalarioBase').value = func.salarioBase;
     document.getElementById('editBonificacao').value = func.bonificacao;
 
-    // Preencher Faltas
-    const editAusencias = document.getElementById('editAusenciasContainer');
-    editAusencias.innerHTML = '';
-    func.faltas.forEach(f => {
+    const containerFaltas = document.getElementById('editAusenciasContainer');
+    containerFaltas.innerHTML = '';
+    func.faltas.forEach(falta => {
         adicionarFalta('editAusenciasContainer');
-        const ultimoGrupo = editAusencias.lastElementChild;
-        ultimoGrupo.querySelector('.dias-falta').value = f.dias;
-        ultimoGrupo.querySelector('.com-atestado').value = f.atestado;
+        const ultimoItem = containerFaltas.lastElementChild;
+        ultimoItem.querySelector('.dias-falta').value = falta.dias;
+        ultimoItem.querySelector('.com-atestado').value = falta.atestado;
     });
 
-    // Preencher Horas Extras
-    const editHorasExtras = document.getElementById('editHorasExtrasContainer');
-    editHorasExtras.innerHTML = '';
-    func.horasExtras.forEach(h => {
+    const containerHoras = document.getElementById('editHorasExtrasContainer');
+    containerHoras.innerHTML = '';
+    func.horasExtras.forEach(he => {
         adicionarHoraExtra('editHorasExtrasContainer');
-        const ultimoGrupo = editHorasExtras.lastElementChild;
-        ultimoGrupo.querySelector('.horas-extra').value = h.horas;
-        ultimoGrupo.querySelector('.tipo-extra').value = h.percentual;
+        const ultimoItem = containerHoras.lastElementChild;
+        ultimoItem.querySelector('.horas-extra').value = he.horas;
+        ultimoItem.querySelector('.tipo-extra').value = he.percentual;
     });
 
     abrirModal('edicao');
@@ -122,15 +116,12 @@ function editarFuncionario(index) {
 function salvarEdicao(event) {
     event.preventDefault();
     if (funcionarioEditando === null) return;
-
     const func = funcionarios[funcionarioEditando];
-
-    // Atualizar dados básicos
+    
     func.nome = document.getElementById('editNome').value;
     func.salarioBase = parseFloat(document.getElementById('editSalarioBase').value);
     func.bonificacao = parseFloat(document.getElementById('editBonificacao').value) || 0;
 
-    // Atualizar Faltas
     func.faltas = [];
     document.querySelectorAll('#editAusenciasContainer .item-flex').forEach(grupo => {
         func.faltas.push({
@@ -139,7 +130,6 @@ function salvarEdicao(event) {
         });
     });
 
-    // Atualizar Horas Extras
     func.horasExtras = [];
     document.querySelectorAll('#editHorasExtrasContainer .item-flex').forEach(grupo => {
         func.horasExtras.push({
@@ -159,12 +149,11 @@ function removerFuncionario(index) {
     }
 }
 
-// Utilitários
 function limparFormulario(tipo) {
     if (tipo === 'cadastro') {
         document.getElementById('nomeCadastro').value = '';
         document.getElementById('salarioBaseCadastro').value = '';
-        document.getElementById('bonificacaoCadastro').value = '';
+        document.getElementById('bonificacaoCadastro').value = '0';
         document.getElementById('ausenciasContainer').innerHTML = '';
         document.getElementById('horasExtrasContainer').innerHTML = '';
         adicionarFalta('ausenciasContainer');
@@ -177,14 +166,11 @@ function atualizarDados() {
     exibirFuncionarios();
 }
 
-// Exibição de Dados
 function exibirFuncionarios() {
     const tbody = document.getElementById('tabelaFuncionarios');
     tbody.innerHTML = '';
-
     funcionarios.forEach((func, index) => {
         const calculo = calcularSalario(func);
-
         tbody.innerHTML += `
             <tr>
                 <td>${func.nome}</td>
@@ -196,6 +182,7 @@ function exibirFuncionarios() {
                     <div class="acoes-cell">
                         <button class="btn" onclick="editarFuncionario(${index})">Editar</button>
                         <button class="btn" onclick="gerarHolerite(${index})">Holerite</button>
+                        <button class="btn" onclick="gerarNotaHoraExtra(${index})">Nota Hora Extra</button>
                         <button class="btn btn-excluir" onclick="removerFuncionario(${index})">Excluir</button>
                     </div>
                 </td>
@@ -204,30 +191,22 @@ function exibirFuncionarios() {
     });
 }
 
-// Cálculos
+// Cálculos do Salário
 function calcularSalario(func) {
-    const diasUteis = parseInt(document.getElementById('diasUteis').value) || 22;
+    const diasUteis = parseInt(document.getElementById('diasUteis') ? document.getElementById('diasUteis').value : 22) || 22;
     const valorDia = func.salarioBase / diasUteis;
+    
+    let descontosFaltas = func.faltas
+        .filter(f => f.atestado === 'nao')
+        .reduce((acc, f) => acc + (f.dias * valorDia), 0);
 
-    // Descontos por Faltas
-    let descontosFaltas = 0;
-    func.faltas.forEach(f => {
-        if (f.atestado === 'nao') descontosFaltas += f.dias * valorDia;
-    });
-
-    // Horas Extras
-    let totalHorasExtras = 0;
-    let valorTotalHE = 0;
     const valorHoraNormal = func.salarioBase / 160;
-    func.horasExtras.forEach(h => {
-        totalHorasExtras += h.horas;
-        valorTotalHE += h.horas * valorHoraNormal * (1 + h.percentual / 100);
-    });
+    const valorTotalHE = func.horasExtras
+        .reduce((acc, he) => acc + (he.horas * valorHoraNormal * (1 + he.percentual / 100)), 0);
 
-    // Cálculos Legais
     const inss = calcularINSS(func.salarioBase);
     const irrf = calcularIRRF(func.salarioBase - inss);
-
+    
     const totalDescontos = descontosFaltas + inss + irrf;
     const totalLiquido = (func.salarioBase - totalDescontos) + valorTotalHE + func.bonificacao;
 
@@ -238,7 +217,6 @@ function calcularSalario(func) {
             inss,
             irrf,
             descontosFaltas,
-            totalHorasExtras,
             valorTotalHE,
             bonificacao: func.bonificacao
         }
@@ -246,54 +224,43 @@ function calcularSalario(func) {
 }
 
 function calcularINSS(salario) {
-    const tetoINSS = 8157.41;
+    const tetoINSS = 908.85;
     const faixas = [
-        [0, 1518.00, 0.075],
-        [1518.01, 2783.88, 0.09],
-        [2783.89, 4190.83, 0.12],
-        [4190.84, tetoINSS, 0.14]
+        { min: 0, max: 1412.00, aliquota: 0.075 },
+        { min: 1412.01, max: 2666.68, aliquota: 0.09 },
+        { min: 2666.69, max: 4000.03, aliquota: 0.12 },
+        { min: 4000.04, max: 7786.02, aliquota: 0.14 }
     ];
 
-    // Verifica se o salário ultrapassa o teto do INSS
-    if (salario > tetoINSS) {
-        let descontoMaximo = 0;
-        for (const [min, max, aliquota] of faixas) {
-            const base = max - min;
-            descontoMaximo += base * aliquota;
-        }
-        return parseFloat(descontoMaximo.toFixed(2));
+    let desconto = 0;
+    let salarioRestante = salario;
+
+    for (const faixa of faixas) {
+        if (salarioRestante <= 0) break;
+        const base = Math.min(salarioRestante, faixa.max - faixa.min);
+        desconto += base * faixa.aliquota;
+        salarioRestante -= base;
     }
 
-    let desconto = 0;
-    for (const [min, max, aliquota] of faixas) {
-        if (salario > min) {
-            const baseCalculo = Math.min(salario, max) - min;
-            if (baseCalculo > 0) {
-                desconto += baseCalculo * aliquota;
-            }
-        }
-    }
-    return parseFloat(desconto.toFixed(2));
+    return Math.min(desconto, tetoINSS);
 }
 
 function calcularIRRF(baseCalculo) {
     const faixas = [
-        [0, 2112.00, 0, 0],
-        [2112.01, 2826.65, 0.075, 158.40],
-        [2826.66, 3751.05, 0.15, 370.40],
-        [3751.06, 4664.68, 0.225, 651.73],
-        [4664.69, Infinity, 0.275, 884.96]
+        { min: 0, max: 2112.00, aliquota: 0, deducao: 0 },
+        { min: 2112.01, max: 2826.65, aliquota: 0.075, deducao: 158.40 },
+        { min: 2826.66, max: 3751.05, aliquota: 0.15, deducao: 370.40 },
+        { min: 3751.06, max: 4664.68, aliquota: 0.225, deducao: 651.73 },
+        { min: 4664.69, max: Infinity, aliquota: 0.275, deducao: 884.96 }
     ];
 
-    for (const [min, max, aliquota, deducao] of faixas) {
-        if (baseCalculo >= min && baseCalculo <= max) {
-            return Math.max((baseCalculo * aliquota) - deducao, 0);
-        }
-    }
-    return 0;
+    const faixa = faixas.find(f => baseCalculo >= f.min && baseCalculo <= f.max);
+    return Math.max((baseCalculo * faixa.aliquota) - faixa.deducao, 0);
 }
 
-/// Gerador de PDF
+  
+
+// Geradores de PDF (Versões Corrigidas)
 function gerarHolerite(index) {
     const { jsPDF } = window.jspdf;
     const func = funcionarios[index];
@@ -324,7 +291,7 @@ function gerarHolerite(index) {
         ["Salário Base", formatCurrency(func.salarioBase)],
         ["Horas Extras", formatCurrency(calculo.detalhes.valorTotalHE)],
         ["Bonificação", formatCurrency(calculo.detalhes.bonificacao)],
-        ["INSS", formatCurrency(calculo.detalhes.inss)],
+        ["FGTS", formatCurrency(calculo.detalhes.inss)],
         ["IRRF", formatCurrency(calculo.detalhes.irrf)],
         ["Descontos por Faltas", formatCurrency(calculo.detalhes.descontosFaltas)],
         [{ content: "TOTAL LÍQUIDO", styles: { fontStyle: 'bold' } }, { content: formatCurrency(calculo.totalLiquido), styles: { fontStyle: 'bold', textColor: [0, 128, 0] } }]
@@ -394,24 +361,134 @@ function gerarHolerite(index) {
     doc.save(`Holerite_${func.nome}_${dataAtual.replace(/\//g, '-')}.pdf`);
 }
 
-// Inicialização
-document.addEventListener('DOMContentLoaded', () => {
-    adicionarFalta('ausenciasContainer');
-    adicionarHoraExtra('horasExtrasContainer');
-    exibirFuncionarios();
-});
 
+function gerarNotaHoraExtra(index) {
+    const { jsPDF } = window.jspdf;
+    const func = funcionarios[index];
+    const now = new Date();
+    const dataAtual = now.toLocaleDateString('pt-BR');
+  
+    // Calcula o mês de referência (mês anterior)
+    const previousMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const mesReferencia = previousMonth.toLocaleString('pt-BR', { month: 'long', year: 'numeric' });
+  
+    const valorHoraNormal = func.salarioBase / 160;
+    let totalValorExtras = 0;
+    const tableData = [];
+  
+    // Monta a lista de registros de horas extras para a tabela
+    if (func.horasExtras && func.horasExtras.length > 0) {
+      func.horasExtras.forEach(he => {
+        const valorHE = he.horas * valorHoraNormal * (1 + he.percentual / 100);
+        totalValorExtras += valorHE;
+        tableData.push([he.horas, he.percentual + "%", formatCurrency(valorHE)]);
+      });
+    }
+  
+    const doc = new jsPDF();
+  
+    // Cabeçalho do PDF
+    doc.setFontSize(18);
+    doc.setFont("helvetica", "bold");
+    doc.text("Nota de Horas Extras", 105, 20, { align: "center" });
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "normal");
+    doc.text(`Funcionário: ${func.nome}`, 20, 30);
+    doc.text(`Data: ${dataAtual}`, 150, 30);
+    doc.setLineWidth(0.5);
+    doc.line(20, 35, 190, 35);
+  
+    let posY = 40;
+  
+    // Texto informativo
+    doc.setFontSize(11);
+    doc.setFont("helvetica", "normal");
+    let informativo = 
+      `Estou ciente e de acordo que meu salário bruto de ${formatCurrency(func.salarioBase)} ` +
+      `foi utilizado para calcular o valor total das horas extras, conforme descrito abaixo.`;
+    let linhasInformativo = doc.splitTextToSize(informativo, 170);
+    doc.text(linhasInformativo, 20, posY);
+    posY += linhasInformativo.length * 7 + 5;
+  
+    // Tabela de Horas Extras
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+    doc.text("Detalhes das Horas Extras", 20, posY);
+    posY += 5;
+  
+    // Cabeçalho da tabela
+    doc.setFontSize(11);
+    doc.setFont("helvetica", "bold");
+    doc.text("Horas", 25, posY);
+    doc.text("Adicional", 65, posY);
+    doc.text("Valor", 120, posY);
+    posY += 3;
+    doc.setLineWidth(0.2);
+    doc.line(20, posY, 190, posY);
+    posY += 7;
+  
+    // Registros da tabela
+    doc.setFont("helvetica", "normal");
+    if (tableData.length > 0) {
+      tableData.forEach(row => {
+        doc.text(String(row[0]), 25, posY);
+        doc.text(String(row[1]), 65, posY);
+        doc.text(String(row[2]), 120, posY);
+        posY += 7;
+      });
+    } else {
+      doc.text("Nenhuma hora extra registrada.", 25, posY);
+      posY += 7;
+    }
+  
+    // Total de Horas Extras em destaque (verde)
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(0, 128, 0);
+    doc.text(`Total de Horas Extras: ${formatCurrency(totalValorExtras)}`, 20, posY);
+    doc.setTextColor(0, 0, 0);
+  
+    // Espaço reservado para não interferir com a área de assinatura (deixa o conteúdo acima mais "limpo")
+    // Vamos posicionar a área de assinaturas próximo à parte inferior da página
+    const signatureY = 230;
+  
+    // Área de assinaturas na parte inferior
+    doc.setFontSize(11);
+    doc.setFont("helvetica", "normal");
+    
+    // Linha e campo para "Nome do Responsável"
+    doc.text("Nome do Responsável:", 20, signatureY);
+    doc.line(70, signatureY + 2, 190, signatureY + 2); // linha para assinatura do responsável
+    
+    // Linha e campo para "Assinatura do Funcionário"
+    doc.text("Assinatura do Funcionário:", 20, signatureY + 20);
+    doc.line(75, signatureY + 22, 190, signatureY + 22); // linha para assinatura do funcionário
+    
+    // Nome do Funcionário abaixo da linha de assinatura do funcionário
+    doc.text(`Nome do Funcionário: ${func.nome}`, 20, signatureY + 35);
+  
+    // Rodapé informativo
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "italic");
+    let rodapeText = `De acordo com este documento, declaro ciência e aceitação dos valores das horas extras aqui descritas, ` +
+                     `referentes ao mês de ${mesReferencia}.`;
+    let rodapeLines = doc.splitTextToSize(rodapeText, 170);
+    doc.text(rodapeLines, 20, signatureY + 45);
+  
+    // Linha e mensagem final no rodapé
+    const rodapeY = 270;
+    doc.setLineWidth(0.5);
+    doc.line(20, rodapeY - 10, 190, rodapeY - 10);
+    doc.text("Nota gerada automaticamente.", 105, rodapeY, { align: "center" });
+  
+    doc.save(`NotaHoraExtra_${func.nome}_${dataAtual.replace(/\//g, '-')}.pdf`);
+  }
+// Funções Auxiliares
 function getFifthBusinessDay(year, month) {
     let count = 0;
     let currentDate = new Date(year, month, 1);
-    
     while (count < 5) {
-        if (currentDate.getDay() !== 0 && currentDate.getDay() !== 6) {
-            count++;
-        }
-        if (count < 5) {
-            currentDate.setDate(currentDate.getDate() + 1);
-        }
+        if (currentDate.getDay() !== 0 && currentDate.getDay() !== 6) count++;
+        if (count < 5) currentDate.setDate(currentDate.getDate() + 1);
     }
     return currentDate;
 }
@@ -425,13 +502,16 @@ function updateCard() {
         fifthBusinessDay = getFifthBusinessDay(today.getFullYear(), today.getMonth() + 1);
     }
     
-    let formattedDate = fifthBusinessDay.toLocaleDateString("pt-BR");
-    
+    card.textContent = `Próximo Quinto dia útil: ${fifthBusinessDay.toLocaleDateString("pt-BR")}`;
     if (today.toDateString() === fifthBusinessDay.toDateString()) {
         card.classList.add("red");
     }
-    
-    card.textContent = "Próximo Quinto dia útil: " + formattedDate;
 }
 
-updateCard();
+// Inicialização
+document.addEventListener('DOMContentLoaded', () => {
+    adicionarFalta('ausenciasContainer');
+    adicionarHoraExtra('horasExtrasContainer');
+    exibirFuncionarios();
+    updateCard();
+});
