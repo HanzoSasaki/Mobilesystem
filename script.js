@@ -42,6 +42,43 @@ document.addEventListener('DOMContentLoaded', () => {
         window.parent.postMessage({ type: 'iframeLoaded' }, '*');
     }
 });
+function setupMenu() {
+    const sidebar = document.querySelector('.sidebar');
+    const toggleButton = document.querySelector('.menu-toggle');
+
+    if (toggleButton) {
+        toggleButton.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+        });
+    } else {
+        console.warn('Botão .menu-toggle não encontrado no DOM.');
+    }
+
+    // Controle de itens do menu
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetUrl = this.href;
+
+            document.querySelectorAll('.nav-item').forEach(nav => {
+                nav.classList.remove('active');
+            });
+            this.classList.add('active');
+
+            document.getElementById('contentFrame').src = targetUrl;
+            sidebar.classList.remove('open');
+        });
+    });
+
+    // Sincronização com iframe
+    window.addEventListener('message', (e) => {
+        if (e.data.type === 'updateMenu') {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.toggle('active', item.href === e.data.url);
+            });
+        }
+    });
+}
 
 // ==== [4. CONTROLE DE MENU/IFRAME] ==== //
 function setupMenu() {

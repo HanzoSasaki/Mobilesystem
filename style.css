@@ -271,3 +271,9 @@ body {
     margin-top: 70px;
   }
 }
+/* Esconde o nome da logo em telas menores que 768px */
+@media (max-width: 768px) {
+  .logo-text {
+    display: none;
+  }
+}
