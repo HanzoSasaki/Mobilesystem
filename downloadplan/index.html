@@ -1,79 +1,178 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
-
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <title>Download de Planilhas</title>
+    <title>Dashboard - Planilhas e Relatórios</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background-color: #333;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            gap: 20px;
+        }
+
+        /* Container Principal */
+        .main-container {
+            flex-grow: 1;
+            display: flex;
+            gap: 20px;
+        }
+
+        /* Seção Relatórios */
+        .relatorios-section {
+            flex: 1;
+            background: #fff;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Seção Planilhas */
+        .planilhas-section {
+            flex: 1;
+            background: #fff;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Estilo dos Cards */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .report-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            border-left: 5px solid #007bff;
+        }
+
+        .planilha-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            border-left: 5px solid #28a745;
+        }
+
+        .report-card:hover, .planilha-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .report-link {
+            text-decoration: none;
+            color: #333;
+            display: block;
+        }
+
+        .report-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .report-description {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        /* Ícones e elementos visuais */
+        .card-icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #007bff;
+        }
+
+        .planilha-card .card-icon {
+            color: #28a745;
+        }
+    </style>
 </head>
-
 <body>
+    <div class="main-container">
+        <!-- Seção Relatórios -->
+        <section class="relatorios-section">
+            <h1>Relatórios Disponíveis</h1>
+            <div class="cards-grid">
+                <a href="https://hanzosasaki.github.io/Analise2024/" target="_blank" class="report-link">
+                    <div class="report-card">
+                        <div class="card-icon">📊</div>
+                        <div class="report-title">Relatorio de margens agosto 2024 a fevereiro 2025</div>
+                        <div class="report-description">Análise detalhada das finanças do último trimestre, para salvar a pagina é necessario apertar ctrl + p e selecionar a opção de pdf  para download </div>
+                    </div>
+                </a>
 
- 
-    
+                <!-- <a href="relatorio2.html" target="_blank" class="report-link">
+                    <div class="report-card">
+                        <div class="card-icon">📈</div>
+                        <div class="report-title">Desempenho de Vendas</div>
+                        <div class="report-description">Métricas e gráficos de performance comercial</div>
+                    </div>
+                </a>
 
-    <main>
-        <h1 class="titulo-principal">Acesso a Planilhas</h1>
+                <a href="relatorio3.html" target="_blank" class="report-link">
+                    <div class="report-card">
+                        <div class="card-icon">👥</div>
+                        <div class="report-title">Relatório de RH</div>
+                        <div class="report-description">Dados atualizados sobre colaboradores e benefícios</div>
+                    </div>
+                </a>
+            </div>-->
+        </section> 
 
-        <div class="alert">
-            <i class="fa-solid fa-triangle-exclamation alert-icon"></i>
-            <p>
-                <strong>ATENÇÃO:</strong> Para acessar as planilhas, você deve ter permissão de acesso. Apenas
-                administradores podem visualizar os dados, sendo impossível compartilhar esse link. Se você não tem
-                permissão, por favor, entre em contato com o administrador.
-            </p>
-        </div>
-
-        <!-- Container de Login -->
-        <div class="container login-container">
-            <div class="login-header">
-                <i class="fa-solid fa-user-lock login-icon"></i>
-                <span class="login-title">Login Atom</span>
+        <!-- Seção Planilhas -->
+<section class="planilhas-section">
+    <h1>Planilhas Recentes</h1>
+    <div class="cards-grid">
+        <a href="https://docs.google.com/spreadsheets/d/1lY-jNRR009UEnXkd4jgMb7W5bTDHE6xxNbBgfvHUav4/edit?gid=1595566814#gid=1595566814" target="_blank" class="report-link">
+            <div class="planilha-card">
+                <div class="card-icon">📑</div>
+                <div class="report-title">Venda dia a dia</div>
+                <div class="report-description">essa planilha esta lacrada pela segurança de dados caso precise acessar entrar em contato com o responsavel</div>
             </div>
+        </a>
 
-            <div class="senhas-container">
-                <div class="senha-item">
-                    <i class="fa-solid fa-key"></i> <strong>Master:</strong> 2468515151
-                </div>
-                <div class="senha-item">
-                    <i class="fa-solid fa-key"></i> <strong>Expedição:</strong> 1234
-                </div>
+        <!-- <a href="agenda-producao.html" target="_blank" class="report-link">
+            <div class="planilha-card">
+                <div class="card-icon">📅</div>
+                <div class="report-title">Agenda de Produção</div>
+                <div class="report-description">Cronograma mensal de atividades operacionais</div>
             </div>
-        </div>
+        </a>
 
-        <!-- Lista de Planilhas -->
-        <div class="container planilhas-container">
-            <div class="download-section">
-                <i class="fa-solid fa-chart-line"></i>
-                <span>Analise Power B.I</span>
-                <a href=""
-                    target="_blank" class="btn-download">Abrir Planilha</a>
+        <a href="projecoes-2024.html" target="_blank" class="report-link">
+            <div class="planilha-card">
+                <div class="card-icon">💼</div>
+                <div class="report-title">Projeções 2024</div>
+                <div class="report-description">Metas e objetivos para o próximo ano fiscal</div>
             </div>
-
-            <div class="download-section">
-                <i class="fa-solid fa-database"></i>
-                <span>Todos os produtos no Atom</span>
-                <a href=""
-                    target="_blank" class="btn-download">Abrir Planilha</a>
-            </div>
-
-            <div class="download-section">
-                <i class="fa-solid fa-file-excel"></i>
-                <span>Planilha de Controle LIKE</span>
-                <a href=""
-                    target="_blank" class="btn-download">Abrir Planilha</a>
-            </div>
-        </div>
-    </main>
-
-  
-
-
-
-    <script src="script.js"></script>
+        </a> -->
+    </div>
+</section>
 
 </body>
-
 </html>
