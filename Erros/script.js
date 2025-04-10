@@ -1,4 +1,4 @@
-// script.js - Código Completo e Revisado
+// script.js - Código Completo com Filtro por Loja
 
 // Variáveis globais
 let dadosPlanilha = [];
@@ -34,7 +34,7 @@ function inicializarDatePickers() {
   });
 }
 
-// Preenche o filtro de lojas
+// Preenche o filtro de lojas (lista suspensa)
 function popularFiltroLojas() {
   const select = document.getElementById("filtroLoja");
   select.innerHTML = '<option value="">Todas as Lojas</option>';
@@ -107,30 +107,26 @@ function preencherTabela(dados) {
   });
 }
 
-// Filtra os dados conforme data (e opcionalmente a loja) e atualiza tabela e gráfico
+// Função de filtragem que considera data e loja
 function filtrarTabela() {
   const dataRange = document.getElementById("dataRange").value;
+  const lojaSelecionada = document.getElementById("filtroLoja").value;
   const [start, end] = dataRange.split(" até ");
   
   const startDate = start ? parseDataBr(start) : null;
   const endDate = end ? parseDataBr(end) : null;
   
-  // Se desejar filtrar também por loja, descomente as próximas linhas:
-  // const lojaSelecionada = document.getElementById("filtroLoja").value;
-  
   const dadosFiltrados = dadosPlanilha.filter(registro => {
     const dataRegistro = parseDataBr(registro.data);
     if (!dataRegistro) return false;
     
-    // Verifica o filtro por data
+    // Filtro por data
     const dataValida = (!startDate || dataRegistro >= startDate) && 
                        (!endDate || dataRegistro <= endDate);
+    // Filtro por loja: se alguma loja estiver selecionada, só aceita registros com essa loja
+    const lojaValida = !lojaSelecionada || registro.loja === lojaSelecionada;
     
-    // Se filtrar por loja, adicione a validação abaixo
-    // const lojaValida = !lojaSelecionada || registro.loja === lojaSelecionada;
-    
-    // Se estiver filtrando por mais de um critério, combine-os (ex: dataValida && lojaValida)
-    return dataValida;
+    return dataValida && lojaValida;
   });
   
   preencherTabela(dadosFiltrados);
@@ -202,13 +198,12 @@ function formatarNomeLoja(nome) {
   return formatacoes[nome] || nome;
 }
 
-// Função para exibir alertas (pode ser personalizada)
+// Função para exibir alertas
 function mostrarAlerta(mensagem) {
   alert(mensagem);
 }
 
-// Abaixo seguem as funções relacionadas à geração de PDF, caso você as utilize.
-// Caso não precise, pode desconsiderá-las ou comentar
+// As funções abaixo são relativas à geração de PDF e podem ser utilizadas se necessário
 
 async function previewPDF() {
   try {

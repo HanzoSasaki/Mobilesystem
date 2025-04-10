@@ -17,9 +17,10 @@
       <div class="filter-group">
         <label for="dataRange">Período:</label>
         <input type="text" id="dataRange" class="date-input" placeholder="Selecione datas" readonly>
+        <select id="filtroLoja"></select>
         <button onclick="filtrarTabela()" class="button">Filtrar</button>
       </div>
-      
+     
       <div class="filter-group">
         <button onclick="abrirModalPDF()" class="button pdf-button">
           <span class="icon">📄</span> Gerar PDF

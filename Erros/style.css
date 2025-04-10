@@ -260,6 +260,40 @@ button {
   justify-content: flex-end;
   margin-top: 1rem;
 }
+#filtroLoja {
+  /* Remove a aparência padrão do select */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  /* Espaçamento interno e tamanho da fonte */
+  padding: 10px 15px;
+  font-size: 16px;
+  color: #333;
+
+  /* Bordas e cantos arredondados */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+
+  /* Fundo e ícone customizado */
+  background-color: #fff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%23999' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px;
+  
+  /* Transição para foco */
+  transition: border-color 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+}
+
+/* Estilos ao focar */
+#filtroLoja:focus {
+  outline: none;
+  border-color: #66afe9;
+  box-shadow: 0 0 8px rgba(102, 175, 233, 0.6);
+}
+
 
 .save-button {
   background: var(--success);
