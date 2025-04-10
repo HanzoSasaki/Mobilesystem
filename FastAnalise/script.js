@@ -1,25 +1,34 @@
 function calcularMargem() {
+    // Captura dos valores dos campos de input
     let produto = document.getElementById("produto").value;
     let precoCusto = parseFloat(document.getElementById("precoCusto").value);
     let precoVenda = parseFloat(document.getElementById("precoVenda").value);
     let plataforma = document.getElementById("plataforma").value;
-
-    if (!produto || isNaN(precoCusto) || isNaN(precoVenda)) {
+    // Novo campo para o imposto: o usuário deverá informar o valor em percentual (ex.: 1.08 para 1,08%)
+    let impostoInput = parseFloat(document.getElementById("imposto").value);
+    
+    // Validação dos campos
+    if (!produto || isNaN(precoCusto) || isNaN(precoVenda) || isNaN(impostoInput)) {
         alert("Preencha todos os campos corretamente!");
         return;
     }
+    
+    // Converte o imposto informado em percentual para sua forma decimal
+    let imposto = impostoInput / 100;
 
-    let imposto = 0.0108;
+    // Define comissão e taxa de pedido conforme a plataforma
     let comissao = plataforma === "shopee" ? 0.20 : 0.13;
     let taxaPedido = plataforma === "shopee" ? 4.00 : 1.00;
 
+    // Cálculo do custo total e margens
     let custoTotal = precoCusto + (precoVenda * imposto) + (precoVenda * comissao) + taxaPedido;
     let margemR = precoVenda - custoTotal;
     let margemP = (margemR / precoVenda) * 100;
 
+    // Define status e classe para exibição dos resultados
     let status = "Manter";
     let classe = "positivo";
-    
+
     if (margemR < 0) {
         status = "Alterar URGENTE";
         classe = "negativo";
@@ -28,6 +37,7 @@ function calcularMargem() {
         classe = "fora-meta";
     }
 
+    // Exibe os resultados na tabela HTML
     document.getElementById("resultado").innerHTML = `<tr class="${classe}">
         <td>${produto}</td>
         <td>R$ ${margemR.toFixed(2)}</td>
@@ -35,6 +45,7 @@ function calcularMargem() {
         <td>${status}</td>
     </tr>`;
 
+    // Cria a simulação de descontos
     let simulacaoHTML = "";
     for (let desconto = 5; desconto <= 90; desconto += 5) {
         let precoFinal = precoVenda * (1 - desconto / 100);
@@ -49,34 +60,41 @@ function calcularMargem() {
     }
     document.getElementById("simulacao").innerHTML = simulacaoHTML;
 }
+
 function gerarRelatorioPDF() {
     const { jsPDF } = window.jspdf;
     let doc = new jsPDF();
 
+    // Captura dos valores dos campos
     let produto = document.getElementById("produto").value;
     let precoCusto = parseFloat(document.getElementById("precoCusto").value);
     let precoVenda = parseFloat(document.getElementById("precoVenda").value);
     let plataforma = document.getElementById("plataforma").value;
+    let impostoInput = parseFloat(document.getElementById("imposto").value);
 
-    if (!produto || isNaN(precoCusto) || isNaN(precoVenda)) {
+    // Validação dos campos
+    if (!produto || isNaN(precoCusto) || isNaN(precoVenda) || isNaN(impostoInput)) {
         alert("Preencha todos os campos corretamente!");
         return;
     }
+    
+    // Conversão do imposto de percentual para decimal
+    let imposto = impostoInput / 100;
 
-    let imposto = 0.0108;
     let comissao = plataforma === "shopee" ? 0.20 : 0.13;
     let taxaPedido = plataforma === "shopee" ? 4.00 : 1.00;
 
+    // Cálculo dos valores
     let custoTotal = precoCusto + (precoVenda * imposto) + (precoVenda * comissao) + taxaPedido;
     let margemR = precoVenda - custoTotal;
     let margemP = (margemR / precoVenda) * 100;
 
-    let status = " Manter";
+    let status = "Manter";
     let precoRecomendado = null;
     let tabelaAlternativa = []; // Para armazenar preços sugeridos
 
     if (margemR < 0) {
-        status = " Alterar URGENTE!";
+        status = "Alterar URGENTE!";
         precoRecomendado = custoTotal * 1.10; // Preço mínimo recomendado com 10% de margem
         tabelaAlternativa = [
             ["10%", `R$ ${(custoTotal * 1.10).toFixed(2)}`],
@@ -85,7 +103,7 @@ function gerarRelatorioPDF() {
             ["40%", `R$ ${(custoTotal * 1.40).toFixed(2)}`]
         ];
     } else if (margemP < 10) {
-        status = " Fora da margem meta";
+        status = "Fora da margem meta";
     }
 
     // Cabeçalho do relatório
@@ -97,11 +115,18 @@ function gerarRelatorioPDF() {
 
     // Tabela com os dados principais
     let dadosTabela = [
-        [`R$ ${precoCusto.toFixed(2)}`, `R$ ${precoVenda.toFixed(2)}`, `R$ ${custoTotal.toFixed(2)}`, `R$ ${margemR.toFixed(2)}`, `${margemP.toFixed(2)}%`, status]
+        [
+            `R$ ${precoCusto.toFixed(2)}`,
+            `R$ ${precoVenda.toFixed(2)}`,
+            `R$ ${custoTotal.toFixed(2)}`,
+            `R$ ${margemR.toFixed(2)}`,
+            `${margemP.toFixed(2)}%`,
+            status
+        ]
     ];
 
     if (precoRecomendado) {
-        dadosTabela[0].push(` R$ ${precoRecomendado.toFixed(2)}`);
+        dadosTabela[0].push(`R$ ${precoRecomendado.toFixed(2)}`);
     }
 
     doc.autoTable({
@@ -126,10 +151,12 @@ function gerarRelatorioPDF() {
         for (let desconto = 5; desconto <= 90; desconto += 5) {
             let precoFinal = precoVenda * (1 - desconto / 100);
             let lucro = precoFinal - custoTotal;
-            simulacao.push([`${desconto}%`, `R$ ${precoFinal.toFixed(2)}`, `R$ ${lucro.toFixed(2)}`, lucro > 0 ? "Lucro" : lucro === 0 ? "Empate" : "Prejuízo"]);
+            simulacao.push([`${desconto}%`, `R$ ${precoFinal.toFixed(2)}`, `R$ ${lucro.toFixed(2)}`, 
+                lucro > 0 ? "Lucro" : lucro === 0 ? "Empate" : "Prejuízo"
+            ]);
         }
 
-        doc.text(" Simulação de Preços com Descontos", 15, doc.lastAutoTable.finalY + 10);
+        doc.text("Simulação de Preços com Descontos", 15, doc.lastAutoTable.finalY + 10);
         doc.autoTable({
             startY: doc.lastAutoTable.finalY + 15,
             head: [["Desconto", "Preço Final", "Lucro", "Status"]],
