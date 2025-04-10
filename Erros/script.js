@@ -1,4 +1,4 @@
-// script.js - Versão Final Completa com Porcentagens
+// script.js - Código Completo e Revisado
 
 // Variáveis globais
 let dadosPlanilha = [];
@@ -9,11 +9,11 @@ const planilhaURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTxtg1eIAjl
 // Inicialização
 document.addEventListener("DOMContentLoaded", function() {
   inicializarDatePickers();
-  carregarDadosPlanilha();
   popularFiltroLojas();
+  carregarDadosPlanilha();
 });
 
-// Configuração inicial
+// Configuração dos datepickers
 function inicializarDatePickers() {
   flatpickr("#dataRange", {
     mode: "range",
@@ -23,7 +23,7 @@ function inicializarDatePickers() {
       rangeSeparator: " até "
     }
   });
-
+  
   flatpickr("#dataPDF", {
     mode: "range",
     dateFormat: "d/m/Y",
@@ -34,6 +34,7 @@ function inicializarDatePickers() {
   });
 }
 
+// Preenche o filtro de lojas
 function popularFiltroLojas() {
   const select = document.getElementById("filtroLoja");
   select.innerHTML = '<option value="">Todas as Lojas</option>';
@@ -42,13 +43,14 @@ function popularFiltroLojas() {
   });
 }
 
-// Funções de manipulação de dados
+// Função para converter data do formato dd/mm/yyyy para objeto Date
 function parseDataBr(dataString) {
   if (!dataString || dataString === "N/A") return null;
   const [dia, mes, ano] = dataString.split('/').map(Number);
   return new Date(ano, mes - 1, dia);
 }
 
+// Carrega os dados da planilha e gera o gráfico completo; a tabela inicia vazia
 async function carregarDadosPlanilha() {
   try {
     const response = await fetch(planilhaURL);
@@ -56,6 +58,7 @@ async function carregarDadosPlanilha() {
     
     dadosPlanilha = data.split("\n")
       .slice(1)
+      .filter(linha => linha.trim() !== "")
       .map(linha => {
         const cols = linha.split(",");
         return {
@@ -69,7 +72,9 @@ async function carregarDadosPlanilha() {
         };
       });
     
-    preencherTabela(dadosPlanilha);
+    // Tabela inicia vazia
+    preencherTabela([]);
+    // Gera o gráfico com todos os dados
     gerarGrafico(dadosPlanilha);
   } catch (error) {
     console.error("Erro ao carregar dados:", error);
@@ -77,9 +82,15 @@ async function carregarDadosPlanilha() {
   }
 }
 
+// Preenche a tabela com os dados passados
 function preencherTabela(dados) {
   const tbody = document.querySelector("#dataTable tbody");
   tbody.innerHTML = "";
+  
+  if (dados.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align: center;">Nenhum dado filtrado.</td></tr>`;
+    return;
+  }
   
   dados.forEach(registro => {
     const tr = document.createElement("tr");
@@ -96,7 +107,7 @@ function preencherTabela(dados) {
   });
 }
 
-// Filtragem e gráfico
+// Filtra os dados conforme data (e opcionalmente a loja) e atualiza tabela e gráfico
 function filtrarTabela() {
   const dataRange = document.getElementById("dataRange").value;
   const [start, end] = dataRange.split(" até ");
@@ -104,22 +115,34 @@ function filtrarTabela() {
   const startDate = start ? parseDataBr(start) : null;
   const endDate = end ? parseDataBr(end) : null;
   
+  // Se desejar filtrar também por loja, descomente as próximas linhas:
+  // const lojaSelecionada = document.getElementById("filtroLoja").value;
+  
   const dadosFiltrados = dadosPlanilha.filter(registro => {
     const dataRegistro = parseDataBr(registro.data);
     if (!dataRegistro) return false;
     
-    return (!startDate || dataRegistro >= startDate) && 
-           (!endDate || dataRegistro <= endDate);
+    // Verifica o filtro por data
+    const dataValida = (!startDate || dataRegistro >= startDate) && 
+                       (!endDate || dataRegistro <= endDate);
+    
+    // Se filtrar por loja, adicione a validação abaixo
+    // const lojaValida = !lojaSelecionada || registro.loja === lojaSelecionada;
+    
+    // Se estiver filtrando por mais de um critério, combine-os (ex: dataValida && lojaValida)
+    return dataValida;
   });
   
   preencherTabela(dadosFiltrados);
   gerarGrafico(dadosFiltrados);
 }
 
+// Gera o gráfico (bar chart) com os dados informados
 function gerarGrafico(dados) {
   const ctx = document.getElementById("myChart").getContext('2d');
   const { motivos } = calcularEstatisticas(dados);
 
+  // Se já existir um gráfico, destrói a instância anterior
   if (window.chartInstance) {
     window.chartInstance.destroy();
   }
@@ -155,7 +178,38 @@ function gerarGrafico(dados) {
   });
 }
 
-// Geração de PDF
+// Calcula estatísticas básicas (quantidade de ocorrências por motivo)
+function calcularEstatisticas(dados) {
+  const motivos = {};
+  let totalOcorrencias = 0;
+
+  dados.forEach(registro => {
+    const motivo = registro.motivo || 'Desconhecido';
+    motivos[motivo] = (motivos[motivo] || 0) + 1;
+    totalOcorrencias++;
+  });
+
+  return { motivos, totalOcorrencias };
+}
+
+// Função para formatação de nomes de lojas
+function formatarNomeLoja(nome) {
+  const formatacoes = {
+    'Armazem': 'Armazém',
+    '4pshopping': '4P Shopping',
+    'Fastshop': 'Fast Shop'
+  };
+  return formatacoes[nome] || nome;
+}
+
+// Função para exibir alertas (pode ser personalizada)
+function mostrarAlerta(mensagem) {
+  alert(mensagem);
+}
+
+// Abaixo seguem as funções relacionadas à geração de PDF, caso você as utilize.
+// Caso não precise, pode desconsiderá-las ou comentar
+
 async function previewPDF() {
   try {
     const loja = document.getElementById("filtroLoja").value;
@@ -186,18 +240,17 @@ async function gerarPDF(dadosFiltrados, lojaFiltro) {
   // Cabeçalho
   doc.setFontSize(18);
   doc.setFont("helvetica", "bold");
-  doc.text("Relatório de Erros e Devolução", pageWidth/2, yPos, { align: 'center' });
+  doc.text("Relatório de Erros e Devolução", pageWidth / 2, yPos, { align: 'center' });
   yPos += 10;
   
   doc.setLineWidth(0.5);
   doc.line(margin, yPos, pageWidth - margin, yPos);
   yPos += 15;
 
-  // Informações do cabeçalho
+  // Informações de cabeçalho
   doc.setFontSize(12);
   const dataGeracao = new Date().toLocaleDateString('pt-BR');
   const nomeFiltro = lojaFiltro ? formatarNomeLoja(lojaFiltro) : "Todas as Lojas";
-  
   doc.text(`Data: ${dataGeracao}`, margin, yPos);
   const filtroWidth = doc.getTextWidth(`Loja: ${nomeFiltro}`);
   doc.text(`Loja: ${nomeFiltro}`, pageWidth - margin - filtroWidth, yPos);
@@ -263,7 +316,7 @@ async function gerarPDF(dadosFiltrados, lojaFiltro) {
 
   yPos = doc.lastAutoTable.finalY + 15;
 
-  // Estatísticas
+  // Estatísticas Avançadas
   const { motivoMaisFrequente, dataMaisReclamacoes } = calcularEstatisticasAvancadas(dadosFiltrados);
   
   doc.setFontSize(12);
@@ -277,7 +330,7 @@ async function gerarPDF(dadosFiltrados, lojaFiltro) {
   doc.text(`• Data com mais registros: ${dataMaisReclamacoes.data} (${dataMaisReclamacoes.quantidade} ocorrências)`, margin, yPos);
   yPos += 20;
 
-  // Gráfico
+  // Gráfico para o PDF
   const canvas = await criarGraficoTemporario(dadosFiltrados);
   const imgData = canvas.toDataURL('image/png');
   const imgProps = doc.getImageProperties(imgData);
@@ -291,32 +344,9 @@ async function gerarPDF(dadosFiltrados, lojaFiltro) {
   doc.setFontSize(10);
   doc.setTextColor(100);
   doc.text("Este relatório foi gerado automaticamente. Em caso de dúvidas, contatar o analista responsável.", 
-    pageWidth/2, yPos, { align: 'center' });
+    pageWidth / 2, yPos, { align: 'center' });
 
   return doc;
-}
-
-// Funções auxiliares
-function formatarNomeLoja(nome) {
-  const formatacoes = {
-    'Armazem': 'Armazém',
-    '4pshopping': '4P Shopping',
-    'Fastshop': 'Fast Shop'
-  };
-  return formatacoes[nome] || nome;
-}
-
-function calcularEstatisticas(dados) {
-  const motivos = {};
-  let totalOcorrencias = 0;
-
-  dados.forEach(registro => {
-    const motivo = registro.motivo || 'Desconhecido';
-    motivos[motivo] = (motivos[motivo] || 0) + 1;
-    totalOcorrencias++;
-  });
-
-  return { motivos, totalOcorrencias };
 }
 
 function calcularPorcentagens(motivos, total) {
@@ -403,11 +433,7 @@ function exibirPreviewPDF(doc) {
   document.getElementById("modalPreview").style.display = "block";
 }
 
-// Funções de UI
-function mostrarAlerta(mensagem) {
-  alert(mensagem);
-}
-
+// Funções de UI para modais e PDF
 function abrirModalPDF() {
   document.getElementById("modalPDF").style.display = "block";
 }
@@ -428,7 +454,7 @@ function salvarPDF() {
   }
 }
 
-// Exportar funções para o HTML
+// Exporta funções para acesso global
 window.filtrarTabela = filtrarTabela;
 window.abrirModalPDF = abrirModalPDF;
 window.fecharModalPDF = fecharModalPDF;

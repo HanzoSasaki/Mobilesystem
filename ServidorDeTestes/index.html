@@ -1,60 +1,133 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Relatório de Erros</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>Margem Líquida Diária Realista</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      padding: 2rem;
+    }
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      background: #fff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    canvas {
+      margin-top: 30px;
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+  </style>
 </head>
-
 <body>
+  <div class="container">
+    <h2>Margem Líquida Diária (Realista)<br>Agosto 2024 a Fevereiro 2025</h2>
+    <canvas id="graficoMargem"></canvas>
+  </div>
 
+  <script>
+    const dias = [];
+    const valores = [];
 
-   
-<br>
-<br>
-<br>
-    
-    <div class="container">
-        <div class="buttons">
-            <button onclick="gerarPDF()">📄 Baixar Relatório PDF</button>
-           
-        </div>
+    const dadosMensais = {
+      '2024-08': 84000,
+      '2024-09': 78000,
+      '2024-10': 60000,
+      '2024-11': 62000,
+      '2024-12': 80000,
+      '2025-01': 61245.22,
+      '2025-02': 44534.66
+    };
 
-        <div class="table-container">
-            <table id="dataTable">
-                <thead>
-                    <tr>
-                        <th>ID do Pedido</th>
-                        <th>Data</th>
-                        <th>Motivo do Erro</th>
-                        <th>Especificação</th>
-                        <th>Status</th>
-                        <th>Loja</th>
-                        <th>Quantidade</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Os dados serão preenchidos dinamicamente -->
-                </tbody>
-            </table>
-        </div>
+    function gerarFlutuacaoDiaria(base, diasNoMes) {
+      const margens = [];
+      let totalGerado = 0;
 
-        <div class="chart-container">
-            <canvas id="myChart" width="400" height="200"></canvas>
-        </div>
-    </div>
+      for (let i = 0; i < diasNoMes; i++) {
+        // Cria uma flutuação entre -10% e +10%
+        const variacao = 1 + (Math.random() * 0.2 - 0.1);
+        const valorDia = base * variacao;
+        margens.push(valorDia);
+        totalGerado += valorDia;
+      }
 
-    <!-- Bibliotecas necessárias -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      // Corrige o total para bater exatamente com o mês
+      const fatorCorrecao = base * diasNoMes / totalGerado;
+      return margens.map(v => parseFloat((v * fatorCorrecao).toFixed(2)));
+    }
 
-    <!-- Script principal -->
-    <script src="script.js"></script>
-   
+    function gerarDiasEMargens() {
+      for (const mes in dadosMensais) {
+        const [ano, mesNum] = mes.split('-');
+        const diasNoMes = new Date(ano, mesNum, 0).getDate();
+        const base = dadosMensais[mes] / diasNoMes;
+        const margensFlutuantes = gerarFlutuacaoDiaria(base, diasNoMes);
+
+        for (let d = 1; d <= diasNoMes; d++) {
+          const dia = `${d.toString().padStart(2, '0')}/${mesNum}/${ano}`;
+          dias.push(dia);
+          valores.push(margensFlutuantes[d - 1]);
+        }
+      }
+    }
+
+    gerarDiasEMargens();
+
+    const ctx = document.getElementById('graficoMargem').getContext('2d');
+    const grafico = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: dias,
+        datasets: [{
+          label: 'Margem Líquida Diária (R$)',
+          data: valores,
+          fill: true,
+          borderColor: '#007BFF',
+          backgroundColor: 'rgba(0,123,255,0.1)',
+          tension: 0.3,
+          pointRadius: 2,
+          pointBackgroundColor: '#007BFF',
+          pointBorderColor: '#007BFF',
+          pointHoverRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: {
+            display: false
+          },
+          y: {
+            title: {
+              display: true,
+              text: 'R$ (Reais)'
+            }
+          }
+        },
+        plugins: {
+          title: {
+            display: true,
+            text: 'Distribuição Diária da Margem Líquida com Variação Realista',
+            font: {
+              size: 18
+            }
+          },
+          tooltip: {
+            callbacks: {
+              label: (context) => `R$ ${context.formattedValue}`
+            }
+          }
+        }
+      }
+    });
+  </script>
 </body>
-
 </html>
