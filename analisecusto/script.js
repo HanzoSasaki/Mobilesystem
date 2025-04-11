@@ -120,8 +120,8 @@ function calcularProjecaoMesAtual() {
         const box = projecaoEl.querySelector('.projecao-box');
         if (box) {
             box.innerHTML = `
-                📆 Média diária: ${formatarMoeda(mediaLucroLiquido)}<br>
-                📈 Projeção até dia ${diasNoMesAtual}: ${formatarMoeda(projecaoLucroLiquido)}
+                 Média diária: ${formatarMoeda(mediaLucroLiquido)}<br>
+                 Projeção até dia ${diasNoMesAtual}: ${formatarMoeda(projecaoLucroLiquido)}
             `;
         }
     }
