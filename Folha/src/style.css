@@ -8,11 +8,62 @@
   --fundo-modal: rgba(0, 0, 0, 0.8);
 }
 
+/* Resets básicos */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
+
+/* Estilos para o Modal */
+/* Os modais ficarão ocultos por padrão; quando precisar exibi-los, o JS deverá definir style.display = "flex" */
+.modal {
+  display: none; /* Oculto por padrão */
+  position: fixed;
+  z-index: 1000;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background: var(--fundo-modal);
+  justify-content: center;
+  align-items: center;
+}
+
+
+/* Estilos para o conteúdo do Modal */
+.modal-content {
+  background: var(--branco);
+  padding: 2rem;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 600px;
+  position: relative;
+  animation: modalEntrada 0.3s ease;
+  overflow-y: auto;
+  max-height: 80vh; /* Evita que o modal ultrapasse a altura da tela */
+}
+
+/* Animação para o modal */
+@keyframes modalEntrada {
+  from { transform: translateY(-20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Botão de fechar (×) */
+.fechar-modal {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--cinza-escuro);
+  background: none;
+  border: none;
+}
+
+/* Demais estilos do projeto */
 
 body {
   font-family: 'Segoe UI', system-ui, sans-serif;
@@ -35,19 +86,6 @@ header {
   left: 0;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
-
-@media (max-width: 768px) {
-  header {
-    font-size: 18px; /* Diminui o tamanho do texto no mobile */
-    padding: 15px;   /* Ajuste do padding para melhor espaçamento */
-  }
-
-  .home-button {
-    top: 50%;
-    left: 10px;   /* Ajuste a posição do ícone no mobile */
-  }
-}
-
 
 .home-button {
   position: absolute;
@@ -144,47 +182,6 @@ tr:nth-child(even) {
   gap: 0.5rem;
 }
 
-.modal {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: var(--fundo-modal);
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background: var(--branco);
-  padding: 2rem;
-  border-radius: 10px;
-  width: 90%;
-  max-width: 600px;
-  position: relative;
-  animation: modalEntrada 0.3s ease;
-  overflow-y: auto;
-  max-height: 80vh; /* Limitar altura para evitar que o modal ultrapasse a tela */
-}
-
-@keyframes modalEntrada {
-  from { transform: translateY(-20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-.fechar-modal {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: var(--cinza-escuro);
-  background: none;
-  border: none;
-}
-
 .form-group {
   margin-bottom: 1.5rem;
 }
@@ -230,7 +227,7 @@ input:focus, select:focus {
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-/* Ajustes para o modal em dispositivos móveis */
+/* Ajustes para dispositivos móveis */
 @media (max-width: 768px) {
   body {
       padding: 1rem;
@@ -245,8 +242,8 @@ input:focus, select:focus {
       padding: 1.5rem;
       width: 90%;
       max-width: 450px;
-      max-height: 80vh; /* Limitar altura do modal em telas menores */
-      overflow-y: auto; /* Habilitar rolagem se o conteúdo for grande */
+      max-height: 80vh;
+      overflow-y: auto;
   }
 
   .form-group {
@@ -276,8 +273,8 @@ footer {
   bottom: 0;
   left: 0;
   width: 100%;
-  background-color: #333; /* Cinza escuro do footer */
-  color: #fff; /* Cor do texto no footer */
+  background-color: #333;
+  color: #fff;
   text-align: center;
   padding: 10px;
   font-size: 14px;

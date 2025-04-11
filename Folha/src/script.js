@@ -3,6 +3,7 @@ function formatCurrency(value) {
     return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
 
+// Recupera os funcionários armazenados no localStorage ou inicia com array vazio
 let funcionarios = JSON.parse(localStorage.getItem("funcionarios")) || [];
 funcionarios = funcionarios.map(func => ({
     ...func,
@@ -258,7 +259,34 @@ function calcularIRRF(baseCalculo) {
     return Math.max((baseCalculo * faixa.aliquota) - faixa.deducao, 0);
 }
 
-// Geradores de PDF (Versões Corrigidas)
+// ------------------------------------------
+// Geradores de PDF com Visualização Prévia
+// ------------------------------------------
+
+// Variável global para armazenar a URL do PDF gerado temporariamente
+let pdfDataUri = '';
+
+function abrirModalPreview(dataUri) {
+    pdfDataUri = dataUri;
+    const modal = document.getElementById('modalPreview');
+    const iframe = document.getElementById('pdfPreviewFrame');
+    iframe.src = pdfDataUri;
+    modal.style.display = 'flex';
+}
+
+function fecharModalPreview() {
+    const modal = document.getElementById('modalPreview');
+    modal.style.display = 'none';
+}
+
+function baixarPDF() {
+    const link = document.createElement('a');
+    link.href = pdfDataUri;
+    link.download = 'documento.pdf'; // Você pode personalizar o nome do arquivo
+    link.click();
+    fecharModalPreview();
+}
+
 function gerarHolerite(index) {
     const { jsPDF } = window.jspdf;
     const func = funcionarios[index];
@@ -320,7 +348,7 @@ function gerarHolerite(index) {
     doc.setFontSize(10);
     doc.text(`Eu, ${func.nome}, declaro estar ciente que:`, 20, finalY);
     doc.text(`- Meu valor líquido é de ${formatCurrency(calculo.totalLiquido)}`, 20, finalY + 5);
-    doc.text(`- Total de horas extras: ${calculo.detalhes.totalHorasExtras}h`, 20, finalY + 10);
+    doc.text(`- Total de horas extras: ${calculo.detalhes.totalHorasExtras || 0}h`, 20, finalY + 10);
     doc.text(`- Valor total das horas extras: ${formatCurrency(calculo.detalhes.valorTotalHE)}`, 20, finalY + 15);
     doc.text(`- Bonificação: ${formatCurrency(calculo.detalhes.bonificacao)}`, 20, finalY + 20);
 
@@ -356,9 +384,10 @@ function gerarHolerite(index) {
         { align: "center", maxWidth: 170 }
     );
 
-    doc.save(`Holerite_${func.nome}_${dataAtual.replace(/\//g, '-')}.pdf`);
+    // Ao invés de salvar imediatamente, gera a Data URI para pré-visualização
+    const dataUri = doc.output('datauristring');
+    abrirModalPreview(dataUri);
 }
-
 
 function gerarNotaHoraExtra(index) {
     const { jsPDF } = window.jspdf;
@@ -445,23 +474,20 @@ function gerarNotaHoraExtra(index) {
     doc.text(`Total de Horas Extras: ${formatCurrency(totalValorExtras)}`, 20, posY);
     doc.setTextColor(0, 0, 0);
   
-    // Espaço reservado para não interferir com a área de assinatura (deixa o conteúdo acima mais "limpo")
-    // Vamos posicionar a área de assinaturas próximo à parte inferior da página
+    // Espaço reservado para a área de assinaturas
     const signatureY = 230;
-  
-    // Área de assinaturas na parte inferior
     doc.setFontSize(11);
     doc.setFont("helvetica", "normal");
     
     // Linha e campo para "Nome do Responsável"
     doc.text("Nome do Responsável:", 20, signatureY);
-    doc.line(70, signatureY + 2, 190, signatureY + 2); // linha para assinatura do responsável
+    doc.line(70, signatureY + 2, 190, signatureY + 2);
     
     // Linha e campo para "Assinatura do Funcionário"
     doc.text("Assinatura do Funcionário:", 20, signatureY + 20);
-    doc.line(75, signatureY + 22, 190, signatureY + 22); // linha para assinatura do funcionário
+    doc.line(75, signatureY + 22, 190, signatureY + 22);
     
-    // Nome do Funcionário abaixo da linha de assinatura do funcionário
+    // Nome do Funcionário abaixo da linha de assinatura
     doc.text(`Nome do Funcionário: ${func.nome}`, 20, signatureY + 35);
   
     // Rodapé informativo
@@ -478,10 +504,11 @@ function gerarNotaHoraExtra(index) {
     doc.line(20, rodapeY - 10, 190, rodapeY - 10);
     doc.text("Nota gerada automaticamente.", 105, rodapeY, { align: "center" });
   
-    doc.save(`NotaHoraExtra_${func.nome}_${dataAtual.replace(/\//g, '-')}.pdf`);
-  }
+    // Gera a Data URI para pré-visualização ao invés de salvar imediatamente
+    const dataUri = doc.output('datauristring');
+    abrirModalPreview(dataUri);
+}
   
-
 // Funções Auxiliares
 function getFifthBusinessDay(year, month) {
     let count = 0;
