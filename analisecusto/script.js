@@ -101,6 +101,11 @@ function calcularProjecaoMesAtual() {
         return;
     }
 
+    // Zera a projeção no dia 1 do mês
+    if (diaAtual === 1) {
+        localStorage.setItem("projecao", 0);
+    }
+
     // Média diária
     const mediaLucroBruto = lucroBruto / diaAtual;
     const mediaLucroLiquido = lucroLiquido / diaAtual;
@@ -125,6 +130,22 @@ function calcularProjecaoMesAtual() {
             `;
         }
     }
+}
+
+const hoje = new Date();
+const mesAtual = hoje.getMonth();
+const anoAtual = hoje.getFullYear();
+
+const ultimoMesSalvo = localStorage.getItem("ultimoMesSalvo");
+const ultimoAnoSalvo = localStorage.getItem("ultimoAnoSalvo");
+
+// Se mudou o mês ou o ano, resetar dados
+if (ultimoMesSalvo != mesAtual || ultimoAnoSalvo != anoAtual) {
+    localStorage.setItem("ultimoMesSalvo", mesAtual);
+    localStorage.setItem("ultimoAnoSalvo", anoAtual);
+
+    // Zera a projeção ou outros dados relacionados ao mês anterior
+    localStorage.setItem("projecao", 0);
 }
 
 
