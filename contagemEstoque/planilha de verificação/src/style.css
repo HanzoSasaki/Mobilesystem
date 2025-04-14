@@ -1,0 +1,184 @@
+:root {
+    --cor-primaria: #333333;
+    --cor-secundaria: #f5f5f5;
+    --cor-texto: #333333;
+    --cor-fundo: #ffffff;
+    --cor-borda: #e0e0e0;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    margin: 0;
+    padding: 2rem;
+    background: var(--cor-fundo);
+    color: var(--cor-texto);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+h1 {
+    text-align: center;
+    color: var(--cor-primaria);
+    margin-bottom: 2rem;
+    font-size: 2.25rem;
+    letter-spacing: -0.5px;
+}
+
+.controles {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+
+/* Grupo de datas */
+.grupo-data {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    background: var(--cor-secundaria);
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--cor-borda);
+}
+
+/* Input de data */
+input[type="date"] {
+    padding: 0.75rem;
+    background: white;
+    border: 2px solid var(--cor-borda);
+    border-radius: 6px;
+    color: var(--cor-texto);
+    font-size: 1rem;
+    transition: all 0.2s ease;
+}
+
+input[type="date"]:hover {
+    border-color: var(--cor-primaria);
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(0.3);
+    padding: 4px;
+    cursor: pointer;
+}
+
+/* Botões */
+button {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1rem;
+    font-weight: 500;
+    background: var(--cor-primaria);
+    color: white;
+}
+
+button:hover {
+    filter: brightness(1.15);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+/* Chips de data */
+.chips-data {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.chip {
+    background: var(--cor-primaria);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.chip button {
+    padding: 0;
+    background: none;
+    color: white;
+    font-size: 1.2rem;
+    line-height: 1;
+}
+
+/* Tabela */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 1rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+th, td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--cor-borda);
+}
+
+th {
+    background: var(--cor-primaria);
+    color: white;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+tr:hover {
+    background: var(--cor-secundaria);
+}
+
+/* Loading */
+.loading {
+    text-align: center;
+    padding: 2rem;
+    font-size: 1.2rem;
+    color: var(--cor-primaria);
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    body {
+        padding: 1.5rem;
+    }
+
+    .controles {
+        gap: 0.75rem;
+    }
+
+    button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .grupo-data {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    input[type="date"] {
+        width: 100%;
+    }
+
+    th, td {
+        padding: 0.875rem;
+    }
+}

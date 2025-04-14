@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizador de Planilha Avançado</title>
+    <link rel="stylesheet" href="src/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Visualizador de Planilha</h1>
+        
+        <div class="controles">
+            <div class="grupo-data">
+                <input type="date" id="dateInput">
+                <div class="chips-data" id="chipsData"></div>
+            </div>
+            
+            <button class="btn-primario" onclick="carregarDados()">
+                🔄 Atualizar Dados
+            </button>
+            
+            <button 
+            class="btn-secundario" 
+            onclick="window.open('https://docs.google.com/spreadsheets/d/1A9FqMpFmb1Bymjamze7kDZ-6cWtAf33_GZfaWcJWdKo/edit?gid=0#gid=0', '_blank')"
+        >
+            🔗 Abrir Planilha Original
+        </button>
+            
+            <button class="btn-primario" onclick="baixarPlanilhaCompleta()">
+                ⬇️ Baixar em excel
+            </button>
+            
+            <button class="btn-secundario" onclick="limparFiltro()">
+                🧹 Limpar Filtro
+            </button>
+        </div>
+
+        <div class="loading">Carregando dados...</div>
+        <table id="dataTable">
+            <thead>
+                <tr>
+                    <th>SKU</th>
+                    <th>Produto</th>
+                    <th>Estoque</th>
+                    <th>Data</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <script src="src/script.js"></script>
+ 
+</body>
+</html>
