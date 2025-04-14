@@ -173,22 +173,32 @@ function renderizarMeses() {
     container.innerHTML = '';
 
     dados.meses.forEach((mes, index) => {
-        if (dados.lucroBruto[index] === null && dados.lucroLiquido[index] === null) return;
+        const lucroBruto = dados.lucroBruto[index];
+        const custos = dados.custos[index];
+        const lucroLiquido = dados.lucroLiquido[index];
+
+        if (lucroBruto === null && lucroLiquido === null) return;
+
+        // 👉 Cálculo da Margem Limpa
+        const margemLimpa = (lucroBruto !== null && custos !== null)
+            ? lucroBruto - custos
+            : null;
 
         const mesDiv = document.createElement('div');
         mesDiv.className = 'mes-card';
         mesDiv.innerHTML = `
             <h3>${mes}</h3>
             <div class="detalhes-mes">
-                <p>💰 Lucro Bruto: ${formatarMoeda(dados.lucroBruto[index])}</p>
-                <p>💵 Lucro Líquido: ${formatarMoeda(dados.lucroLiquido[index])}</p>
-                <p>📉 Custos: ${formatarMoeda(dados.custos[index])}</p>
+                <p>💰 Lucro Bruto: ${formatarMoeda(lucroBruto)}</p>
+                <p>💵 Lucro Líquido: ${formatarMoeda(lucroLiquido)}</p>
+                <p>📉 Custos: ${formatarMoeda(custos)}</p>
+                <p>📊 Margem Limpa: ${formatarMoeda(margemLimpa)}</p>
                 <br>
                 <div class="variacoes">
                     <h3>Comparação com o mês anterior:</h3>
-                    <p>📈 Variação margem: ${calcularVariacao(dados.lucroLiquido[index], dados.lucroLiquido[index - 1])}</p>
+                    <p>📈 Variação margem: ${calcularVariacao(lucroLiquido, dados.lucroLiquido[index - 1])}</p>
                     <p>📅 Variação Custos: ${calcularVariacaoAjustada(
-                        dados.custos[index],
+                        custos,
                         dados.custos[index - 1],
                         dados.diasNoMes[index],
                         dados.diasNoMes[index - 1]
@@ -199,6 +209,7 @@ function renderizarMeses() {
         container.appendChild(mesDiv);
     });
 }
+
 
 function calcularTotais() {
     const total = (arr) => arr.reduce((acc, val) => (val !== null ? acc + val : acc), 0);
