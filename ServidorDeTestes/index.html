@@ -1,131 +1,126 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Margem Líquida Diária Realista</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cadastro de Produtos</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      padding: 2rem;
-    }
-    .container {
-      max-width: 1200px;
+      background: #f4f4f4;
+      padding: 20px;
+      max-width: 500px;
       margin: auto;
-      background: #fff;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-    canvas {
-      margin-top: 30px;
-    }
-    h2 {
+    h1 {
       text-align: center;
       color: #333;
+    }
+    form {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      color: #555;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px;
+      width: 100%;
+      background: #007BFF;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .success {
+      color: green;
+      margin-top: 15px;
+      text-align: center;
+    }
+    .error {
+      color: red;
+      margin-top: 15px;
+      text-align: center;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Margem Líquida Diária (Realista)<br>Agosto 2024 a Fevereiro 2025</h2>
-    <canvas id="graficoMargem"></canvas>
-  </div>
+  <h1>Cadastro de Produtos</h1>
+  <form id="form">
+    <label for="sku">SKU:</label>
+    <input type="text" id="sku" name="sku" required />
+
+    <label for="produto">Produto:</label>
+    <input type="text" id="produto" name="produto" required />
+
+    <label for="estoque">Estoque:</label>
+    <input type="number" id="estoque" name="estoque" required />
+
+    <button type="submit">Enviar</button>
+    <div id="mensagem"></div>
+  </form>
 
   <script>
-    const dias = [];
-    const valores = [];
+    const form = document.getElementById('form');
+    const mensagem = document.getElementById('mensagem');
 
-    const dadosMensais = {
-      '2024-08': 84000,
-      '2024-09': 78000,
-      '2024-10': 60000,
-      '2024-11': 62000,
-      '2024-12': 80000,
-      '2025-01': 61245.22,
-      '2025-02': 44534.66
-    };
+    // ✅ Substitua abaixo pelo SEU LINK DO WEB APP
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbycYvAlukwzeGm_LWX2_P3uuWTzUG1DvunzcAOdi1Hx7xc9V9ZsJh-5HkK6zsztj72V/exec';
 
-    function gerarFlutuacaoDiaria(base, diasNoMes) {
-      const margens = [];
-      let totalGerado = 0;
 
-      for (let i = 0; i < diasNoMes; i++) {
-        // Cria uma flutuação entre -10% e +10%
-        const variacao = 1 + (Math.random() * 0.2 - 0.1);
-        const valorDia = base * variacao;
-        margens.push(valorDia);
-        totalGerado += valorDia;
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const sku = document.getElementById('sku').value.trim();
+      const produto = document.getElementById('produto').value.trim();
+      const estoque = document.getElementById('estoque').value.trim();
+
+      if (!sku || !produto || !estoque) {
+        mensagem.textContent = 'Preencha todos os campos.';
+        mensagem.className = 'error';
+        return;
       }
 
-      // Corrige o total para bater exatamente com o mês
-      const fatorCorrecao = base * diasNoMes / totalGerado;
-      return margens.map(v => parseFloat((v * fatorCorrecao).toFixed(2)));
-    }
+      const dados = { sku, produto, estoque };
 
-    function gerarDiasEMargens() {
-      for (const mes in dadosMensais) {
-        const [ano, mesNum] = mes.split('-');
-        const diasNoMes = new Date(ano, mesNum, 0).getDate();
-        const base = dadosMensais[mes] / diasNoMes;
-        const margensFlutuantes = gerarFlutuacaoDiaria(base, diasNoMes);
-
-        for (let d = 1; d <= diasNoMes; d++) {
-          const dia = `${d.toString().padStart(2, '0')}/${mesNum}/${ano}`;
-          dias.push(dia);
-          valores.push(margensFlutuantes[d - 1]);
-        }
-      }
-    }
-
-    gerarDiasEMargens();
-
-    const ctx = document.getElementById('graficoMargem').getContext('2d');
-    const grafico = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: dias,
-        datasets: [{
-          label: 'Margem Líquida Diária (R$)',
-          data: valores,
-          fill: true,
-          borderColor: '#007BFF',
-          backgroundColor: 'rgba(0,123,255,0.1)',
-          tension: 0.3,
-          pointRadius: 2,
-          pointBackgroundColor: '#007BFF',
-          pointBorderColor: '#007BFF',
-          pointHoverRadius: 4
-        }]
-      },
-      options: {
-        responsive: true,
-        scales: {
-          x: {
-            display: false
+      try {
+        const response = await fetch(scriptURL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
           },
-          y: {
-            title: {
-              display: true,
-              text: 'R$ (Reais)'
-            }
-          }
-        },
-        plugins: {
-          title: {
-            display: true,
-            text: 'Distribuição Diária da Margem Líquida com Variação Realista',
-            font: {
-              size: 18
-            }
-          },
-          tooltip: {
-            callbacks: {
-              label: (context) => `R$ ${context.formattedValue}`
-            }
-          }
+          body: JSON.stringify(dados)
+        });
+
+        const texto = await response.text();
+
+        if (response.ok) {
+          mensagem.textContent = 'Dados enviados com sucesso!';
+          mensagem.className = 'success';
+          form.reset();
+        } else {
+          throw new Error(texto);
         }
+      } catch (error) {
+        mensagem.textContent = 'Erro ao enviar: ' + error.message;
+        mensagem.className = 'error';
       }
     });
   </script>
