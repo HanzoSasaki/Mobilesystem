@@ -1,128 +1,49 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Cadastro de Produtos</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
-      padding: 20px;
-      max-width: 500px;
-      margin: auto;
-    }
-    h1 {
-      text-align: center;
-      color: #333;
-    }
-    form {
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    label {
-      display: block;
-      margin-top: 10px;
-      color: #555;
-    }
-    input {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      box-sizing: border-box;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-    button {
-      margin-top: 20px;
-      padding: 10px;
-      width: 100%;
-      background: #007BFF;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    button:hover {
-      background: #0056b3;
-    }
-    .success {
-      color: green;
-      margin-top: 15px;
-      text-align: center;
-    }
-    .error {
-      color: red;
-      margin-top: 15px;
-      text-align: center;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Cadastro de Produtos</title>
+    <link rel="stylesheet" href="style.css"> <!-- Link para seu arquivo CSS -->
 </head>
 <body>
-  <h1>Cadastro de Produtos</h1>
-  <form id="form">
-    <label for="sku">SKU:</label>
-    <input type="text" id="sku" name="sku" required />
+    <h1>Cadastro de Produtos</h1>
+    
+    <!-- Formulário Principal -->
+    <form id="form">
+        <label for="sku">SKU:</label>
+        <input type="text" id="sku" name="sku" required>
 
-    <label for="produto">Produto:</label>
-    <input type="text" id="produto" name="produto" required />
+        <label for="produto">Produto:</label>
+        <input type="text" id="produto" name="produto" required>
 
-    <label for="estoque">Estoque:</label>
-    <input type="number" id="estoque" name="estoque" required />
+        <label for="estoque">Estoque:</label>
+        <input type="number" id="estoque" name="estoque" required>
 
-    <button type="submit">Enviar</button>
-    <div id="mensagem"></div>
-  </form>
+        <button type="submit">Cadastrar Produto</button>
+        <div id="mensagem"></div> <!-- Container para mensagens de erro -->
+    </form>
 
-  <script>
-    const form = document.getElementById('form');
-    const mensagem = document.getElementById('mensagem');
+    <!-- Animação de Sucesso -->
+    <div id="animacao" class="success-message">
+        ✔ Item Cadastrado!
+    </div>
 
-    // ✅ Substitua abaixo pelo SEU LINK DO WEB APP
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbycYvAlukwzeGm_LWX2_P3uuWTzUG1DvunzcAOdi1Hx7xc9V9ZsJh-5HkK6zsztj72V/exec';
+    <!-- Histórico de Cadastros -->
+    <div class="historico-container">
+        <h2 class="historico-title">Últimos Cadastros (24h)</h2>
+        <ul class="historico-list" id="historicoList">
+            <!-- Itens do histórico serão inseridos aqui via JavaScript -->
+        </ul>
+    </div>
 
+    <!-- Ícone para Exclusão (SVG Oculto) -->
+    <svg style="display: none;">
+        <symbol id="icon-lixeira" viewBox="0 0 24 24">
+            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+        </symbol>
+    </svg>
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const sku = document.getElementById('sku').value.trim();
-      const produto = document.getElementById('produto').value.trim();
-      const estoque = document.getElementById('estoque').value.trim();
-
-      if (!sku || !produto || !estoque) {
-        mensagem.textContent = 'Preencha todos os campos.';
-        mensagem.className = 'error';
-        return;
-      }
-
-      const dados = { sku, produto, estoque };
-
-      try {
-        const response = await fetch(scriptURL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(dados)
-        });
-
-        const texto = await response.text();
-
-        if (response.ok) {
-          mensagem.textContent = 'Dados enviados com sucesso!';
-          mensagem.className = 'success';
-          form.reset();
-        } else {
-          throw new Error(texto);
-        }
-      } catch (error) {
-        mensagem.textContent = 'Erro ao enviar: ' + error.message;
-        mensagem.className = 'error';
-      }
-    });
-  </script>
+    <script src="script.js"></script> <!-- Link para seu arquivo JavaScript -->
 </body>
 </html>

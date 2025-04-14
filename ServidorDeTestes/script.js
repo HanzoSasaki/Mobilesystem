@@ -1,202 +1,201 @@
-// Variáveis globais para armazenar o motivo de erro com maior ocorrência e o total de ocorrências
-let motivoMaisFrequente = "";
-let maiorCount = 0;
-let totalOcorrencias = 0;
+// Elementos do sistema
+const form = document.getElementById('form');
+if (!form) throw new Error('Formulário não encontrado!');
 
-document.addEventListener("DOMContentLoaded", function () {
-  carregarDadosPlanilha();
+const btnEnviar = form.querySelector('button[type="submit"]');
+const animacaoSucesso = document.getElementById('animacao');
+const mensagemErro = document.getElementById('mensagem');
+const historicoList = document.getElementById('historicoList');
+
+// Verificação de elementos essenciais
+const elementosObrigatorios = {
+    sku: document.getElementById('sku'),
+    produto: document.getElementById('produto'),
+    estoque: document.getElementById('estoque')
+};
+
+// Verificar se todos os campos existem
+Object.entries(elementosObrigatorios).forEach(([nome, elemento]) => {
+    if (!elemento) {
+        throw new Error(`Campo '${nome}' não encontrado! Verifique o ID no HTML.`);
+    }
 });
 
-// URL da sua planilha pública no formato CSV
-const planilhaURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTxtg1eIAjlrA3A064lmdbR9-AczKj-ngXntN6Up1a4hQx-jTAeMV8pK406GmNXRQY3PtvtnE87PQVQ/pub?output=csv";
+// Configuração dos campos (agora seguro)
+const campos = elementosObrigatorios;
 
-// Função para carregar os dados da planilha
-function carregarDadosPlanilha() {
-  fetch(planilhaURL)
-      .then(response => response.text())
-      .then(data => {
-          const linhas = data.split("\n").map(linha => linha.split(","));
-          preencherTabela(linhas.slice(1)); // Remove cabeçalhos
-          gerarGrafico(linhas.slice(1));
-      })
-      .catch(error => console.error("Erro ao carregar a planilha:", error));
-}
+// ... (o restante do código permanece igual ao anterior)
+// Configuração do Web App
 
-// Preencher a tabela HTML com os dados da planilha
-function preencherTabela(linhas) {
-  const tabela = document.getElementById("dataTable").getElementsByTagName('tbody')[0];
-  tabela.innerHTML = ""; // Limpa a tabela antes de preencher
+const scriptURL = 'https://script.google.com/macros/s/AKfycbyKD3AGd_vwN4Jus6jD78z1tssYZrvguxpCo5TC8vCU2BksHr14KXSEKUINaiVein6x/exec';
+// Configurações do histórico
+const HISTORICO_KEY = 'cadastros_recentes';
+const VINTE_E_QUATRO_HORAS = 86400000;
+const LIMITE_REGISTROS = 50;
 
-  linhas.forEach(linha => {
-      let novaLinha = tabela.insertRow();
-      let id = linha[0] || "N/A";
-      let data = linha[1] || "N/A";
-      let motivo = linha[2] || "N/A";
-      let especificacao = linha[3] || "N/A";
-      let status = linha[4] || "N/A";
-      let loja = linha[5] || "N/A";
-      let quantidade = linha[6] || "N/A";
+// Controle de estado
+let isEnviando = false;
 
-      novaLinha.innerHTML = `
-          <td>${id}</td>
-          <td>${data}</td>
-          <td>${motivo}</td>
-          <td>${especificacao}</td>
-          <td>${status}</td>
-          <td>${loja}</td>
-          <td>${quantidade}</td>
-      `;
-  });
-}
+// Funções de histórico
+const salvarNoHistorico = (dados) => {
+    const historico = JSON.parse(localStorage.getItem(HISTORICO_KEY)) || [];
+    historico.unshift({
+        ...dados,
+        timestamp: Date.now()
+    });
+    localStorage.setItem(HISTORICO_KEY, JSON.stringify(historico.slice(0, LIMITE_REGISTROS)));
+};
 
-// Gerar gráfico de motivos de erro mais frequentes
-function gerarGrafico(linhas) {
-  const motivos = {};
+const carregarHistorico = () => {
+    const historico = JSON.parse(localStorage.getItem(HISTORICO_KEY)) || [];
+    return historico.filter(item => (Date.now() - item.timestamp) < VINTE_E_QUATRO_HORAS);
+};
 
-  linhas.forEach(linha => {
-      let motivo = linha[2] || "Desconhecido";
-      motivos[motivo] = (motivos[motivo] || 0) + 1;
-  });
+const formatarData = (timestamp) => {
+    return new Date(timestamp).toLocaleDateString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+};
 
-  // Calcula o total de ocorrências e identifica o motivo com maior ocorrência
-  motivoMaisFrequente = "";
-  maiorCount = 0;
-  totalOcorrencias = 0;
-  for (let motivo in motivos) {
-    totalOcorrencias += motivos[motivo];
-    if (motivos[motivo] > maiorCount) {
-      maiorCount = motivos[motivo];
-      motivoMaisFrequente = motivo;
+const excluirDoHistorico = (timestamp) => {
+    const historico = JSON.parse(localStorage.getItem(HISTORICO_KEY)) || [];
+    const novoHistorico = historico.filter(item => item.timestamp !== timestamp);
+    localStorage.setItem(HISTORICO_KEY, JSON.stringify(novoHistorico));
+    atualizarListaHistorico();
+};
+
+const atualizarListaHistorico = () => {
+    const historico = carregarHistorico();
+    
+    historicoList.innerHTML = historico.map(item => `
+        <li class="historico-item" data-timestamp="${item.timestamp}">
+            <div class="historico-info">
+                <strong>${item.sku}</strong> - ${item.produto}
+                <div>Estoque: ${item.estoque}</div>
+            </div>
+            <div class="historico-actions">
+                <div class="historico-time">${formatarData(item.timestamp)}</div>
+                <button class="btn-delete" title="Excluir registro">
+                    🗑️
+                </button>
+            </div>
+        </li>
+    `).join('');
+
+    // Eventos para botões de exclusão
+    document.querySelectorAll('.btn-delete').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const timestamp = Number(btn.closest('.historico-item').dataset.timestamp);
+            mostrarFeedback.confirmarExclusao(() => {
+                excluirDoHistorico(timestamp);
+            });
+        });
+    });
+};
+
+// Sistema de feedback
+const mostrarFeedback = {
+    sucesso: (dados) => {
+        animacaoSucesso.style.display = 'block';
+        salvarNoHistorico(dados);
+        atualizarListaHistorico();
+        
+        setTimeout(() => {
+            animacaoSucesso.style.display = 'none';
+            form.reset();
+        }, 2000);
+    },
+    
+    erro: (mensagem) => {
+        mensagemErro.textContent = mensagem;
+        mensagemErro.className = 'error';
+        setTimeout(() => {
+            mensagemErro.textContent = '';
+            mensagemErro.className = '';
+        }, 5000);
+    },
+    
+    confirmarExclusao: (callback) => {
+        if (confirm('Deseja excluir este registro permanentemente?')) {
+            callback();
+        }
     }
-  }
+};
 
-  const ctx = document.getElementById("myChart").getContext("2d");
+// Validação do formulário
+const validarFormulario = () => {
+    let valido = true;
+    
+    Object.values(campos).forEach(campo => {
+        const valor = campo.value.trim();
+        if (!valor) {
+            campo.classList.add('error');
+            valido = false;
+        } else {
+            campo.classList.remove('error');
+        }
+    });
+    
+    return valido;
+};
 
-  new Chart(ctx, {
-      type: "bar",
-      data: {
-          labels: Object.keys(motivos),
-          datasets: [{
-              label: "Ocorrências",
-              data: Object.values(motivos),
-              backgroundColor: "#007BFF",
-              borderColor: "#0056b3",
-              borderWidth: 1
-          }]
-      },
-      options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-              y: {
-                  beginAtZero: true
-              }
-          }
-      }
-  });
-}
+// Evento de envio
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (isEnviando) return;
 
-// Função para gerar o PDF do relatório (versão aprimorada)
-function gerarPDF() {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF('p', 'pt', 'a4');
-  
-  // Configurações gerais
-  const margin = 40;
-  let yPos = margin;
-  const pageWidth = doc.internal.pageSize.getWidth();
-  
-  // Cabeçalho profissional
-  doc.setFillColor(0, 123, 255);
-  doc.rect(0, 0, pageWidth, 60, 'F');
-  doc.setFontSize(18);
-  doc.setTextColor(255);
-  doc.text("Relatório de Taxa de Erros e Devolução", margin, 40);
-  
-  // Data formatada
-  const dataFormatada = new Date().toLocaleDateString("pt-BR", {
-      day: '2-digit',
-      month: 'long',
-      year: 'numeric'
-  });
-  
-  // Informações do relatório
-  doc.setTextColor(0);
-  doc.setFontSize(11);
-  yPos += 30;
-  doc.text(`Data do relatório: ${dataFormatada}`, margin, yPos);
-  doc.text(`Total de ocorrências: ${totalOcorrencias}`, pageWidth - margin - 100, yPos, { align: 'right' });
-  
-  // Seção de insights
-  yPos += 30;
-  doc.setFontSize(14);
-  doc.setTextColor(0, 123, 255);
-  doc.text("Principais Insights", margin, yPos);
-  
-  // Box de destaque
-  yPos += 20;
-  const porcentagem = totalOcorrencias > 0 ? ((maiorCount / totalOcorrencias) * 100).toFixed(2) : 0;
-  const insights = [
-      `Motivo mais frequente: ${motivoMaisFrequente}`,
-      `Ocorrências: ${maiorCount} (${porcentagem}%)`,
-      `Total geral de registros: ${totalOcorrencias}`
-  ];
-  
-  doc.setFillColor(240, 248, 255);
-  doc.rect(margin, yPos - 10, pageWidth - 2 * margin, 50, 'F');
-  doc.setFontSize(12);
-  doc.setTextColor(0);
-  insights.forEach((text, index) => {
-      doc.text(text, margin + 10, yPos + (index * 15));
-  });
-  
-  // Seção do gráfico
-  yPos += 80;
-  doc.setFontSize(14);
-  doc.setTextColor(0, 123, 255);
-  doc.text("Distribuição de Ocorrências", margin, yPos);
-  
-  // Adiciona gráfico
-  const canvas = document.getElementById("myChart");
-  if (canvas) {
-      const imgData = canvas.toDataURL("image/png", 1.0);
-      const imgWidth = pageWidth - 2 * margin;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      doc.addImage(imgData, 'PNG', margin, yPos + 10, imgWidth, imgHeight);
-      yPos += imgHeight + 30;
-  }
-  
-  // Tabela de dados
-  doc.setFontSize(14);
-  doc.setTextColor(0, 123, 255);
-  doc.text("Detalhamento das Ocorrências", margin, yPos);
-  
-  doc.autoTable({
-      html: "#dataTable",
-      startY: yPos + 10,
-      margin: { left: margin, right: margin },
-      headStyles: { 
-          fillColor: [0, 123, 255],
-          textColor: 255,
-          fontSize: 10
-      },
-      bodyStyles: { fontSize: 9 },
-      styles: { overflow: 'linebreak' },
-      columnStyles: {
-          0: { cellWidth: 40 },
-          1: { cellWidth: 60 },
-          6: { cellWidth: 30 }
-      },
-      theme: 'grid'
-  });
-  
-  // Rodapé
-  const finalY = doc.lastAutoTable.finalY + 20;
-  doc.setFontSize(10);
-  doc.setTextColor(100);
-  doc.text("Relatório gerado automaticamente pelo sistema - Confidencial", margin, finalY);
-  doc.text(`Página 1/1`, pageWidth - margin, finalY, { align: 'right' });
-  
-  // Salva o PDF
-  doc.save(`Relatorio_Erros_${dataFormatada.replace(/\//g, '-')}.pdf`);
-}
+    isEnviando = true;
+    btnEnviar.classList.add('loading');
+
+    try {
+        if (!validarFormulario()) {
+            throw new Error('Preencha todos os campos corretamente!');
+        }
+
+        const dadosEnviados = {
+            sku: campos.sku.value.trim(),
+            produto: campos.produto.value.trim(),
+            estoque: campos.estoque.value.trim()
+        };
+
+        const formData = new FormData();
+        Object.entries(dadosEnviados).forEach(([key, value]) => {
+            formData.append(key, value);
+        });
+
+        const response = await fetch(scriptURL, {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!response.ok) throw new Error('Falha na comunicação com o servidor');
+
+        mostrarFeedback.sucesso(dadosEnviados);
+    } catch (error) {
+        mostrarFeedback.erro(error.message);
+        console.error('Erro:', error);
+    } finally {
+        isEnviando = false;
+        btnEnviar.classList.remove('loading');
+    }
+});
+
+// Validação em tempo real
+Object.values(campos).forEach(campo => {
+    campo.addEventListener('input', () => {
+        if (campo.value.trim()) {
+            campo.classList.remove('error');
+        }
+    });
+});
+
+// Inicialização
+document.addEventListener('DOMContentLoaded', () => {
+    atualizarListaHistorico();
+    setInterval(atualizarListaHistorico, 60000); // Atualiza a cada minuto
+});
