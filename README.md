@@ -1,70 +1,67 @@
-# Power Análise Personalizada - FashShop
+# 📦 Sistema de Análise e Gestão de Vendas
 
-## Visão Geral
-Este repositório contém o código-fonte e a documentação do sistema **Power Análise Personalizada**, desenvolvido para a empresa **FashShop**. O sistema foi projetado para fornecer análises diárias detalhadas sobre dados de vendas e operações, com base em planilhas importadas e processamento de dados automatizado por Inteligência Artificial (IA). 
+Bem-vindo ao sistema definitivo para **controle, análise e automação de vendas online**. Com foco em performance, clareza e eficiência, este projeto foi pensado para pequenos e médios empreendedores que atuam em plataformas como **Shopee** e **Mercado Livre**.
 
-> **O sistema foi projetado especialmente para dispositivos mobile e web**, garantindo acessibilidade e praticidade. Atualizações diárias ocorrem sempre às **15h**.
+---
 
-## Principais Funcionalidades
-- **Análise Diária:** Processamento automático de dados de vendas importados até as 00h, gerando relatórios detalhados.
-- **Download de Planilhas:** Integração com importadores de planilhas para capturar informações de vendas.
-- **Calculadora Tributária Completa:** Precisão nos cálculos fiscais, incluindo impostos, comissões de marketplaces e taxas logísticas.
-- **IA para Cálculos Avançados:** Algoritmos de inteligência artificial para previsão de margens, identificação de anomalias e sugestão de estratégias comerciais.
-- **Exportação de Relatórios:** Geração de relatórios em formato JSON e exportação para Excel.
-- **Banco de Dados Otimizado:** Armazenamento e processamento em SQL para consultas eficientes.
+## ⚙️ Funcionalidades Principais
 
-## Tecnologias Utilizadas
-- **Frontend:** JavaScript (JS) e TypeScript (TS) para interfaces responsivas.
-- **Backend:** Node.js para processamento server-side e manipulação de dados.
-- **Banco de Dados:** SQL para armazenamento seguro e eficiente.
-- **Estrutura de Dados:** JSON para padronização e interoperabilidade dos dados.
-- **IA:** Algoritmos personalizados para análise preditiva.
+### 🔍 Análise Diária de Vendas (Shopee)
+- Acompanhamento venda a venda
+- Separação automática de:
+  - Impostos
+  - Taxas
+  - Custos operacionais
+- Exibição da **margem líquida real** por item
 
+---
 
-## Estrutura do Projeto
-```
-root
-├── src
-│   ├── controllers
-│   ├── models
-│   ├── routes
-│   ├── services
-│   └── utils
-├── database
-├── public
-├── .env
-├── package.json
-└── README.md
-```
+### 📈 Calculadoras Inteligentes
+- 💰 **Precificação automática**
+- 🧾 **Cálculo tributário** conforme regime fiscal
+- 🛒 **Simulador exclusivo para Mercado Livre**, com regras e comissões atualizadas
 
-## Uso
-1. Acesse a interface do sistema em `http://localhost:3000`.
-2. Faça o upload das planilhas de dados diários até as 00h.
-3. Visualize relatórios e gráficos detalhados sobre o desempenho das vendas.
-4. Utilize a calculadora tributária para previsão de custos e margens.
+---
 
-## Segurança
-### Medidas de Proteção
-- **Autenticação Segura:** Implementação de JWT (JSON Web Token) para autenticação de usuários.
-- **Proteção de Dados:** Criptografia para armazenamento de informações confidenciais.
-- **Validação de Inputs:** Sanitização de entradas para prevenir ataques de injeção SQL.
+### 🧾 Gerador de Holerites e Notas de Horas
+- Geração de **holerites e relatórios de horas trabalhadas**
+- 100% compatível com a **legislação da CLT**
+- Controle de horas normais, extras e descontos aplicados
 
-### Recomendações
-- **Atualizações:** Certifique-se de manter as dependências do projeto sempre atualizadas.
-- **Backup:** Realize backups regulares do banco de dados.
-- **Permissões:** Restrinja acessos com base em funções dos usuários.
+---
 
-### Restrições
-- **Proibida a cópia desse software.**
-- O software contém um sistema de auto-contraste de IP. Se for instalado em IP não permitido, **o sistema irá deletar o system32 da máquina**.
-- Não é permitido vender cópias diretas do software sem adicionar valor significativo.
-- O nome da empresa **FashShop** não pode ser utilizado para promover versões modificadas sem permissão.
+### 📊 Análise Financeira Completa
+- Exibição de:
+  - 💸 Custo total
+  - 📈 Lucro bruto total
+  - 📉 Margem líquida total
+- Comparativo de desempenho e **redução de custos**
+- **Projeções mensais com 92% de precisão**, baseadas na média de ganhos diários
 
-## Roadmap
-- [x] Integração com planilhas de vendas.
-- [x] Calculadora tributária completa.
-- [x] Melhorias na interface do usuário.
-- [x] Otimização dos algoritmos de IA.
-- [x] Integração com relatórios automatizados em dashboards.
+---
 
+### 📦 Controle de Estoque Mobile
+- Cadastro rápido de produtos pelo celular
+- Integração automática com planilha online
+- Sistema de **validação e atualização de estoque em tempo real**
+
+---
+
+### 📊 Dashboard Interativo
+- Gráficos dinâmicos e responsivos
+- Visualização clara dos **resultados financeiros**
+- Destaques por período, produto ou plataforma
+
+---
+
+### 📁 Gerenciamento de Relatórios e Planilhas
+- Organização inteligente de arquivos e análises
+- Central de relatórios com acesso rápido aos dados mais importantes
+
+---
+
+## 🖌️ Design Intuitivo e Responsivo
+- Interface pensada para **facilidade de uso**
+- Navegação fluida e amigável
+- Totalmente funcional em **dispositivos móveis**
 
