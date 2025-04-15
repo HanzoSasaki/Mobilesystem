@@ -115,18 +115,22 @@ function limparFiltro() {
     atualizarChips();
     atualizarTabela(dadosCompletos);
 }
-
 function atualizarTabela(dados) {
+    const linhasVerificadas = getLinhasVerificadas();
     const tbody = document.querySelector('#dataTable tbody');
-    tbody.innerHTML = dados.map(item => `
-        <tr>
-            <td>${item.sku}</td>
-            <td>${item.produto}</td>
-            <td>${item.estoque}</td>
-            <td>${formatarData(item.data)}</td>
-        </tr>
-    `).join('');
+    tbody.innerHTML = dados.map(item => {
+        const verificada = linhasVerificadas.includes(item.sku);
+        return `
+            <tr class="${verificada ? 'linha-verificada' : ''}" onclick="toggleLinhaVerificada('${item.sku}')">
+                <td>${item.sku}</td>
+                <td>${item.produto}</td>
+                <td>${item.estoque}</td>
+                <td>${formatarData(item.data)}</td>
+            </tr>
+        `;
+    }).join('');
 }
+
 
 async function baixarPlanilhaCompleta() {
     try {
@@ -141,6 +145,24 @@ async function baixarPlanilhaCompleta() {
         alert('Erro ao baixar a planilha');
     }
 }
+
+
+// Salvar e recuperar IDs das linhas verificadas
+function getLinhasVerificadas() {
+    return JSON.parse(localStorage.getItem('linhasVerificadas') || '[]');
+}
+
+function toggleLinhaVerificada(sku) {
+    let linhas = getLinhasVerificadas();
+    if (linhas.includes(sku)) {
+        linhas = linhas.filter(id => id !== sku);
+    } else {
+        linhas.push(sku);
+    }
+    localStorage.setItem('linhasVerificadas', JSON.stringify(linhas));
+    aplicarFiltro(); // Atualiza a tabela com a nova marcação
+}
+
 
 // Inicialização
 carregarDados();

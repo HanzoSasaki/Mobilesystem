@@ -90,7 +90,13 @@ button:hover {
 button:active {
     transform: scale(0.98);
 }
+.linha-verificada {
+    background-color: #d4edda !important;
+}
 
+tr:hover {
+    cursor: pointer;
+}
 /* Chips de data */
 .chips-data {
     display: flex;
