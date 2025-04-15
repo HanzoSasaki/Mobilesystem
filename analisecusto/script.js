@@ -88,7 +88,7 @@ function formatarMoeda(valor) {
 function calcularProjecaoMesAtual() {
     const hoje = new Date();
     const mesAtual = hoje.getMonth(); // 0 = Janeiro
-    const diaAtual = hoje.getDate(); // Dia de hoje
+    const diaAtual = hoje.getDate();   // Dia de hoje
     const diasNoMesAtual = dados.diasNoMes[mesAtual];
 
     const lucroBruto = dados.lucroBruto[mesAtual];
@@ -106,7 +106,7 @@ function calcularProjecaoMesAtual() {
         localStorage.setItem("projecao", 0);
     }
 
-    // Média diária
+    // Calcular médias diárias
     const mediaLucroBruto = lucroBruto / diaAtual;
     const mediaLucroLiquido = lucroLiquido / diaAtual;
 
@@ -114,7 +114,7 @@ function calcularProjecaoMesAtual() {
     const projecaoLucroBruto = mediaLucroBruto * diasNoMesAtual;
     const projecaoLucroLiquido = mediaLucroLiquido * diasNoMesAtual;
 
-    // Atualiza o conteúdo do card
+    // Atualiza o conteúdo do card com as projeções
     const projecaoEl = document.getElementById('projecao-mensal');
     if (projecaoEl) {
         const titulo = projecaoEl.querySelector('h2');
@@ -125,12 +125,18 @@ function calcularProjecaoMesAtual() {
         const box = projecaoEl.querySelector('.projecao-box');
         if (box) {
             box.innerHTML = `
-                 Média diária: ${formatarMoeda(mediaLucroLiquido)}<br>
-                 Projeção até dia ${diasNoMesAtual}: ${formatarMoeda(projecaoLucroLiquido)}
+           
+                <strong>Média Diária:</strong><br>
+                Líquida: ${formatarMoeda(mediaLucroLiquido)}<br>
+                Bruta: ${formatarMoeda(mediaLucroBruto)}<br><br>
+                <strong>Projeção até dia ${diasNoMesAtual}:</strong><br>
+                Líquida: ${formatarMoeda(projecaoLucroLiquido)}<br>
+                Bruta: ${formatarMoeda(projecaoLucroBruto)}
             `;
         }
     }
 }
+
 
 const hoje = new Date();
 const mesAtual = hoje.getMonth();
