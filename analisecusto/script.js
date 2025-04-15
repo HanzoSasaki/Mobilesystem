@@ -137,6 +137,47 @@ function calcularProjecaoMesAtual() {
     }
 }
 
+function mostrarLoader() {
+    const loader = document.getElementById('loader');
+    if (loader) loader.style.display = 'flex';
+}
+
+function esconderLoader() {
+    const loader = document.getElementById('loader');
+    if (loader) loader.style.display = 'none';
+}
+async function carregarDados() {
+    mostrarLoader();
+    try {
+        const response = await fetch(TSV_URL);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const tsv = await response.text();
+        processarTSV(tsv);
+        calcularProjecaoMesAtual();
+        renderizarMeses();
+        calcularTotais();
+        renderizarGraficos();
+    } catch (error) {
+        console.error('Erro ao carregar dados:', error);
+        alert('Erro ao carregar dados. Verifique o console para detalhes.');
+    } finally {
+        esconderLoader();
+    }
+}
+function aplicarEfeitoSnake(texto) {
+    const container = document.getElementById('snake-text');
+    container.innerHTML = ''; // Limpa o conteúdo atual
+
+    texto.split('').forEach((letra, i) => {
+        const span = document.createElement('span');
+        span.textContent = letra;
+        span.style.animationDelay = `${i * 0.1}s`;
+        container.appendChild(span);
+    });
+}
+
+// Inicia com o texto "Carregando..."
+aplicarEfeitoSnake('Carregando...');
 
 const hoje = new Date();
 const mesAtual = hoje.getMonth();

@@ -121,3 +121,25 @@ footer {
     transform: none !important;
   }
 }
+#snake-text {
+  display: flex;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: bold;
+  gap: 2px;
+}
+
+#snake-text span {
+  display: inline-block;
+  animation: wave 1s ease-in-out infinite;
+  color: #333;
+}
+
+@keyframes wave {
+  0%, 100% {
+      transform: translateY(0);
+  }
+  50% {
+      transform: translateY(-10px);
+  }
+}
