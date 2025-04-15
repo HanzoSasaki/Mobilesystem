@@ -65,3 +65,11 @@ Bem-vindo ao sistema definitivo para **controle, análise e automação de venda
 - Navegação fluida e amigável
 - Totalmente funcional em **dispositivos móveis**
 
+
+## ⚠️ Aviso Legal
+
+Este sistema opera sob **regime particular**, com scripts conectados a um **servidor próprio em ambiente Kali Linux**, onde **todos os acessos e interações são monitorados em tempo real** para garantir segurança e integridade dos dados.
+
+Ao utilizar este software, o usuário declara estar ciente de que **todos os dados inseridos, processados ou gerados são automaticamente vinculados ao desenvolvedor Erick Barbosa**, que detém a **propriedade total e exclusiva** dessas informações, incluindo registros, cálculos e projeções.
+
+O uso indevido, cópia ou distribuição sem autorização prévia constitui violação de direitos autorais e poderá resultar em **medidas legais cabíveis**.
