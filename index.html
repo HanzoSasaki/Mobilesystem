@@ -1,21 +1,23 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FAST SHOP B.I - ERP</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
   <link rel="stylesheet" href="style.css" />
   <style>
-   
+
   </style>
 </head>
+
 <body>
   <!-- Modal de Senha -->
   <div id="password-modal">
     <div class="modal-content">
       <h2>Digite a senha</h2>
-      <input type="password" id="password-input" placeholder="Senha"/>
+      <input type="password" id="password-input" placeholder="Senha" />
       <button onclick="verificarSenha()">Acessar</button>
       <p id="error-message"></p>
     </div>
@@ -52,19 +54,37 @@
     <nav class="sidebar">
       <div class="nav-section">
         <span class="nav-title">Menu</span>
-        <a href="analisedia/meianota/meia.html" class="nav-item"><i class="fas fa-chart-line"></i> <span>Análise Diária</span></a>
-        <a href="Folha/index.html" class="nav-item"><i class="fas fa-file-invoice-dollar"></i> <span>Folha de Pagamento</span></a>
-        <a href="Erros/index.html" class="nav-item"><i class="fas fa-exclamation-circle"></i> <span>Taxa de Erros</span></a>
-        <a href="analisecusto/index.html" class="nav-item"><i class="fas fa-balance-scale-left"></i> <span>Análise Comparativa</span></a>
-        <a href="contagemEstoque/index.html" class="nav-item"><i class="fas fa-boxes"></i> <span>Atualiza Estoque</span></a>
-        <a href="contagemEstoque/planilha de verificação/index.html" class="nav-item"><i class="fas fa-clipboard-check"></i> <span>Planilha de Contagem</span></a>
-        <a href="downloadplan/index.html" class="nav-item"><i class="fas fa-file-download"></i> <span>Planilhas e Relatórios</span></a>
-        <a href="graficos/index.html" class="nav-item"><i class="fas fa-chart-pie"></i> <span>Relatórios Gráficos</span></a>
-        <a href="Financeiro/index.html" class="nav-item"><i class="fas fa-wallet"></i> <span>Financeiro</span></a>
+        <!-- 📊 Análises e Relatórios -->
+        <a href="analisecusto/index.html" class="nav-item"><i class="fas fa-balance-scale-left"></i> <span>Análise
+            Comparativa</span></a>
+        <a href="analisedia/meianota/meia.html" class="nav-item"><i class="fas fa-chart-line"></i> <span>Análise
+            Diária</span></a>
         <a href="FastAnalise/index.html" class="nav-item"><i class="fas fa-bolt"></i> <span>Fast Análise</span></a>
+        <a href="downloadplan/index.html" class="nav-item"><i class="fas fa-file-download"></i> <span>Planilhas e
+            Relatórios</span></a>
+        <a href="graficos/index.html" class="nav-item"><i class="fas fa-chart-pie"></i> <span>Relatórios
+            Gráficos</span></a>
+        <a href="RelatorioCarga/index.html" class="nav-item"><i class="fas fa-truck"></i> <span>Relatório de
+            carregamento</span></a>
+
+        <!-- 📦 Estoque -->
+        <a href="contagemEstoque/index.html" class="nav-item"><i class="fas fa-boxes"></i> <span>Atualiza
+            Estoque</span></a>
+        <a href="contagemEstoque/planilha de verificação/index.html" class="nav-item"><i
+            class="fas fa-clipboard-check"></i> <span>Planilha de Contagem</span></a>
+
+        <!-- 💰 Financeiro e Pagamento -->
+        <a href="Financeiro/index.html" class="nav-item"><i class="fas fa-wallet"></i> <span>Financeiro</span></a>
+        <a href="Folha/index.html" class="nav-item"><i class="fas fa-file-invoice-dollar"></i> <span>Folha de
+            Pagamento</span></a>
         <a href="ML/index.html" class="nav-item"><i class="fas fa-calculator"></i> <span>Calculadora ML</span></a>
-       
-        
+
+        <!-- ⚠️ Indicadores de Qualidade -->
+        <a href="Erros/index.html" class="nav-item"><i class="fas fa-exclamation-circle"></i> <span>Taxa de
+            Erros</span></a>
+
+
+
 
       </div>
     </nav>
@@ -164,4 +184,5 @@
     });
   </script>
 </body>
+
 </html>
