@@ -151,46 +151,58 @@ function aplicarFiltro(dataInicio, dataFim) {
 
 // Exibição dos resultados na tabela
 function exibirResultados(dados) {
-    const tbody = document.getElementById('table-body');
-    tbody.innerHTML = '';
+  const formatadorMoeda = new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+  });
 
-    dados.forEach(item => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${item.id}</td>
-            <td>${item.produto}</td>
-            <td>${item.variacao}</td>
-            <td>${item.quantidade}</td>
-            <td>${item.loja}</td>
-            <td>R$ ${item.custo.toFixed(2)}</td>
-            <td>R$ ${item.preco.toFixed(2)}</td>
-            <td style="color: ${item.margemLiquida < 0 ? 'red' : 'green'}">
-                R$ ${item.margemLiquida.toFixed(2)}
-            </td>
-            <td>${((item.margemLiquida / item.preco) * 100 || 0).toFixed(2)}%</td>
-            <td>${item.data.toLocaleDateString('pt-BR')}</td>
-            <td style="color: ${item.avaliacao === 'Alterar' ? 'red' : 'green'}">
-                ${item.avaliacao}
-            </td>
-         
-        `;
-        tbody.appendChild(row);
-    });
+  const tbody = document.getElementById('table-body');
+  tbody.innerHTML = '';
 
-    document.getElementById('resultTable').style.display = 'table';
+  dados.forEach(item => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+          <td>${item.id}</td>
+          <td>${item.produto}</td>
+          <td>${item.variacao}</td>
+          <td>${new Intl.NumberFormat('pt-BR').format(item.quantidade)}</td>
+          <td>${item.loja}</td>
+          <td>${formatadorMoeda.format(item.custo)}</td>
+          <td>${formatadorMoeda.format(item.preco)}</td>
+          <td style="color: ${item.margemLiquida < 0 ? 'red' : 'green'}">
+              ${formatadorMoeda.format(item.margemLiquida)}
+          </td>
+          <td>${(item.margemLiquida / item.preco * 100 || 0).toLocaleString('pt-BR', { maximumFractionDigits: 2 })}%</td>
+          <td>${item.data.toLocaleDateString('pt-BR')}</td>
+          <td style="color: ${item.avaliacao === 'Alterar' ? 'red' : 'green'}">
+              ${item.avaliacao}
+          </td>
+
+      `;
+      tbody.appendChild(row);
+  });
+
+  document.getElementById('resultTable').style.display = 'table';
 }
-
 // Atualização do resumo financeiro
 function atualizarResumo(dados) {
-    const totalVendas = dados.reduce((acc, item) => acc + item.quantidade, 0);
-    const totalMargem = dados.reduce((acc, item) => acc + item.margemLiquida, 0);
-    const totalBruto = dados.reduce((acc, item) => acc + item.brutoLiquido, 0);
+  const formatadorMoeda = new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+  });
 
-    document.getElementById('totalVendas').textContent = totalVendas;
-    document.getElementById('margemTotal').textContent = `R$ ${totalMargem.toFixed(2)}`;
-    document.getElementById('lucroBruto').textContent = `R$ ${totalBruto.toFixed(2)}`;
+  const formatadorNumerico = new Intl.NumberFormat('pt-BR');
+
+  const totalVendas = dados.reduce((acc, item) => acc + item.quantidade, 0);
+  const totalMargem = dados.reduce((acc, item) => acc + item.margemLiquida, 0);
+  const totalBruto = dados.reduce((acc, item) => acc + item.brutoLiquido, 0);
+
+  document.getElementById('totalVendas').textContent = formatadorNumerico.format(totalVendas);
+  document.getElementById('margemTotal').innerHTML = formatadorMoeda.format(totalMargem);
+  document.getElementById('lucroBruto').innerHTML = formatadorMoeda.format(totalBruto);
 }
-
 // Funções de interface
 function mostrarCarregamento() {
     document.getElementById('loader').style.display = 'flex';
