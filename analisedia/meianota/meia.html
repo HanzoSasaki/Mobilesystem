@@ -1,85 +1,265 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Software de Análise de Vendas</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Análise de Vendas - Controle Financeiro</title>
+    
+    <!-- CSS Externo -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- CSS Interno Otimizado -->
+    <style>
+        :root {
+            --cor-primaria: #2c3e50;
+            --cor-secundaria: #3498db;
+            --cor-sucesso: #27ae60;
+            --cor-alerta: #e67e22;
+            --cor-erro: #e74c3c;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            color: var(--cor-primaria);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Loader */
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--cor-secundaria);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Filtros */
+        #filtroContainer {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+
+        #seletorData {
+            padding: 12px 15px;
+            font-size: 16px;
+            border: 2px solid var(--cor-secundaria);
+            border-radius: 8px;
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 20px;
+        }
+
+        /* Resumo */
+        #resumoPeriodo {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 25px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .resumo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .resumo-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--cor-secundaria);
+        }
+
+        .resumo-item h3 {
+            margin: 0 0 10px 0;
+            color: var(--cor-primaria);
+            font-size: 1.1em;
+        }
+
+        .resumo-item p {
+            margin: 0;
+            font-size: 1.4em;
+            font-weight: 600;
+            color: var(--cor-sucesso);
+        }
+
+        /* Tabela */
+        #resultTable {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-top: 25px;
+        }
+
+        #resultTable th,
+        #resultTable td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        #resultTable th {
+            background-color: var(--cor-primaria);
+            color: white;
+            font-weight: 600;
+        }
+
+        #resultTable tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* Botões e Interações */
+        #scrollToTopBtn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 15px;
+            background: var(--cor-secundaria);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: none;
+            transition: transform 0.2s;
+        }
+
+        #scrollToTopBtn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Mensagens */
+        .erro {
+            background: #fee;
+            color: var(--cor-erro);
+            padding: 15px;
+            margin: 20px;
+            border-radius: 8px;
+            border: 1px solid #fcc;
+        }
+
+        .aviso {
+            background: #ffedcc;
+            color: var(--cor-alerta);
+            padding: 15px;
+            margin: 20px;
+            border-radius: 8px;
+            border: 1px solid #ffe099;
+        }
+
+        @media (max-width: 768px) {
+            #resultTable {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .resumo-item p {
+                font-size: 1.2em;
+            }
+        }
+    </style>
 </head>
-
 <body>
-
+    <!-- Loader -->
     <div id="loader" class="loader-overlay">
         <div class="spinner"></div>
-        <p>Processando... Aguarde</p>
+        <p>Carregando dados...</p>
     </div>
 
-    <button id="scrollToTopBtn" onclick="scrollToTop()">↑</button>
-    <!-- <header style="position: relative; padding: 10px;">
-        <h2 style="text-align: center; width: 100%;">Análise Diária FASTSHOP (PRINCIPAL)</h2>
-     
-    </header> -->
+    <!-- Botão Scroll to Top -->
+    <button id="scrollToTopBtn" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i>
+    </button>
 
-    <div class="actions-container">
-        <div class="import-button-container">
-            <button id="importButton" onclick="window.location.href='../index.html'">
-                <span>Visualização de analise Secundaria (10%)</span>
-            </button>
+    <div class="container">
+        <!-- Seção de Filtros -->
+        <div id="filtroContainer">
+            <h2>Análise de Vendas Diárias</h2>
+            <input type="text" id="seletorData" placeholder="Selecione o período">
+            
+            <!-- Resumo Financeiro -->
+            <div id="resumoPeriodo">
+                <h3>Resumo Financeiro</h3>
+                <div class="resumo-grid">
+                    <div class="resumo-item">
+                        <h3>Total de Vendas</h3>
+                        <p id="totalVendas">0</p>
+                    </div>
+                    <div class="resumo-item">
+                        <h3>Margem Líquida Total</h3>
+                        <p id="margemTotal">R$ 0,00</p>
+                    </div>
+                    <div class="resumo-item">
+                        <h3>Lucro Bruto Total</h3>
+                        <p id="lucroBruto">R$ 0,00</p>
+                    </div>
+                </div>
+            </div>
         </div>
-    
-        <div class="filtro-container">
-            <input type="text" id="filtroData" placeholder="Escolha uma data ou intervalo">
-        </div>
-    </div>
 
-    <div class="alert">
-        <span class="alert-icon">⚠️</span>
-        <p><strong>ATENÇÃO:</strong> AS ANÁLISES FORAM FEITAS ATÉ O DIA 24/03 COM OS VALORES DE 3,25. SENDO ASSIM, O NOVO CÁLCULO SERÁ: <Strong>IMPOSTO</Strong> de <Strong>1,8%</Strong> e nas demais taxas padrões para <Strong>MEIA NOTA.</Strong></p>
-
-    </div>
-
-    <section class="table-section">
+        <!-- Tabela de Resultados -->
         <table id="resultTable">
             <thead>
                 <tr>
-                    <th onclick="ativarFiltro(this)">Número do Pedido</th>
-                    <th onclick="ativarFiltro(this)">Nome do Produto</th>
-                    <th onclick="ativarFiltro(this)">Variação Produto</th>
-                    <th onclick="ativarFiltro(this)">Quantidade venda</th>
-                    <th onclick="ativarFiltro(this)">Loja</th>
-                    <th onclick="ativarFiltro(this)">Custo Real (R$)</th>
-                    <th onclick="ativarFiltro(this)">Preço de Venda (R$)</th>
-                    <th onclick="ativarFiltro(this)">Margem Líquida (R$)</th>
-                    <th onclick="ativarFiltro(this)">Margem (%)</th>
-                    <th onclick="ativarFiltro(this)">Data</th>
-                    <th onclick="ativarFiltro(this)">% NECESSÁRIA PARA ATINGIR A META</th>
-                    <th onclick="ativarFiltro(this)">AVALIAÇÃO POR PEDIDO</th>
-                    <th onclick="ativarFiltro(this)">OBS</th>
-                    
+                    <th>Pedido</th>
+                    <th>Produto</th>
+                    <th>Variação</th>
+                    <th>Quantidade</th>
+                    <th>Loja</th>
+                    <th>Custo (R$)</th>
+                    <th>Preço Venda (R$)</th>
+                    <th>Margem Líquida</th>
+                    <th>Margem %</th>
+                    <th>Data</th>
+                    <th>Avaliação</th>
+                  
                 </tr>
             </thead>
             <tbody id="table-body">
-                <!-- Dados da planilha serão exibidos aqui -->
+                <!-- Dados serão inseridos via JavaScript -->
             </tbody>
         </table>
-    </section>
+    </div>
 
-
-
-      
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/papaparse/papaparse.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
     <script src="meia.js"></script>
-    <script src="../assets/filter.js"></script>
-
-    <script>
-      
-    </script>
-    
 </body>
-
 </html>

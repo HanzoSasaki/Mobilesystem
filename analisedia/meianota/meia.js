@@ -1,208 +1,233 @@
-let resultados = [];
-let dadosFixos = []; // Armazena os dados da planilha
+// Configurações e estados globais
+let todosDados = [];
+let flatpickrInstance = null;
 
-function openModal(modalId) {
-  document.getElementById('modal' + modalId).style.display = "block";
-}
+// Mapeamento das colunas (ajuste os números conforme sua planilha)
+const COLUNAS = {
+    ID: 0,
+    NOME_PRODUTO: 1,
+    VARIACAO: 2,
+    CUSTO_POR_PRODUTO: 3,
+    PRECO_VENDA: 5,
+    MARGEM_LIQUIDA: 11,
+    LOJA: 10, // Coluna que contém DIRETAMENTE o nome da loja
+    DATA: 13,
+    QUANTIDADE: 17,
+    BRUTO_LIQUIDO: 19,
+    AVALIACAO_PRECO: 16
+};
 
-function closeModal(modalId) {
-  document.getElementById('modal' + modalId).style.display = "none";
-}
-
-// Fechar o modal clicando fora da área do conteúdo
-window.onclick = function(event) {
-  if (event.target.className === "modal") {
-    event.target.style.display = "none";
-  }
-}
-
-// Função para mostrar o loader
-function mostrarLoader() {
-  const loader = document.getElementById('loader');
-  loader.style.visibility = 'visible';
-  loader.style.opacity = '1';
-}
-
-// Função para ocultar o loader
-function ocultarLoader() {
-  const loader = document.getElementById('loader');
-  loader.style.opacity = '0';
-  setTimeout(() => {
-    loader.style.visibility = 'hidden';
-  }, 500); // Espera o fade-out terminar
-}
-
-// Função auxiliar para converter "DD/MM/AAAA" para um número (AAAAMMDD) para comparação
-function converterParaNumero(data) {
-  let [dia, mes, ano] = data.split("/");
-  return parseInt(ano + mes + dia);
-}
-
-// Função para encontrar a última data disponível dos resultados
-function obterUltimaData(resultados) {
-  let ultimaData = "";
-  let maiorNumero = 0;
-  resultados.forEach(item => {
-    const dataItem = item[13]; // coluna de data
-    if (dataItem) {
-      const dataNum = converterParaNumero(dataItem);
-      if (dataNum > maiorNumero) {
-        maiorNumero = dataNum;
-        ultimaData = dataItem;
-      }
+// Inicialização do sistema
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        mostrarCarregamento();
+        await carregarDados();
+        configurarFlatpickr();
+        console.log('Sistema inicializado com sucesso');
+    } catch (error) {
+        console.error('Erro na inicialização:', error);
+        mostrarErro('Falha ao inicializar o sistema');
+    } finally {
+        ocultarCarregamento();
     }
-  });
-  return ultimaData;
+});
+
+// Função principal de carregamento de dados
+async function carregarDados() {
+    try {
+        const dadosVendas = await carregarPlanilha(
+            'https://docs.google.com/spreadsheets/d/e/2PACX-1vTtvK3X3YMZzQe3M1I5lz6AkpNcdR8RomqEPefP_meogRr3LeZXELjeHajUYf4Cv_lFItd7YFf84NLf/pub?output=tsv'
+        );
+        
+        todosDados = processarVendas(dadosVendas);
+        console.log('Dados processados:', todosDados);
+    } catch (error) {
+        throw new Error(`Erro no carregamento: ${error.message}`);
+    }
 }
 
-// Função para carregar a planilha fixa
-function carregarPlanilha() {
-  mostrarLoader(); // Mostra o loader ao iniciar o carregamento
-  
-  fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vTtvK3X3YMZzQe3M1I5lz6AkpNcdR8RomqEPefP_meogRr3LeZXELjeHajUYf4Cv_lFItd7YFf84NLf/pub?gid=265979275&single=true&output=csv')
-    .then(response => response.text())
-    .then(data => {
-      Papa.parse(data, {
-        complete: function (result) {
-          resultados = result.data;
-          // Remove a linha de cabeçalho e linhas vazias
-          resultados = resultados.slice(1).filter(row => row.length > 1);
-          dadosFixos = resultados.map(row => [...row]);
-          
-          calcularMargens(resultados);
-          calcularMargemTotalEMedia(resultados);
-          
-          // Exibir apenas os dados do último dia disponível
-          const ultimaData = obterUltimaData(resultados);
-          const resultadosUltimoDia = resultados.filter(item => item[13] === ultimaData);
-          exibirResultados(resultadosUltimoDia);
-          
-          ocultarLoader(); // Oculta o loader ao terminar o processamento
-        },
-        header: false,
-        skipEmptyLines: true
-      });
-    })
-    .catch(error => {
-      console.error("Erro ao carregar a planilha:", error);
-      ocultarLoader(); // Oculta o loader em caso de erro
+// Função para carregar a planilha
+async function carregarPlanilha(url) {
+    try {
+        const response = await fetch(url);
+        const tsvData = await response.text();
+        return new Promise((resolve, reject) => {
+            Papa.parse(tsvData, {
+                delimiter: '\t',
+                header: true,
+                skipEmptyLines: true,
+                complete: (result) => resolve(result.data),
+                error: (err) => reject(err)
+            });
+        });
+    } catch (error) {
+        throw new Error(`Falha ao carregar planilha: ${error.message}`);
+    }
+}
+
+// Processa dados de vendas
+function processarVendas(dadosBrutos) {
+    return dadosBrutos.map(linha => {
+        try {
+            return {
+                id: linha[Object.keys(linha)[COLUNAS.ID]],
+                produto: linha[Object.keys(linha)[COLUNAS.NOME_PRODUTO]],
+                variacao: linha[Object.keys(linha)[COLUNAS.VARIACAO]],
+                quantidade: parseInt(linha[Object.keys(linha)[COLUNAS.QUANTIDADE]]) || 0,
+                custo: converterValor(linha[Object.keys(linha)[COLUNAS.CUSTO_POR_PRODUTO]]),
+                preco: converterValor(linha[Object.keys(linha)[COLUNAS.PRECO_VENDA]]),
+                margemLiquida: converterValor(linha[Object.keys(linha)[COLUNAS.MARGEM_LIQUIDA]]),
+                brutoLiquido: converterValor(linha[Object.keys(linha)[COLUNAS.BRUTO_LIQUIDO]]),
+                data: parseData(linha[Object.keys(linha)[COLUNAS.DATA]]),
+                avaliacao: linha[Object.keys(linha)[COLUNAS.AVALIACAO_PRECO]] || 'Manter',
+                loja: linha[Object.keys(linha)[COLUNAS.LOJA]] || 'Loja não informada'
+            };
+        } catch (error) {
+            console.error('Erro ao processar linha:', linha, error);
+            return null;
+        }
+    }).filter(item => item !== null);
+}
+
+// Funções auxiliares de conversão
+function converterValor(valor) {
+    return parseFloat(
+        String(valor)
+            .replace(/[^0-9,]/g, '')
+            .replace(',', '.')
+    ) || 0;
+}
+
+function parseData(dataStr) {
+    try {
+        const [dia, mes, ano] = dataStr.split('/').map(Number);
+        return new Date(ano, mes - 1, dia);
+    } catch (error) {
+        console.error('Data inválida:', dataStr);
+        return null;
+    }
+}
+
+// Configuração do Flatpickr
+function configurarFlatpickr() {
+    flatpickrInstance = flatpickr("#seletorData", {
+        mode: "range",
+        dateFormat: "d/m/Y",
+        locale: "pt",
+        onChange: (dates) => {
+            if(dates.length === 2) aplicarFiltro(dates[0], dates[1]);
+        }
     });
 }
 
-function calcularMargens(resultados) {
-  resultados.forEach(item => {
-    let custo = parseFloat(item[3].replace('R$', '').replace(',', '.')) || 0;
-    let precoVenda = parseFloat(item[4].replace('R$', '').replace(',', '.')) || 0;
-    const imposto = parseFloat(item[5].replace('%', '').replace(',', '.')) / 100 || 0;
-    const comissao = parseFloat(item[6].replace('%', '').replace(',', '.')) / 100 || 0;
-    let taxaPedidos = parseFloat(item[7].replace('R$', '').replace(',', '.')) || 0;
+// Aplicação de filtros
+function aplicarFiltro(dataInicio, dataFim) {
+    try {
+        mostrarCarregamento();
+        
+        const inicio = new Date(dataInicio.setHours(0, 0, 0, 0));
+        const fim = new Date(dataFim.setHours(23, 59, 59, 999));
 
-    const impostoValor = imposto * precoVenda;
-    const comissaoValor = comissao * precoVenda;
-    const totalDespesas = impostoValor + comissaoValor + taxaPedidos;
+        const dadosFiltrados = todosDados.filter(item => {
+            if (!item.data) return false;
+            const dataItem = new Date(item.data);
+            return dataItem >= inicio && dataItem <= fim;
+        });
 
-    const margemLiquida = precoVenda - custo - totalDespesas;
-    const margemPercentual = (margemLiquida / precoVenda) * 100;
+        if(dadosFiltrados.length === 0) {
+            mostrarAviso('Nenhum resultado encontrado para o período selecionado');
+            return;
+        }
 
-    item.margemLiquida = isNaN(margemLiquida) ? 0 : margemLiquida;
-    item.margemPercentual = isNaN(margemPercentual) ? 0 : margemPercentual;
-  });
+        exibirResultados(dadosFiltrados);
+        atualizarResumo(dadosFiltrados);
+    } catch (error) {
+        console.error('Erro na filtragem:', error);
+        mostrarErro('Erro ao aplicar filtro');
+    } finally {
+        ocultarCarregamento();
+    }
 }
 
-function calcularMargemTotalEMedia(resultados) {
-  const margensLiquidas = resultados.map(item => item.margemLiquida);
-  const margemLiquidaTotal = margensLiquidas.reduce((total, margem) => total + margem, 0);
-  const mediaMargemTotal = margemLiquidaTotal / margensLiquidas.length;
+// Exibição dos resultados na tabela
+function exibirResultados(dados) {
+    const tbody = document.getElementById('table-body');
+    tbody.innerHTML = '';
 
-  document.getElementById('margemLiquidaTotal').innerText = `Margem Líquida Total: R$ ${margemLiquidaTotal.toFixed(2)}`;
-  document.getElementById('mediaMargemTotal').innerText = `Média da Margem Total: ${(mediaMargemTotal).toFixed(2)}%`;
+    dados.forEach(item => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${item.id}</td>
+            <td>${item.produto}</td>
+            <td>${item.variacao}</td>
+            <td>${item.quantidade}</td>
+            <td>${item.loja}</td>
+            <td>R$ ${item.custo.toFixed(2)}</td>
+            <td>R$ ${item.preco.toFixed(2)}</td>
+            <td style="color: ${item.margemLiquida < 0 ? 'red' : 'green'}">
+                R$ ${item.margemLiquida.toFixed(2)}
+            </td>
+            <td>${((item.margemLiquida / item.preco) * 100 || 0).toFixed(2)}%</td>
+            <td>${item.data.toLocaleDateString('pt-BR')}</td>
+            <td style="color: ${item.avaliacao === 'Alterar' ? 'red' : 'green'}">
+                ${item.avaliacao}
+            </td>
+         
+        `;
+        tbody.appendChild(row);
+    });
+
+    document.getElementById('resultTable').style.display = 'table';
 }
 
-function exibirResultados(resultados) {
-  const tbody = document.querySelector('#resultTable tbody');
-  tbody.innerHTML = ''; // Limpar a tabela antes de adicionar os novos dados
+// Atualização do resumo financeiro
+function atualizarResumo(dados) {
+    const totalVendas = dados.reduce((acc, item) => acc + item.quantidade, 0);
+    const totalMargem = dados.reduce((acc, item) => acc + item.margemLiquida, 0);
+    const totalBruto = dados.reduce((acc, item) => acc + item.brutoLiquido, 0);
 
-  resultados.forEach(item => {
-    // Converte as colunas 11 e 12 para número, removendo qualquer possível caractere de 'R$' ou ',' 
-    const margemLiquida = parseFloat(item[11].replace('R$', '').replace(',', '.')) || 0;  // Para margem líquida R$
-    const margemPercentual = parseFloat(item[12].replace('%', '').replace(',', '.')) || 0;  // Para margem percentual (%)
-    const porcentagemColuna14 = parseFloat(item[14].replace('%', '').replace(',', '.')) || 0;  // Para a porcentagem da coluna 14
+    document.getElementById('totalVendas').textContent = totalVendas;
+    document.getElementById('margemTotal').textContent = `R$ ${totalMargem.toFixed(2)}`;
+    document.getElementById('lucroBruto').textContent = `R$ ${totalBruto.toFixed(2)}`;
+}
 
-    // Lógica para definir a cor com base nos valores das colunas 11 e 12
-    const corMargemLiquida = margemLiquida < 0 ? 'color: red;' : 'color: green;';
-    const corMargemPercentual = margemPercentual < 0 ? 'color: red; font-weight: bold;' : 'color: green; font-weight: bold;';
+// Funções de interface
+function mostrarCarregamento() {
+    document.getElementById('loader').style.display = 'flex';
+}
 
-    const corManterAlterar = item[16].toLowerCase() === 'alterar' ? 'color: red; font-weight: bold;' : (item[16].toLowerCase() === 'manter' ? 'color: green; font-weight: bold;' : '');
-    const corColuna14 = porcentagemColuna14 > 0 ? 'color: red; font-weight: bold;' : '';
-    const corFundoLinha = item[16].toLowerCase() === 'alterar' ? 'background-color: #FFDDDD;' : 
-                         (item[16].toLowerCase() === 'manter' ? 'background-color: #DFFFD6;' : '');
+function ocultarCarregamento() {
+    document.getElementById('loader').style.display = 'none';
+}
 
-    const row = document.createElement('tr');
-    row.style = corFundoLinha;
-    row.innerHTML = `
-      <td>${item[0]}</td>                                  <!-- número de pedido               -->
-      <td>${item[1]}</td>                                  <!-- Nome produto                   -->
-      <td>${item[2]}</td>                                  <!-- variação do produto            -->
-      <td>${item[17]}</td>                                 <!-- quantidade                     -->
-      <td>${item[10]}</td>                                 <!-- loja                           -->
-      <td>${item[4]}</td>                                  <!-- custo real                     -->
-      <td>${item[5]}</td>                                  <!-- preço venda                    -->
-      <td style="${corMargemPercentual}">${item[11]}</td>   <!-- Coluna 11 (Margem Líquida)     -->
-      <td style="${corMargemPercentual}">${item[12]}</td>   <!-- Coluna 12 (Margem Percentual)  -->
-      <td>${item[13]}</td>                                 <!-- Coluna 13 (DATA)               -->
-      <td style="${corColuna14}">${item[14]}</td>           <!-- Coluna 14 (Porcentagem)        -->
-      <td style="${corManterAlterar}">${item[16]}</td>        <!-- Coluna 16 (Alterar/Mantener)   -->
-      <td style="font-weight: bold;">${item[18]}</td>        <!-- OBS                          -->
+function mostrarErro(mensagem) {
+    const div = document.createElement('div');
+    div.className = 'erro';
+    div.innerHTML = `
+        <i class="fas fa-exclamation-triangle"></i>
+        ${mensagem}
     `;
-    tbody.appendChild(row);
-  });
+    document.body.prepend(div);
+    setTimeout(() => div.remove(), 5000);
 }
 
-document.querySelectorAll('.copy-link').forEach(link => {
-  link.addEventListener('click', function(event) {
-      event.preventDefault();  // Impede a navegação padrão do link
-
-      // Cria um campo de input temporário
-      const tempInput = document.createElement('input');
-      document.body.appendChild(tempInput);
-      tempInput.value = this.textContent;  // Define o valor do input como o conteúdo da célula
-      tempInput.select();
-      document.execCommand('copy');  // Copia o conteúdo para a área de transferência
-      document.body.removeChild(tempInput);  // Remove o campo de input temporário
-
-      alert('Texto copiado para a área de transferência!');
-  });
-});
-
-// Função para filtrar dados pelo input de busca
-function filtrarDados(filtro) {
-  const resultadosFiltrados = dadosFixos.filter(item => {
-    return item.some(valor => valor.toString().toLowerCase().includes(filtro.toLowerCase()));
-  });
-  exibirResultados(resultadosFiltrados);
+function mostrarAviso(mensagem) {
+    const div = document.createElement('div');
+    div.className = 'aviso';
+    div.innerHTML = `
+        <i class="fas fa-info-circle"></i>
+        ${mensagem}
+    `;
+    document.body.prepend(div);
+    setTimeout(() => div.remove(), 3000);
 }
 
-function filtrar() {
-  const filtro = document.getElementById('busca').value;
-  filtrarDados(filtro);
-}
-
-carregarPlanilha();
-
-// Exibe o botão quando o usuário rola para baixo
-window.onscroll = function() {
-  let scrollToTopBtn = document.getElementById("scrollToTopBtn");
-  if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
-    scrollToTopBtn.style.display = "block";  // Exibe o botão
-  } else {
-    scrollToTopBtn.style.display = "none";  // Esconde o botão
-  }
+// Controle do scroll
+window.onscroll = () => {
+    const btn = document.getElementById('scrollToTopBtn');
+    btn.style.display = window.scrollY > 100 ? 'block' : 'none';
 };
 
-// Função para rolar até o topo
 function scrollToTop() {
-  window.scrollTo({
-    top: 0,
-    behavior: 'smooth'  // Animação suave ao subir
-  });
-}
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+};

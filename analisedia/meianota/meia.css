@@ -5,7 +5,55 @@
     box-sizing: border-box;
     font-family: 'Segoe UI', sans-serif;
 }
+.resumo-periodo {
+    margin: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
 
+.resumo-header h3 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.resumo-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.resumo-stats p {
+    margin: 5px 0;
+    padding: 8px;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.erro {
+    background: #ffebee;
+    color: #b71c1c;
+    padding: 15px;
+    margin: 20px;
+    border-radius: 8px;
+    border: 1px solid #ffcdd2;
+}
+
+.aviso {
+    background: #fff3e0;
+    color: #e65100;
+    padding: 15px;
+    margin: 20px;
+    border-radius: 8px;
+    border: 1px solid #ffe0b2;
+}
+
+#loader p {
+    margin-left: 15px;
+    font-size: 1.2em;
+    color: #3498db;
+}
 body {
     background-color: #f5f7fa;
     color: #333;
@@ -13,7 +61,32 @@ body {
     min-height: 100vh;
     padding-bottom: 60px; /* Adicionado para compensar o footer fixo */
 }
+.resumo-periodo {
+    margin: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
 
+.resumo-header h3 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.resumo-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.resumo-stats p {
+    margin: 5px 0;
+    padding: 8px;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
 /* Header */
 header {
     background-color: #333;
